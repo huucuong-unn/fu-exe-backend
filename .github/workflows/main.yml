@@ -59,7 +59,7 @@ jobs:
             docker pull ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
             docker stop backend-exe-spring || true
             docker rm backend-exe-spring || true
-            docker run -d --name backend-exe-spring -p 80:8080 ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
+            docker run -d --name backend-exe-spring -p 80:8086 ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
             
 
           
