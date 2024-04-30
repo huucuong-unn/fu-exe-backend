@@ -56,10 +56,10 @@ jobs:
           key: ${{ secrets.AWS_SERVER_SSH_KEY }}
           port: ${{ secrets.AWS_SERVER_SSH_PORT }}
           script: |
-            docker pull ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
-            docker stop backend-exe-spring || true
-            docker rm backend-exe-spring || true
-            docker run -d --name backend-exe-spring -p 80:8086 ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
+            sudo docker pull ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
+            sudo docker stop backend-exe-spring || true
+            sudo docker rm backend-exe-spring || true
+            sudo docker run -d --name backend-exe-spring -p 80:8086 ${DOCKER_HUB_USERNAME}/backend-exe-spring:latest
             
 
           
