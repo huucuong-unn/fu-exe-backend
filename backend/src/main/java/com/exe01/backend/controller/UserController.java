@@ -19,5 +19,8 @@ public class UserController {
     @GetMapping(value = ConstAPI.AuthenticationAPI.TEST_AWS_DEPLOY)
     public String testAwsDeploy(){
         return  "hello test aws deploy";
+    }    @GetMapping(value = ConstAPI.AuthenticationAPI.TEST_AWS_DEPLOY2)
+    public String testAwsDeploy2(){
+        return  "hello test ci/cd aws deploy2";
     }
 }

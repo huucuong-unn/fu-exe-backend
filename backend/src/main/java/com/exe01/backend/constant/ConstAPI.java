@@ -5,6 +5,7 @@ public class ConstAPI {
         public static final String LOGIN_WITH_PASSWORD_USERNAME = "api/v1/authentication/login";
 
         public static final String TEST_AWS_DEPLOY = "api/v1/authentication/test-aws-deploy";
+        public static final String TEST_AWS_DEPLOY2 = "api/v1/authentication/test-aws-deploy2";
 
     }
 
