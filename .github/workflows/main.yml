@@ -24,5 +24,4 @@ jobs:
 
       - name: Build the application
         run:
-          mvn clean 
-          mvn -B package --file backend/pom.xml
+          mvn clean package --file backend/pom.xml
