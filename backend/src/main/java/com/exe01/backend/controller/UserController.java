@@ -21,6 +21,8 @@ public class UserController {
         return  "hello test aws deploy";
     }    @GetMapping(value = ConstAPI.AuthenticationAPI.TEST_AWS_DEPLOY2)
     public String testAwsDeploy2(){
-        return  "Hello út be khùm";
+        return  " /\\_/\\  \n" +
+                "( o.o ) \n" +
+                " > ^ <";
     }
 }
