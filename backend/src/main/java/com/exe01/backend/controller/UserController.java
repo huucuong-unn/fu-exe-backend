@@ -21,8 +21,26 @@ public class UserController {
         return  "hello test aws deploy";
     }    @GetMapping(value = ConstAPI.AuthenticationAPI.TEST_AWS_DEPLOY2)
     public String testAwsDeploy2(){
-        return  " /*_/*  \n" +
-                "( o.o ) \n" +
-                " > ^ <";
+        return  "            *     ,MMM8&&&.            *\n" +
+                "                  MMMM88&&&&&    .\n" +
+                "                 MMMM88&&&&&&&\n" +
+                "     *           MMM88&&&&&&&&\n" +
+                "                 MMM88&&&&&&&&\n" +
+                "                 'MMM88&&&&&&'\n" +
+                "                   'MMM8&&&'      *    \n" +
+                "          |\\___/|     /\\___/\\\n" +
+                "          )     (     )    ~( .              '\n" +
+                "         =\\     /=   =\\~    /=\n" +
+                "           )===(       ) ~ (\n" +
+                "          /     \\     /     \\\n" +
+                "          |     |     ) ~   (\n" +
+                "         /       \\   /     ~ \\\n" +
+                "         \\       /   \\~     ~/\n" +
+                "  jgs_/\\_/\\__  _/_/\\_/\\__~__/_/\\_/\\_/\\_/\\_/\\_\n" +
+                "  |  |  |  |( (  |  |  | ))  |  |  |  |  |  |\n" +
+                "  |  |  |  | ) ) |  |  |//|  |  |  |  |  |  |\n" +
+                "  |  |  |  |(_(  |  |  (( |  |  |  |  |  |  |\n" +
+                "  |  |  |  |  |  |  |  |\\)|  |  |  |  |  |  |\n" +
+                "  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |";
     }
 }
