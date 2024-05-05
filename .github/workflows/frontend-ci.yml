@@ -25,7 +25,7 @@ jobs:
         run: cd ..
 
       - name: Change directory to the frontend folder
-        run: cd frontend
+        run: cd fu-exe/frontend
       # - name: Unit Tests
 
       - name: List path
