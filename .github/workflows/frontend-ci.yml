@@ -35,7 +35,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./frontend
-        run: npm install
+        run: npm install --force
 
       - name: Build the application
         working-directory: ./frontend
