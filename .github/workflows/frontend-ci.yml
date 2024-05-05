@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: "14"
 
+      - name: List path
+        run: pwd
+
       - name: Change directory to the frontend folder
-        run: cd fu-exe/frontend
+        run: cd ./fu-exe/frontend
 
       # - name: Unit Tests
 
