@@ -23,6 +23,13 @@ jobs:
 
       # - name: Unit Tests
 
+      - name: Cache npm dependencies
+        uses: actions/cache@v2
+        with:
+          path: ./frontend/node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-
+
       - name: Install dependencies
         run: npm install
 
