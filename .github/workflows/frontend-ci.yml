@@ -18,13 +18,16 @@ jobs:
         with:
           node-version: "14"
 
+      - name: Change directory to the frontend folder
+        run: cd frontend
+
       # - name: Unit Tests
 
       - name: Install dependencies
         run: npm install
 
       - name: Build the application
-        run: npm run build --file frontend/package.json
+        run: npm run build
 
       - name: Build FE Docker Image
         uses: docker/build-push-action@v2
