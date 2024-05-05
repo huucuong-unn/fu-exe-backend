@@ -28,6 +28,9 @@ jobs:
         run: cd frontend
       # - name: Unit Tests
 
+      - name: List path
+        run: pwd
+
       - name: Cache npm dependencies
         uses: actions/cache@v2
         with:
