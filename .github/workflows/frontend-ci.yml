@@ -19,15 +19,15 @@ jobs:
           node-version: "14"
 
       - name: Change directory to the frontend folder
-        run: cd ./frontend
+        run: cd frontend
 
       # - name: Unit Tests
 
       - name: Cache npm dependencies
         uses: actions/cache@v2
         with:
-          path: ./frontend/node_modules
-          key: npm-${{ hashFiles('**/package-lock.json') }}
+          path: frontend/node_modules
+          key: npm-${{ hashFiles('frontend/**/package-lock.json') }}
           restore-keys: npm-
 
       - name: Install dependencies
