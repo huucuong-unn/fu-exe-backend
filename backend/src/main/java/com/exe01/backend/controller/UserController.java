@@ -2,7 +2,6 @@ package com.exe01.backend.controller;
 
 import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.UserDTO;
-import com.exe01.backend.entity.User;
 import com.exe01.backend.repository.UserRepository;
 import com.exe01.backend.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
