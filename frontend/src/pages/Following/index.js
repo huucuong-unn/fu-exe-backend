@@ -17,7 +17,7 @@ function Home() {
 
         };
         getTestAPI();
-    }, []);
+    }, [testData]);
 
     return (
         <div>
