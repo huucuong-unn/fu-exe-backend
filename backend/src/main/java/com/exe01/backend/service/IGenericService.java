@@ -2,11 +2,13 @@ package com.exe01.backend.service;
 
 import org.springframework.http.ResponseEntity;
 
-public interface IGenericService<T> {
-    ResponseEntity<?> findById(Long id);
+import java.util.List;
 
-    ResponseEntity<?> findAllByStatusTrue(int page, int limit);
-    ResponseEntity<?> findAll(int page, int limit);
+public interface IGenericService<T> {
+    T findById(Long id);
+
+    List<T> findAllByStatusTrue(int page, int limit);
+    List<T>  findAll();
 
     ResponseEntity<?> save(T t);
 

@@ -1,22 +1,22 @@
-//package com.exe01.backend.repository;
-//
-//
-//import com.exe01.backend.entity.User;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//import org.springframework.data.jpa.repository.Modifying;
-//import org.springframework.data.jpa.repository.Query;
-//import org.springframework.data.repository.query.Param;
-//import org.springframework.stereotype.Repository;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Repository
-//public interface UserRepository extends JpaRepository<User, String> {
-//
-//    Optional<User> findByEmail(String email);
+package com.exe01.backend.repository;
+
+
+import com.exe01.backend.entity.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, String> {
+
+    Optional<User> findByEmail(String email);
 //
 //    User findById(Long id);
 //
@@ -29,7 +29,7 @@
 //    boolean existsByEmail(String email);
 //
 //    User findByStatusIsTrueAndId(Long id);
-//
+
 //    @Transactional
 //    @Modifying
 //    @Query(value = "UPDATE tbl_user SET first_name = :firstName, last_name = :lastName, phone = :phone, dob = :dob, status = :status, gender = :gender, role_id = :userRoleId, modified_by = :modifiedBy, modified_date = EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) WHERE id = :id", nativeQuery = true)
@@ -115,5 +115,5 @@
 //    @Transactional
 //    @Modifying
 //    User save(User user);
-//
-//}
+
+}
