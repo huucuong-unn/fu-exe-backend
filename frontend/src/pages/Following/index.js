@@ -1,14 +1,12 @@
-const React = require('react');
-
+import {useState, useEffect} from 'react';
 const testAPI = require('../../API/TestAPI');
-const useState = React.useState;
 
 
 
 function Home() {
     const [testData, setTestData] = useState();
 
-    React.useEffect(() => {
+    useEffect(() => {
         const getTestAPI = async () => {
             const data = await testAPI.testAPI();
             console.log(data);
