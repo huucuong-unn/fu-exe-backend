@@ -2,15 +2,21 @@ package com.exe01.backend.repository;
 
 
 import com.exe01.backend.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByEmail(String email);
+
+    List<User> findAllByOrderById(Pageable pageable);
+
+    User findById(Long Id);
 //
 //    User findById(Long id);
 //
