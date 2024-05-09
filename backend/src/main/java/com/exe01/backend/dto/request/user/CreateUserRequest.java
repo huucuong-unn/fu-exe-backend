@@ -1,7 +1,5 @@
 package com.exe01.backend.dto.request.user;
 
-import com.exe01.backend.entity.Role;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -4,7 +4,6 @@ import com.exe01.backend.dto.UserDTO;
 import com.exe01.backend.dto.request.user.CreateUserRequest;
 import com.exe01.backend.dto.request.user.UpdateUserRequest;
 import com.exe01.backend.models.PagingModel;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface IUserService extends IGenericService<UserDTO> {
