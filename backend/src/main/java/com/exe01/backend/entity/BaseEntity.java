@@ -12,13 +12,12 @@ import java.util.Date;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable  = false)
     private Long id;
 
-//    @Temporal(TemporalType.DATE) // Specify that only the date part should be stored
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", updatable = false)
     private Date createdDate;
