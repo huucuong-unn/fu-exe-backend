@@ -1,0 +1,14 @@
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\bin\Debug\net8.0\Tortee.BussinessObject.deps.json
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\bin\Debug\net8.0\Tortee.BussinessObject.runtimeconfig.json
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\bin\Debug\net8.0\Tortee.BussinessObject.dll
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\bin\Debug\net8.0\Tortee.BussinessObject.pdb
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.csproj.AssemblyReference.cache
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.AssemblyInfoInputs.cache
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.AssemblyInfo.cs
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.csproj.CoreCompileInputs.cache
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.dll
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\refint\Tortee.BussinessObject.dll
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.pdb
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\Tortee.BussinessObject.genruntimeconfig.cache
+D:\FPT_University\SWD392\project\TorteeProject\Tortee.BussinessObject\obj\Debug\net8.0\ref\Tortee.BussinessObject.dll
