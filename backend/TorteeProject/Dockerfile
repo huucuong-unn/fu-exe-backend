@@ -1,20 +1,27 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
 # Use the .NET 8 SDK image as a build environment
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /source
-
-# Copy the project file and restore dependencies
+ARG BUILD_CONFIGURATION=Debug
+WORKDIR /src
+COPY ["Tortee.API/Tortee.API.csproj", "Tortee.API/"]
+COPY ["Tortee.Repository/Tortee.Repository.csproj", "Tortee.Repository/"]
+COPY ["Tortee.BussinessObject/Tortee.BussinessObject.csproj", "Tortee.BussinessObject/"]
+RUN dotnet restore "./Tortee.API/Tortee.API.csproj" 
 COPY . .
-RUN dotnet restore "./Tortee.API/Tortee.API.csproj" --disable-parallel
-RUN dotnet publish "./Tortee.API/Tortee.API.csproj" -c release -o /app --disable-parallel --no-restore
+WORKDIR "/src/Tortee.API"   
+RUN dotnet build "Tortee.API.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
 
-# Use the ASP.NET Core runtime image for the final image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Debug
+RUN dotnet publish "Tortee.API.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app ./
-
-# Expose port 8086 for HTTP traffic
-EXPOSE 5000
-
-# Set the entry point for the application
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Tortee.API.dll"]
