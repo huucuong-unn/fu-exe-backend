@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Tortee.Repository
-build_property.ProjectDir = D:\FPT_University\SWD392\project\TorteeProject\Tortee.Repository\
+build_property.ProjectDir = D:\FPT_University\SWD392\project\fu-exe\backend\TorteeProject\Tortee.Repository\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

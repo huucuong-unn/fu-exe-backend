@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EkS3zWRxRZt543Zsr3tOPZOkdidPoXRYBrhWMzb3cf3hXxL+L7IpHlbZSTvxfRfH/xFW5e/6zUGFvKGmOeTwKQ==",
+  "dgSpecHash": "jh7Gc8nWLvdw9sAx1+0DExNTyQ4Z5uSNOtjafxOw/7N/3NG17VBO4oY9qBaXsovflYPNWBkIpmUijM25qfoapw==",
   "success": true,
-  "projectFilePath": "D:\\FPT_University\\SWD392\\project\\TorteeProject\\Tortee.Repository\\Tortee.Repository.csproj",
+  "projectFilePath": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.Repository\\Tortee.Repository.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Nguyen Thanh\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\Nguyen Thanh\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",

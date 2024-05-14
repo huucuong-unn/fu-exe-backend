@@ -1,13 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\FPT_University\\SWD392\\project\\TorteeProject\\",
+  "WorkspaceRootPath": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|d:\\fpt_university\\swd392\\project\\torteeproject\\tortee.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|d:\\fpt_university\\swd392\\project\\fu-exe\\backend\\torteeproject\\tortee.api\\tortee.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|solutionrelative:tortee.api\\tortee.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\tortee.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|solutionrelative:tortee.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\tortee.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{21C1BAF9-8DA3-46A2-ABBE-2607E2B76986}|Tortee.API\\Tortee.API.csproj|solutionrelative:tortee.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E8644550-518B-44B4-A656-95F195552C49}|Tortee.Repository\\Tortee.Repository.csproj|d:\\fpt_university\\swd392\\project\\torteeproject\\tortee.repository\\utils\\jwtutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E8644550-518B-44B4-A656-95F195552C49}|Tortee.Repository\\Tortee.Repository.csproj|D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\tortee.repository\\utils\\jwtutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E8644550-518B-44B4-A656-95F195552C49}|Tortee.Repository\\Tortee.Repository.csproj|solutionrelative:tortee.repository\\utils\\jwtutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -18,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,29 +58,52 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "JwtUtil.cs",
-              "DocumentMoniker": "D:\\FPT_University\\SWD392\\project\\TorteeProject\\Tortee.Repository\\Utils\\JwtUtil.cs",
-              "RelativeDocumentMoniker": "Tortee.Repository\\Utils\\JwtUtil.cs",
-              "ToolTip": "D:\\FPT_University\\SWD392\\project\\TorteeProject\\Tortee.Repository\\Utils\\JwtUtil.cs",
-              "RelativeToolTip": "Tortee.Repository\\Utils\\JwtUtil.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAmAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-13T14:32:43.204Z",
+              "DocumentIndex": 0,
+              "Title": "Tortee.API.http",
+              "DocumentMoniker": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.API\\Tortee.API.http",
+              "RelativeDocumentMoniker": "Tortee.API\\Tortee.API.http",
+              "ToolTip": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.API\\Tortee.API.http",
+              "RelativeToolTip": "Tortee.API\\Tortee.API.http",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2024-05-14T05:29:40.176Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\FPT_University\\SWD392\\project\\TorteeProject\\Tortee.API\\Program.cs",
-              "RelativeDocumentMoniker": "Tortee.API\\Program.cs",
-              "ToolTip": "D:\\FPT_University\\SWD392\\project\\TorteeProject\\Tortee.API\\Program.cs",
-              "RelativeToolTip": "Tortee.API\\Program.cs",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAAADoAAAADAAAA",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.API\\appsettings.json",
+              "RelativeDocumentMoniker": "Tortee.API\\appsettings.json",
+              "ToolTip": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.API\\appsettings.json",
+              "RelativeToolTip": "Tortee.API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-05-13T16:25:27.974Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "JwtUtil.cs",
+              "DocumentMoniker": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.Repository\\Utils\\JwtUtil.cs",
+              "RelativeDocumentMoniker": "Tortee.Repository\\Utils\\JwtUtil.cs",
+              "ToolTip": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.Repository\\Utils\\JwtUtil.cs",
+              "RelativeToolTip": "Tortee.Repository\\Utils\\JwtUtil.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-13T14:23:33.346Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-13T14:32:43.204Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.API\\Program.cs",
+              "RelativeDocumentMoniker": "Tortee.API\\Program.cs",
+              "ToolTip": "D:\\FPT_University\\SWD392\\project\\fu-exe\\backend\\TorteeProject\\Tortee.API\\Program.cs",
+              "RelativeToolTip": "Tortee.API\\Program.cs",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAADEAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-13T14:23:33.346Z"
             }
           ]
         }
