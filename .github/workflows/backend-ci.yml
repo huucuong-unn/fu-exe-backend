@@ -40,7 +40,6 @@ jobs:
        run: 'if ! command -v sshpass &> /dev/null; then sudo apt-get install -y sshpass; fi'
      - name: Pull and run Docker image
        run: |
-         if [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.base.ref }}" == "main" ]; then
           sshpass -p ${{secrets.SSH_PASSWORD}} ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "
           
           docker stop ${{secrets.DOCKER_IMAGE}}-backend-api || true
@@ -49,8 +48,8 @@ jobs:
           
           docker pull ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
           docker run -d -p 8070:80 --name ${{secrets.DOCKER_IMAGE}}-backend-api ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_IMAGE}}:latest
-          "
-         fi
+        
+         
 
 #OLD
      
