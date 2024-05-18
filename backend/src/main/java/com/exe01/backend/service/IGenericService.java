@@ -1,19 +1,14 @@
 package com.exe01.backend.service;
 
-import org.springframework.http.ResponseEntity;
+import com.exe01.backend.models.PagingModel;
 
-import java.util.List;
+import java.util.UUID;
 
 public interface IGenericService<T> {
-    T findById(Long id);
+    T findById(UUID id);
 
-    List<T> findAllByStatusTrue(int page, int limit);
-    List<T>  findAll();
+    PagingModel getAll(Integer page, Integer limit);
 
-    ResponseEntity<?> save(T t);
-
-    ResponseEntity<?> changeStatus(Long id);
-
-    Boolean checkExist(Long id);
+    PagingModel findAllByStatusTrue(Integer page, Integer limit);
 
 }

@@ -5,12 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoleDTO{
+public class RoleDTO {
+    private UUID id;
     private String name;
     private String description;
     private Boolean status;
+    private Date createdDate;
+    private Date modifiedDate;
+    private String createBy;
+    private String modifiedBy;
 }

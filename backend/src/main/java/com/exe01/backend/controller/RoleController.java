@@ -1,33 +1,47 @@
 package com.exe01.backend.controller;
 
 import com.exe01.backend.constant.ConstAPI;
-import com.exe01.backend.dto.UserDTO;
-import com.exe01.backend.repository.UserRepository;
-import com.exe01.backend.service.IUserService;
+import com.exe01.backend.dto.RoleDTO;
+import com.exe01.backend.dto.request.role.CreateRoleRequest;
+import com.exe01.backend.dto.request.role.UpdateRoleRequest;
+import com.exe01.backend.models.PagingModel;
+import com.exe01.backend.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
-public class UserController {
+public class RoleController {
 
     @Autowired
-    private IUserService userService;
-    @Autowired
-    private UserRepository userRepository;
-    @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_PASSWORD_USERNAME)
-    public List<UserDTO> login() {
-        return userService.findAll();
+    private IRoleService roleService;
+
+    @GetMapping(value = ConstAPI.AuthenticationAPI.ROLE)
+    public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+        return roleService.getAll(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.AuthenticationAPI.TEST_AWS_DEPLOY)
-    public String testAwsDeploy() {
-        return "hello test aws deploy";
+    @GetMapping(value = ConstAPI.AuthenticationAPI.ROLE_STATUS_TRUE)
+    public PagingModel getAllWithStatusTrue(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+        return roleService.findAllByStatusTrue(page, limit);
+    }
+
+    @GetMapping(value = ConstAPI.AuthenticationAPI.ROLE_BY_ID + "{id}")
+    public RoleDTO findById(@PathVariable("id") UUID id) {
+        return roleService.findById(id);
+    }
+
+    @PostMapping(value = ConstAPI.AuthenticationAPI.CREATE_ROLE)
+    public RoleDTO create(@RequestBody CreateRoleRequest request) {
+        return roleService.create(request);
+    }
+
+    @PutMapping(value = ConstAPI.AuthenticationAPI.UPDATE_ROLE + "{id}")
+    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateRoleRequest request) {
+        return roleService.update(id, request);
     }
 
     @GetMapping(value = ConstAPI.AuthenticationAPI.TEST_AWS_DEPLOY2)

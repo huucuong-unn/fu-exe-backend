@@ -7,26 +7,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable  = false)
-    private Long id;
+    @Column(updatable = false)
+    private UUID id;
 
-//    @Temporal(TemporalType.DATE) // Specify that only the date part should be stored
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", updatable = false)
     private Date createdDate;
-
-//    @CreationTimestamp
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "create_date")
-//    private Date createDate;
 
     @Column(name = "create_by")
     private String createBy;
@@ -40,24 +34,24 @@ public abstract class BaseEntity {
 
     @PrePersist
     protected void onCreate() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            createBy = "Anonymous";
-            modifiedBy = "Anonymous";
-        }
-        else {
-            createBy = authentication.getName();
-            modifiedBy = authentication.getName();
-        }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null) {
+//            createBy = "Anonymous";
+//            modifiedBy = "Anonymous";
+//        } else {
+//            createBy = authentication.getName();
+//            modifiedBy = authentication.getName();
+//        }
+        id = UUID.randomUUID();
 
         createdDate = new Date();
-        modifiedDate =  new Date();
+        modifiedDate = new Date();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        modifiedBy = authentication.getName();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        modifiedBy = authentication.getName();
         modifiedDate = new Date();
     }
 
