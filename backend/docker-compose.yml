@@ -1,0 +1,12 @@
+services:
+  backend-exe-spring:
+    container_name: backend-exe-spring
+    image: hucun/backend-exe-spring
+    ports:
+      - "8086:8086"
+    networks:
+      - backend-exe-spring-network
+
+networks:
+  backend-exe-spring-network:
+    driver: bridge
