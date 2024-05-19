@@ -76,7 +76,7 @@ public class RoleServiceImpl implements IRoleService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Role> roles = roleRepository.findAllByStatusTrueOOrderByCreatedDate(pageable);
+        List<Role> roles = roleRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS,pageable);
 
         List<RoleDTO> roleDTOS = roles.stream().map(RoleConverter::toDto).toList();
 

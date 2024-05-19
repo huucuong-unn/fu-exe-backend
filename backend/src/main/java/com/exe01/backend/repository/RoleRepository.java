@@ -1,5 +1,6 @@
 package com.exe01.backend.repository;
 
+import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.entity.Role;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,5 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
     Optional<Role> findById(UUID id);
     List<Role> findAllBy(Pageable pageable);
 
-    List<Role> findAllByStatusTrueOOrderByCreatedDate(Pageable pageable);
+    List<Role> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 }
