@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Account extends BaseEntity implements UserDetails {
     @NotNull(message = "This field must not be null")
     @Size(max = 100, message = "Username must be less than or equal to 100 characters")
     @Column(name = "username")
-    private String userName;
+    private String username;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
@@ -41,8 +42,14 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @OneToOne
-    @JoinColumn(name = "role_id")
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    @Size(max = 100, message = "Email must be less than or equal to 200 characters")
+    @Column(name = "email")
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
 
     @Override
@@ -57,7 +64,7 @@ public class Account extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override

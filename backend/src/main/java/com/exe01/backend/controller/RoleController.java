@@ -19,27 +19,27 @@ public class RoleController {
     @Autowired
     private IRoleService roleService;
 
-    @GetMapping(value = ConstAPI.AuthenticationAPI.ROLE)
+    @GetMapping(value = ConstAPI.RoleAPI.ROLE)
     public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
         return roleService.getAll(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.AuthenticationAPI.ROLE_STATUS_TRUE)
+    @GetMapping(value = ConstAPI.RoleAPI.ROLE_STATUS_TRUE)
     public PagingModel getAllWithStatusTrue(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
         return roleService.findAllByStatusTrue(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.AuthenticationAPI.ROLE_BY_ID + "{id}")
+    @GetMapping(value = ConstAPI.RoleAPI.ROLE_BY_ID + "{id}")
     public RoleDTO findById(@PathVariable("id") UUID id) {
         return roleService.findById(id);
     }
 
-    @PostMapping(value = ConstAPI.AuthenticationAPI.CREATE_ROLE)
+    @PostMapping(value = ConstAPI.RoleAPI.CREATE_ROLE)
     public RoleDTO create(@RequestBody CreateRoleRequest request) {
         return roleService.create(request);
     }
 
-    @PutMapping(value = ConstAPI.AuthenticationAPI.UPDATE_ROLE + "{id}")
+    @PutMapping(value = ConstAPI.RoleAPI.UPDATE_ROLE + "{id}")
     public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateRoleRequest request) {
         return roleService.update(id, request);
     }

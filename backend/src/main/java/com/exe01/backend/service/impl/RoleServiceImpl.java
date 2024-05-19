@@ -1,5 +1,6 @@
 package com.exe01.backend.service.impl;
 
+import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.RoleConverter;
 import com.exe01.backend.dto.RoleDTO;
 import com.exe01.backend.dto.request.role.CreateRoleRequest;
@@ -70,7 +71,7 @@ public class RoleServiceImpl implements IRoleService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Role> roles = roleRepository.findAllByStatusTrue(pageable);
+        List<Role> roles = roleRepository.findAllByStatus(ConstStatus.ACTIVE_STATUS, pageable);
 
         List<RoleDTO> roleDTOS = roles.stream().map(RoleConverter::toDto).toList();
 
@@ -113,7 +114,7 @@ public class RoleServiceImpl implements IRoleService {
         Role role = new Role();
         role.setName(request.getName());
         role.setDescription(request.getDescription());
-        role.setStatus("Active");
+        role.setStatus(ConstStatus.ACTIVE_STATUS);
 
         roleRepository.save(role);
 

@@ -34,7 +34,7 @@ public class Role extends BaseEntity {
     @Column(name ="description")
     private String description;
 
-    @OneToOne(mappedBy = "role")
-    private Account account;
+    @OneToMany(mappedBy = "role")
+    private List<Account> account = new ArrayList<>();
 
 }
