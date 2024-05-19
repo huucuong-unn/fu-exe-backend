@@ -36,6 +36,7 @@ public abstract class BaseEntity {
 
     @Column(name = "status")
     private String status;
+
     @PrePersist
     protected void onCreate() {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

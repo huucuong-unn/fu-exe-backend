@@ -1,4 +1,5 @@
 package com.exe01.backend.entity;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +29,4 @@ public class Mentor extends BaseEntity {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
-
-    // Other attributes and methods
 }

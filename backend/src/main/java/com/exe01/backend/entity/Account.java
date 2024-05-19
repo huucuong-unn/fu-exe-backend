@@ -79,4 +79,5 @@ public class Account extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
 }

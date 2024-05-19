@@ -55,7 +55,6 @@ public class Company extends BaseEntity {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    @Size(max = 200, message = "Address must be less than or equal to 200 characters")
     @Column(name = "address", nullable = false)
     private String address;
 
@@ -81,4 +80,5 @@ public class Company extends BaseEntity {
 
     @OneToMany(mappedBy = "company")
     private List<Campaign> campaigns = new ArrayList<>();
+
 }

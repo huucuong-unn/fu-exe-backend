@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,5 +63,4 @@ public class Application extends BaseEntity {
     @OneToOne(mappedBy = "application")
     private MentorApply mentorApply;
 
-    // Add any additional fields or relationships if needed
 }

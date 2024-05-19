@@ -28,7 +28,7 @@ public class Major extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 200, message = "Description must be less than or equal to 200 characters")
+    @Size(max = 500, message = "Description must be less than or equal to 500 characters")
     @NotNull(message = "This field must not be null")
     @Column(name = "description")
     private String description;

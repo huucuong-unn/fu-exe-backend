@@ -51,4 +51,5 @@ public class MentorProfile extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "mentor_id", referencedColumnName = "id")
     private Mentor mentor;
+
 }
