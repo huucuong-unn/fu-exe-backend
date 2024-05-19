@@ -9,17 +9,17 @@ public class ConstAPI {
     }
 
     public static class RoleAPI {
-        public static final String ROLE = "api/v1/role";
-        public static final String ROLE_STATUS_TRUE = "api/v1/role/role-status-true";
-        public static final String ROLE_BY_ID = "api/v1/role/";
+        public static final String GET_ROLE = "api/v1/role";
+        public static final String GET_ROLE_STATUS_TRUE = "api/v1/role/role-status-true";
+        public static final String GET_ROLE_BY_ID = "api/v1/role/";
         public static final String CREATE_ROLE = "api/v1/role/create";
         public static final String UPDATE_ROLE = "api/v1/role/update/";
     }
 
     public static class AccountAPI {
-        public static final String ACCOUNT = "api/v1/account";
-        public static final String ACCOUNT_STATUS_TRUE = "api/v1/account/account-status-true";
-        public static final String ACCOUNT_BY_ID = "api/v1/account/";
+        public static final String GET_ACCOUNT = "api/v1/account";
+        public static final String GET_ACCOUNT_STATUS_TRUE = "api/v1/account/account-status-true";
+        public static final String GET_ACCOUNT_BY_ID = "api/v1/account/";
         public static final String CREATE_ACCOUNT = "api/v1/account/create";
         public static final String UPDATE_ACCOUNT = "api/v1/account/update/";
         public static final String DELETE_ACCOUNT = "api/v1/account/delete/";

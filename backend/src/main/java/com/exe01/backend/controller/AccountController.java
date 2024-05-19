@@ -17,17 +17,17 @@ public class AccountController {
     @Autowired
     private IAccountService accountService;
 
-    @GetMapping(value = ConstAPI.AccountAPI.ACCOUNT)
+    @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT)
     public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
         return accountService.getAll(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.AccountAPI.ACCOUNT_STATUS_TRUE)
+    @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_STATUS_TRUE)
     public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
         return accountService.findAllByStatusTrue(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.AccountAPI.ACCOUNT_BY_ID + "{id}")
+    @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_BY_ID + "{id}")
     public AccountDTO findById(@PathVariable("id") UUID id) {
         return accountService.findById(id);
     }

@@ -23,7 +23,7 @@ public class BaseAccountRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    @Size(max = 100, message = "Password must be less than or equal to 100 characters")
+    @Size(min = 8, max = 80, message = "Password must be less than or equal to 100 characters")
     private String password;
 
     @NotBlank(message = "This field must not be blank")

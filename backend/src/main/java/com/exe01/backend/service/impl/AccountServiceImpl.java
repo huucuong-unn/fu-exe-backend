@@ -22,6 +22,7 @@ import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements IAccountService {
+
     @Autowired
     private AccountRepository accountRepository;
 

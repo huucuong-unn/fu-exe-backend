@@ -19,17 +19,17 @@ public class RoleController {
     @Autowired
     private IRoleService roleService;
 
-    @GetMapping(value = ConstAPI.RoleAPI.ROLE)
+    @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE)
     public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
         return roleService.getAll(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.RoleAPI.ROLE_STATUS_TRUE)
+    @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE_STATUS_TRUE)
     public PagingModel getAllWithStatusTrue(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
         return roleService.findAllByStatusTrue(page, limit);
     }
 
-    @GetMapping(value = ConstAPI.RoleAPI.ROLE_BY_ID + "{id}")
+    @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE_BY_ID + "{id}")
     public RoleDTO findById(@PathVariable("id") UUID id) {
         return roleService.findById(id);
     }

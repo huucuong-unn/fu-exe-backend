@@ -7,6 +7,7 @@ import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import java.util.UUID;
 
 public interface IAccountService extends IGenericService<AccountDTO> {
+    
     public AccountDTO create(CreateAccountRequest request);
 
     public Boolean update(UUID id, UpdateAccountRequest request);
