@@ -40,13 +40,8 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "status")
-    private Boolean status;
-
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Override

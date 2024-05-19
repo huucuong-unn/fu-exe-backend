@@ -113,7 +113,7 @@ public class RoleServiceImpl implements IRoleService {
         Role role = new Role();
         role.setName(request.getName());
         role.setDescription(request.getDescription());
-        role.setStatus(true);
+        role.setStatus("Active");
 
         roleRepository.save(role);
 
