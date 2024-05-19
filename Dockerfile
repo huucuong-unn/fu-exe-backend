@@ -15,7 +15,7 @@ COPY src ./src
 RUN mvn clean install
 
 # Stage 2: Run the application
-FROM openjdk:17-alpine
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/backend.jar /app/backend.jar
 EXPOSE 8086
