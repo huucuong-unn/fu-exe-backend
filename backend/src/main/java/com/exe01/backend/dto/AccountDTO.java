@@ -1,6 +1,5 @@
 package com.exe01.backend.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class AccountDTO {
-    
+
     private UUID id;
 
     private String username;
