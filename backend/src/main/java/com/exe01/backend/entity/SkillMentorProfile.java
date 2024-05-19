@@ -29,4 +29,9 @@ public class SkillMentorProfile extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "skill_id", referencedColumnName = "id")
     private Skill skill;
+
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    @Column(name = "skill_level")
+    private String skillLevel;
 }

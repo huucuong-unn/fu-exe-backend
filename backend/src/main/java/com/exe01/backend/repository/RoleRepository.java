@@ -14,5 +14,5 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
     Optional<Role> findById(UUID id);
     List<Role> findAllBy(Pageable pageable);
 
-    List<Role> findAllByStatusTrue(Pageable pageable);
+    List<Role> findAllByStatusTrueOOrderByCreatedDate(Pageable pageable);
 }
