@@ -16,7 +16,7 @@ public class RoleDTO {
     private UUID id;
     private String name;
     private String description;
-    private Boolean status;
+    private String status;
     private Date createdDate;
     private Date modifiedDate;
     private String createBy;

@@ -22,6 +22,7 @@ import java.util.List;
 @Entity
 @Table(name = "account_tbl")
 public class Account extends BaseEntity implements UserDetails {
+
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     @Size(max = 100, message = "Username must be less than or equal to 100 characters")
@@ -40,13 +41,8 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "status")
-    private Boolean status;
-
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Override
@@ -83,4 +79,5 @@ public class Account extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
 }
