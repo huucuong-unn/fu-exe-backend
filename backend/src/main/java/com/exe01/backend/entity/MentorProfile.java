@@ -47,6 +47,7 @@ public class MentorProfile extends BaseEntity {
     @OneToMany(mappedBy = "mentorProfile")
     private List<SkillMentorProfile> skillMentorProfiles = new ArrayList<>();
 
+    @NotNull(message = "This field must not be null")
     @ManyToOne
     @JoinColumn(name = "mentor_id", referencedColumnName = "id")
     private Mentor mentor;

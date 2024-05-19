@@ -21,7 +21,7 @@ public class Certificate extends BaseEntity {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    @Size(max = 100, message = "Name must be less than or equal to 100 characters")
+    @Size(max = 200, message = "Name must be less than or equal to 100 characters")
     @Column(name = "name", nullable = false)
     private String name;
 

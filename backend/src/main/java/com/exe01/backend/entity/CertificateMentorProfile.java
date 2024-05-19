@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "certificate_mentor_profile")
+@Table(name = "certificate_mentor_profile_tbl")
 public class CertificateMentorProfile extends BaseEntity {
     @NotNull(message = "This field must not be null")
     @OneToOne

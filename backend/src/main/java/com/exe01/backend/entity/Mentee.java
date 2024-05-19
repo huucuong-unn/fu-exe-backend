@@ -1,6 +1,7 @@
 package com.exe01.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -20,19 +22,15 @@ import java.util.List;
 @Table(name = "mentee_tbl")
 public class Mentee extends BaseEntity {
 
+    @NotNull(message = "This field must not be null")
     @ManyToOne
     @JoinColumn(name = "campaign_id", referencedColumnName = "id")
     private Campaign campaign;
 
+    @NotNull(message = "This field must not be null")
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
-
-    @Column(name = "create_date")
-    private LocalDate createDate;
-
-    @Column(name = "update_date")
-    private LocalDate updateDate;
 
     @OneToMany(mappedBy = "mentee")
     private List<Application> applications = new ArrayList<>();

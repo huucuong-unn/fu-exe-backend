@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "mentor")
+@Table(name = "mentor_tbl")
 public class Mentor extends BaseEntity {
 
     @OneToMany(mappedBy = "mentor")

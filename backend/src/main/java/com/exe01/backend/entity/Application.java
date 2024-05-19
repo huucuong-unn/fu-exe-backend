@@ -18,9 +18,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "application")
+@Table(name = "application_tbl")
 public class Application extends BaseEntity {
-
 
     @ManyToOne
     @JoinColumn(name = "mentee_id")
