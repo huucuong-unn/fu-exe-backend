@@ -1,14 +1,12 @@
-import Header from '~/parts/Header';
 import Footer from '~/parts/Footer';
 import classNames from 'classnames/bind';
 import styles from '~/components/Layouts/DefaultLayout/DefaultLayout.module.scss';
 
 const cx = classNames.bind(styles);
 
-function DefaultLayout({ children }) {
+function LayoutWithFooter({ children }) {
     return (
         <div className={cx('page-container')}>
-            <Header />
             <div className={cx('content-container')}>
                 <div className={cx('content')}>{children}</div>
             </div>
@@ -17,4 +15,4 @@ function DefaultLayout({ children }) {
     );
 }
 
-export default DefaultLayout;
+export default LayoutWithFooter;
