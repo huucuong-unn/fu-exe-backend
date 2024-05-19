@@ -27,5 +27,4 @@ public class UniversityDTO {
 
     private String status;
 
-
 }
