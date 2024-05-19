@@ -12,13 +12,28 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoleDTO {
+public class AccountDTO {
+
     private UUID id;
-    private String name;
-    private String description;
-    private String status;
+
+    private String username;
+
+    private String password;
+
+    private String avatarUrl;
+
     private Date createdDate;
-    private Date modifiedDate;
+
     private String createBy;
+
     private String modifiedBy;
+
+    private Date modifiedDate;
+
+    private String status;
+
+    private String email;
+
+    private String role;
+
 }

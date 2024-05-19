@@ -1,6 +1,8 @@
 package com.exe01.backend.service.impl;
 
 import com.exe01.backend.converter.RoleConverter;
+import com.exe01.backend.constant.ConstStatus;
+import com.exe01.backend.converter.GenericConverter;
 import com.exe01.backend.dto.RoleDTO;
 import com.exe01.backend.dto.request.role.CreateRoleRequest;
 import com.exe01.backend.dto.request.role.UpdateRoleRequest;
@@ -20,6 +22,10 @@ import java.util.UUID;
 
 @Service
 public class RoleServiceImpl implements IRoleService {
+
+    @Autowired
+    GenericConverter genericConverter;
+
     @Autowired
     private RoleRepository roleRepository;
 
@@ -70,7 +76,7 @@ public class RoleServiceImpl implements IRoleService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Role> roles = roleRepository.findAllByStatusTrue(pageable);
+        List<Role> roles = roleRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS,pageable);
 
         List<RoleDTO> roleDTOS = roles.stream().map(RoleConverter::toDto).toList();
 
@@ -111,9 +117,9 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public RoleDTO create(CreateRoleRequest request) {
         Role role = new Role();
-        role.setName(request.getName());
-        role.setDescription(request.getDescription());
-        role.setStatus(true);
+        RoleDTO roleDTO = (RoleDTO) genericConverter.toDTO(request, RoleDTO.class);
+        role.setStatus(ConstStatus.ACTIVE_STATUS);
+        role = RoleConverter.toEntity(roleDTO);
 
         roleRepository.save(role);
 
