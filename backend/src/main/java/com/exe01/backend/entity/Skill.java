@@ -32,7 +32,4 @@ public class Skill extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "skill_level")
-    private String skillLevel;
-
 }

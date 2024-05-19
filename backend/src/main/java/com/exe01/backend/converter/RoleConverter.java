@@ -5,6 +5,7 @@ import com.exe01.backend.entity.Role;
 
 public class RoleConverter {
     public static RoleDTO toDto(Role role) {
+
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(role.getId());
         roleDTO.setName(role.getName());
@@ -16,5 +17,17 @@ public class RoleConverter {
         roleDTO.setCreateBy(role.getCreateBy());
 
         return roleDTO;
+
     }
+
+    public static Role toEntity(RoleDTO roleDTO) {
+
+        Role role = new Role();
+        role.setId(roleDTO.getId());
+        role.setName(roleDTO.getName());
+        role.setDescription(roleDTO.getDescription());
+
+        return role;
+    }
+
 }
