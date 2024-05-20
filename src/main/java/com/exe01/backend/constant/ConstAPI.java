@@ -25,4 +25,13 @@ public class ConstAPI {
         public static final String DELETE_ACCOUNT = "api/v1/account/delete/";
     }
 
+    public static class MajorAPI {
+        public static final String GET_MAJOR = "api/v1/major";
+        public static final String GET_MAJOR_STATUS_TRUE = "api/v1/major/major-status-true";
+        public static final String GET_MAJOR_BY_ID = "api/v1/major/";
+        public static final String CREATE_MAJOR = "api/v1/major/create";
+        public static final String UPDATE_MAJOR = "api/v1/major/update/";
+        public static final String DELETE_MAJOR = "api/v1/major/delete/";
+    }
+
 }
