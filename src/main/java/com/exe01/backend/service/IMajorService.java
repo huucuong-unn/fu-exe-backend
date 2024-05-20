@@ -12,5 +12,6 @@ public interface IMajorService extends IGenericService<MajorDTO>{
 
     public Boolean update(UUID id, UpdateMajorRequest request);
 
-    public Boolean delete(UUID id);
+    public  Boolean delete(UUID id);
+
 }

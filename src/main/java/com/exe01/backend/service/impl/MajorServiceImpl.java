@@ -39,7 +39,6 @@ public class MajorServiceImpl implements IMajorService {
         boolean isMajorExist = majorById.isPresent();
 
         if (!isMajorExist) {
-            //TODO
             logger.warn("Major with id {} not found", id);
             throw new EntityNotFoundException();
         }

@@ -102,7 +102,6 @@ public class RoleServiceImpl implements IRoleService {
         boolean isRole = roleById.isPresent();
 
         if (!isRole) {
-            //TODO
             throw new EntityNotFoundException();
         }
 

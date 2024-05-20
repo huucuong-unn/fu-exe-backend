@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface MajorRepository extends JpaRepository<Major, UUID> {
+
     Optional<Major> findById(UUID id);
 
     List<Major> findAllByOrderByCreatedDate(Pageable pageable);

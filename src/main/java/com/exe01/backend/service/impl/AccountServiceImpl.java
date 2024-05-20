@@ -48,7 +48,6 @@ public class AccountServiceImpl implements IAccountService {
 
         if (!isRoleExist) {
             logger.warn("Role with id {} is not found", request.getRoleId());
-            //TODO
             throw new EntityNotFoundException();
         }
 
@@ -84,7 +83,6 @@ public class AccountServiceImpl implements IAccountService {
 
         if (!isRoleExist) {
             logger.warn("Role with id {} is not found", request.getRoleId());
-            //TODO
             throw new EntityNotFoundException();
         }
 
@@ -109,7 +107,6 @@ public class AccountServiceImpl implements IAccountService {
 
         if (!isAccountExist) {
             logger.warn("Account with id {} is not found", id);
-            //TODO
             throw new EntityNotFoundException();
         }
 
@@ -133,7 +130,6 @@ public class AccountServiceImpl implements IAccountService {
         boolean isAccountExist = accountById.isPresent();
 
         if (!isAccountExist) {
-            //TODO
             throw new EntityNotFoundException();
         }
 

@@ -15,7 +15,7 @@ public class BaseDTO {
 
     private Date modifiedDate;
 
-    private String createBy;
+    private String createdBy;
 
     private String modifiedBy;
 }
