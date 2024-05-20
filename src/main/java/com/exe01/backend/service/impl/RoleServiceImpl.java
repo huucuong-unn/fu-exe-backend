@@ -11,6 +11,8 @@ import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.RoleRepository;
 import com.exe01.backend.service.IRoleService;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,8 @@ import java.util.UUID;
 @Service
 public class RoleServiceImpl implements IRoleService {
 
+    Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
+
     @Autowired
     GenericConverter genericConverter;
 
@@ -31,6 +35,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleDTO findById(UUID id) {
+        logger.info("Find Role by id {}", id);
         boolean isExist = roleRepository.findById(id).isPresent();
 
         if (!isExist) {
@@ -49,6 +54,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public PagingModel getAll(Integer page, Integer limit) {
+        logger.info("Get all Role with paging");
         PagingModel result = new PagingModel();
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
@@ -72,6 +78,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public PagingModel findAllByStatusTrue(Integer page, Integer limit) {
+        logger.info("Get all Role with status active");
         PagingModel result = new PagingModel();
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
@@ -90,11 +97,11 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public Boolean update(UUID id, UpdateRoleRequest request) {
+        logger.info("Update role");
         var roleById = roleRepository.findById(id);
         boolean isRole = roleById.isPresent();
 
         if (!isRole) {
-            //TODO
             throw new EntityNotFoundException();
         }
 
@@ -116,10 +123,11 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleDTO create(CreateRoleRequest request) {
+        logger.info("Create Role");
         Role role = new Role();
-        RoleDTO roleDTO = (RoleDTO) genericConverter.toDTO(request, RoleDTO.class);
         role.setStatus(ConstStatus.ACTIVE_STATUS);
-        role = RoleConverter.toEntity(roleDTO);
+        role.setName(request.getName());
+        role.setDescription(request.getDescription());
 
         roleRepository.save(role);
 

@@ -58,11 +58,6 @@ public class Account extends BaseEntity implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
     public String getUsername() {
         return username;
     }

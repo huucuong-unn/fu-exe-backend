@@ -11,6 +11,8 @@ import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.RoleRepository;
 import com.exe01.backend.service.IAccountService;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,8 @@ import java.util.UUID;
 @Service
 public class AccountServiceImpl implements IAccountService {
 
+    Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
+
     @Autowired
     private AccountRepository accountRepository;
 
@@ -31,6 +35,7 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public AccountDTO create(CreateAccountRequest request) {
+        logger.info("Create major");
         Account account = new Account();
         account.setUsername(request.getUsername());
         account.setPassword(request.getPassword());
@@ -39,10 +44,10 @@ public class AccountServiceImpl implements IAccountService {
         account.setEmail(request.getEmail());
 
         var roleById = roleRepository.findById(request.getRoleId());
-        boolean isRoleExist = roleById.isPresent();
+        boolean isRoleExist = roleById.isPresent() && roleById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
 
         if (!isRoleExist) {
-            //TODO
+            logger.warn("Role with id {} is not found", request.getRoleId());
             throw new EntityNotFoundException();
         }
 
@@ -55,10 +60,12 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public Boolean update(UUID id, UpdateAccountRequest request) {
+        logger.info("Update major");
         var accountById = accountRepository.findById(id);
         boolean isAccountExist = accountById.isPresent();
 
         if (!isAccountExist) {
+            logger.warn("Account with id {} is not found", id);
             //TODO
             throw new EntityNotFoundException();
         }
@@ -75,7 +82,7 @@ public class AccountServiceImpl implements IAccountService {
         boolean isRoleExist = roleById.isPresent();
 
         if (!isRoleExist) {
-            //TODO
+            logger.warn("Role with id {} is not found", request.getRoleId());
             throw new EntityNotFoundException();
         }
 
@@ -94,11 +101,12 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public Boolean delete(UUID id) {
+        logger.info("Delete account");
         var accountById = accountRepository.findById(id);
         boolean isAccountExist = accountById.isPresent();
 
         if (!isAccountExist) {
-            //TODO
+            logger.warn("Account with id {} is not found", id);
             throw new EntityNotFoundException();
         }
 
@@ -117,11 +125,11 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public AccountDTO findById(UUID id) {
+        logger.info("Find account by id {}", id);
         var accountById = accountRepository.findById(id);
         boolean isAccountExist = accountById.isPresent();
 
         if (!isAccountExist) {
-            //TODO
             throw new EntityNotFoundException();
         }
 
@@ -130,6 +138,7 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public PagingModel getAll(Integer page, Integer limit) {
+        logger.info("Get all account with paging");
         PagingModel result = new PagingModel();
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
@@ -152,6 +161,7 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public PagingModel findAllByStatusTrue(Integer page, Integer limit) {
+        logger.info("Get all account with status is active");
         PagingModel result = new PagingModel();
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
