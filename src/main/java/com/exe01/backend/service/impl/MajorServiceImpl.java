@@ -59,8 +59,6 @@ public class MajorServiceImpl implements IMajorService {
         List<MajorDTO> majorDTOs = majors.stream().map(MajorConverter::toDTO).toList();
 
         result.setListResult(majorDTOs);
-
-        result.setListResult(majorDTOs);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
 
@@ -133,6 +131,7 @@ public class MajorServiceImpl implements IMajorService {
             throw new EntityNotFoundException();
         }
 
+        majorById.get().setId(id);
         majorById.get().setStatus(ConstStatus.INACTIVE_STATUS);
 
         majorRepository.save(majorById.get());

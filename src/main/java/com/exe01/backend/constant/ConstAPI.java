@@ -34,4 +34,13 @@ public class ConstAPI {
         public static final String DELETE_MAJOR = "api/v1/major/delete/";
     }
 
+    public static class MentorProfileAPI {
+        public static final String GET_MENTOR_PROFILE = "api/v1/mentor-profile";
+        public static final String GET_MENTOR_PROFILE_STATUS_TRUE = "api/v1/mentor-profile/mentor-profile-status-true";
+        public static final String GET_MENTOR_PROFILE_BY_ID = "api/v1/mentor-profile/";
+        public static final String CREATE_MENTOR_PROFILE = "api/v1/mentor-profile/create";
+        public static final String UPDATE_MENTOR_PROFILE = "api/v1/mentor-profile/update/";
+        public static final String DELETE_MENTOR_PROFILE = "api/v1/mentor-profile/delete/";
+    }
+
 }

@@ -12,7 +12,7 @@ public class AccountConverter {
         accountDTO.setAvatarUrl(account.getAvatarUrl());
         accountDTO.setCreatedDate(account.getCreatedDate());
         accountDTO.setModifiedDate(account.getModifiedDate());
-        accountDTO.setCreateBy(account.getCreateBy());
+        accountDTO.setCreateBy(account.getCreatedBy());
         accountDTO.setModifiedBy(account.getModifiedBy());
         accountDTO.setStatus(account.getStatus());
         accountDTO.setEmail(account.getEmail());
