@@ -14,6 +14,7 @@ import java.util.UUID;
 @CrossOrigin
 @RestController
 public class AccountController {
+
     @Autowired
     private IAccountService accountService;
 
