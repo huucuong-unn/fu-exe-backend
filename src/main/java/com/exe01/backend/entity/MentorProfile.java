@@ -20,8 +20,6 @@ import java.util.List;
 @Table(name = "mentor_profile_tbl")
 public class MentorProfile extends BaseEntity {
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
     @Column(name = "linkedin_url")
     private String linkedinUrl;
 

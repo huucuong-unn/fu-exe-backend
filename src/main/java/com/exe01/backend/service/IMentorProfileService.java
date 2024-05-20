@@ -6,12 +6,12 @@ import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
 
 import java.util.UUID;
 
-public interface IMentorProfileService extends IGenericService<MentorProfiledDTO>{
+public interface IMentorProfileService extends IGenericService<MentorProfiledDTO> {
 
     public MentorProfiledDTO create(CreateMentorProfileRequest request);
 
     public Boolean update(UUID id, UpdateMentorProfileRequest request);
 
-    public  Boolean delete(UUID id);
+    public Boolean delete(UUID id);
 
 }

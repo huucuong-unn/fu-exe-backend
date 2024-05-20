@@ -15,8 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BaseMentorProfileRequest {
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
     private String linkedinUrl;
 
     @NotBlank(message = "This field must not be blank")
