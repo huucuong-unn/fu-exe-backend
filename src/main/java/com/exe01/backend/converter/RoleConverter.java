@@ -11,10 +11,10 @@ public class RoleConverter {
         roleDTO.setName(role.getName());
         roleDTO.setDescription(role.getDescription());
         roleDTO.setStatus(role.getStatus());
-        roleDTO.setCreateBy(role.getCreateBy());
+        roleDTO.setCreatedDate(role.getCreatedDate());
         roleDTO.setModifiedDate(role.getModifiedDate());
         roleDTO.setModifiedBy(role.getModifiedBy());
-        roleDTO.setCreateBy(role.getCreateBy());
+        roleDTO.setCreateBy(role.getCreatedBy());
 
         return roleDTO;
 

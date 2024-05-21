@@ -13,7 +13,7 @@ public class MajorConverter {
         majorDTO.setStatus(major.getStatus());
         majorDTO.setCreatedDate(major.getCreatedDate());
         majorDTO.setModifiedDate(major.getModifiedDate());
-        majorDTO.setCreatedBy(major.getCreateBy());
+        majorDTO.setCreatedBy(major.getCreatedBy());
         majorDTO.setModifiedBy(major.getModifiedBy());
 
         return majorDTO;
