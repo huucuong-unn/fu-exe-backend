@@ -1,25 +1,25 @@
 package com.exe01.backend.converter;
 
-import com.exe01.backend.dto.MentorProfiledDTO;
+import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.entity.MentorProfile;
 
 public class MentorProfileConverter {
 
-    public static MentorProfiledDTO toDto(MentorProfile mentorProfile) {
-        MentorProfiledDTO mentorProfiledDTO = new MentorProfiledDTO();
-        mentorProfiledDTO.setId(mentorProfile.getId());
-        mentorProfiledDTO.setProfilePicture(mentorProfile.getProfilePicture());
-        mentorProfiledDTO.setDescription(mentorProfile.getDescription());
-        mentorProfiledDTO.setShortDescription(mentorProfile.getShortDescription());
-        mentorProfiledDTO.setLinkedinUrl(mentorProfile.getLinkedinUrl());
-        mentorProfiledDTO.setRequirement(mentorProfile.getRequirement());
-        mentorProfiledDTO.setCreatedDate(mentorProfile.getCreatedDate());
-        mentorProfiledDTO.setModifiedDate(mentorProfile.getModifiedDate());
-        mentorProfiledDTO.setCreatedBy(mentorProfile.getCreatedBy());
-        mentorProfiledDTO.setModifiedBy(mentorProfile.getModifiedBy());
-        mentorProfiledDTO.setStatus(mentorProfile.getStatus());
+    public static MentorProfileDTO toDto(MentorProfile mentorProfile) {
+        MentorProfileDTO mentorProfileDTO = new MentorProfileDTO();
+        mentorProfileDTO.setId(mentorProfile.getId());
+        mentorProfileDTO.setProfilePicture(mentorProfile.getProfilePicture());
+        mentorProfileDTO.setDescription(mentorProfile.getDescription());
+        mentorProfileDTO.setShortDescription(mentorProfile.getShortDescription());
+        mentorProfileDTO.setLinkedinUrl(mentorProfile.getLinkedinUrl());
+        mentorProfileDTO.setRequirement(mentorProfile.getRequirement());
+        mentorProfileDTO.setCreatedDate(mentorProfile.getCreatedDate());
+        mentorProfileDTO.setModifiedDate(mentorProfile.getModifiedDate());
+        mentorProfileDTO.setCreatedBy(mentorProfile.getCreatedBy());
+        mentorProfileDTO.setModifiedBy(mentorProfile.getModifiedBy());
+        mentorProfileDTO.setStatus(mentorProfile.getStatus());
 
-        return mentorProfiledDTO;
+        return mentorProfileDTO;
     }
 
 }

@@ -3,7 +3,7 @@ package com.exe01.backend.service.impl;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
 import com.exe01.backend.converter.MentorProfileConverter;
-import com.exe01.backend.dto.MentorProfiledDTO;
+import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
 import com.exe01.backend.entity.MentorProfile;
@@ -33,7 +33,7 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     MentorProfileRepository mentorProfileRepository;
 
     @Override
-    public MentorProfiledDTO findById(UUID id) {
+    public MentorProfileDTO findById(UUID id) {
         logger.info("Find mentor profile by id {}", id);
         var mentorById = mentorProfileRepository.findById(id);
         boolean isMentorExist = mentorById.isPresent();
@@ -55,9 +55,9 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
         List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByOrderByCreatedDate(pageable);
 
-        List<MentorProfiledDTO> mentorProfiledDTOs = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
+        List<MentorProfileDTO> mentorProfileDTOS = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
 
-        result.setListResult(mentorProfiledDTOs);
+        result.setListResult(mentorProfileDTOS);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
 
@@ -77,9 +77,9 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
         List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
 
-        List<MentorProfiledDTO> mentorProfiledDTOs = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
+        List<MentorProfileDTO> mentorProfileDTOS = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
 
-        result.setListResult(mentorProfiledDTOs);
+        result.setListResult(mentorProfileDTOS);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
 
@@ -87,7 +87,7 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     }
 
     @Override
-    public MentorProfiledDTO create(CreateMentorProfileRequest request) {
+    public MentorProfileDTO create(CreateMentorProfileRequest request) {
         logger.info("Create mentor profile");
         MentorProfile mentorProfile = new MentorProfile();
         mentorProfile.setLinkedinUrl(request.getLinkedinUrl());

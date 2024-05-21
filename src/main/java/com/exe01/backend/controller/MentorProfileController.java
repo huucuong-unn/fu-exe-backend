@@ -1,7 +1,7 @@
 package com.exe01.backend.controller;
 
 import com.exe01.backend.constant.ConstAPI;
-import com.exe01.backend.dto.MentorProfiledDTO;
+import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
 import com.exe01.backend.models.PagingModel;
@@ -29,12 +29,12 @@ public class MentorProfileController {
     }
 
     @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE_BY_ID + "{id}")
-    public MentorProfiledDTO findById(@PathVariable("id") UUID id) {
+    public MentorProfileDTO findById(@PathVariable("id") UUID id) {
         return mentorProfileService.findById(id);
     }
 
     @PostMapping(value = ConstAPI.MentorProfileAPI.CREATE_MENTOR_PROFILE)
-    public MentorProfiledDTO create(@RequestBody CreateMentorProfileRequest request) {
+    public MentorProfileDTO create(@RequestBody CreateMentorProfileRequest request) {
         return mentorProfileService.create(request);
     }
 

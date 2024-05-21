@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MentorProfiledDTO extends BaseDTO{
+public class MentorProfileDTO extends BaseDTO{
 
     private String linkedinUrl;
 
