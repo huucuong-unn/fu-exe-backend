@@ -1,4 +1,4 @@
-package com.exe01.backend.dto.request.account;
+package com.exe01.backend.dto.request.mentor;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,9 +11,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateAccountRequest extends BaseAccountRequest{
+public class UpdateMentorRequest extends BaseMentorRequest{
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     private String status;
+
 }
