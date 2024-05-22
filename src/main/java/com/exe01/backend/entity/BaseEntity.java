@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
     //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @Id
     @Column(updatable = false)

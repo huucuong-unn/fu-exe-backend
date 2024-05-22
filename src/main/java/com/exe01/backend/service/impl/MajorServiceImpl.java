@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class MajorServiceImpl implements IMajorService {
@@ -32,10 +32,22 @@ public class MajorServiceImpl implements IMajorService {
     @Autowired
     private MajorRepository majorRepository;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    private static final String HASH_KEY_PREFIX = "Major:";
+
     @Override
     public MajorDTO findById(UUID id) {
         logger.info("Find major by id {}", id);
-        var majorById = majorRepository.findById(id);
+        String hashKey = HASH_KEY_PREFIX + id.toString();
+        MajorDTO majorDTO = (MajorDTO) redisTemplate.opsForHash().get(HASH_KEY_PREFIX, hashKey);
+
+        if (!Objects.isNull(majorDTO)) {
+            return majorDTO;
+        }
+
+        Optional<Major> majorById = majorRepository.findById(id);
         boolean isMajorExist = majorById.isPresent();
 
         if (!isMajorExist) {
@@ -43,7 +55,11 @@ public class MajorServiceImpl implements IMajorService {
             throw new EntityNotFoundException();
         }
 
-        return MajorConverter.toDTO(majorById.get());
+        majorDTO = MajorConverter.toDTO(majorById.get());
+
+        redisTemplate.opsForHash().put(HASH_KEY_PREFIX, hashKey, majorDTO);
+
+        return majorDTO;
     }
 
     @Override
@@ -53,10 +69,20 @@ public class MajorServiceImpl implements IMajorService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Major> majors = majorRepository.findAllByOrderByCreatedDate(pageable);
+        String cacheKey = HASH_KEY_PREFIX + "all:" + page + ":" + limit;
 
+        List<MajorDTO> majorDTOs;
 
-        List<MajorDTO> majorDTOs = majors.stream().map(MajorConverter::toDTO).toList();
+        if (redisTemplate.opsForHash().hasKey(HASH_KEY_PREFIX, cacheKey)) {
+            logger.info("Fetching majors from cache for page {} and limit {}", page, limit);
+            majorDTOs = (List<MajorDTO>) redisTemplate.opsForHash().get(HASH_KEY_PREFIX, cacheKey);
+        } else {
+            logger.info("Fetching majors from database for page {} and limit {}", page, limit);
+            List<Major> majors = majorRepository.findAllByOrderByCreatedDate(pageable);
+            majorDTOs = majors.stream().map(MajorConverter::toDTO).toList();
+
+            redisTemplate.opsForHash().put(HASH_KEY_PREFIX, cacheKey, majorDTOs);
+        }
 
         result.setListResult(majorDTOs);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
@@ -71,14 +97,25 @@ public class MajorServiceImpl implements IMajorService {
 
     @Override
     public PagingModel findAllByStatusTrue(Integer page, Integer limit) {
-        logger.info("Get all major with status is ACTIVE");
+        logger.info("Get all major with status true");
         PagingModel result = new PagingModel();
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Major> majors = majorRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+        String cacheKey = HASH_KEY_PREFIX + "all:" + "active:" + page + ":" + limit;
 
-        List<MajorDTO> majorDTOs = majors.stream().map(MajorConverter::toDTO).toList();
+        List<MajorDTO> majorDTOs;
+
+        if (redisTemplate.opsForHash().hasKey(HASH_KEY_PREFIX, cacheKey)) {
+            logger.info("Fetching majors from cache for page {} and limit {}", page, limit);
+            majorDTOs = (List<MajorDTO>) redisTemplate.opsForHash().get(HASH_KEY_PREFIX, cacheKey);
+        } else {
+            logger.info("Fetching majors from database for page {} and limit {}", page, limit);
+            List<Major> majors = majorRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            majorDTOs = majors.stream().map(MajorConverter::toDTO).toList();
+
+            redisTemplate.opsForHash().put(HASH_KEY_PREFIX, cacheKey, majorDTOs);
+        }
 
         result.setListResult(majorDTOs);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
@@ -117,6 +154,13 @@ public class MajorServiceImpl implements IMajorService {
         majorById.get().setDescription(request.getDescription());
         majorById.get().setStatus(request.getStatus());
 
+        majorRepository.save(majorById.get());
+
+        Set<String> keysToDelete = redisTemplate.keys("Major:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
+
         return true;
     }
 
@@ -135,6 +179,11 @@ public class MajorServiceImpl implements IMajorService {
         majorById.get().setStatus(ConstStatus.INACTIVE_STATUS);
 
         majorRepository.save(majorById.get());
+
+        Set<String> keysToDelete = redisTemplate.keys("Major:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
 
         return true;
     }

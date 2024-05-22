@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseDTO {
+public class BaseDTO implements Serializable {
     private UUID id;
 
     private Date createdDate;
