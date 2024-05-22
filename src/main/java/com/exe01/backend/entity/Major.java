@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "major_tbl")
-public class Major extends BaseEntity {
+public class Major extends BaseEntity implements Serializable {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
