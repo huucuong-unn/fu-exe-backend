@@ -6,9 +6,11 @@ import com.exe01.backend.converter.MentorProfileConverter;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
+import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.MentorProfileRepository;
+import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.service.IMentorProfileService;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,6 +34,9 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
     @Autowired
     MentorProfileRepository mentorProfileRepository;
+
+    @Autowired
+    MentorRepository mentorRepository;
 
     @Override
     public MentorProfileDTO findById(UUID id) {
@@ -90,6 +96,16 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     public MentorProfileDTO create(CreateMentorProfileRequest request) {
         logger.info("Create mentor profile");
         MentorProfile mentorProfile = new MentorProfile();
+
+        Optional<Mentor> mentorById = mentorRepository.findById(request.getMentorId());
+        boolean isMentorExist = mentorById.isPresent();
+
+        if (!isMentorExist) {
+            logger.warn("Mentor with id {} not found", request.getMentorId());
+            throw new EntityNotFoundException();
+        }
+
+        mentorProfile.setMentor(mentorById.get());
         mentorProfile.setLinkedinUrl(request.getLinkedinUrl());
         mentorProfile.setRequirement(request.getRequirement());
         mentorProfile.setDescription(request.getDescription());
@@ -106,22 +122,31 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     public Boolean update(UUID id, UpdateMentorProfileRequest request) {
         logger.info("Update mentor profile with id {}", id);
         logger.info("Find mentor profile by id {}", id);
-        var mentorById = mentorProfileRepository.findById(id);
-        boolean isMentorExist = mentorById.isPresent();
+        var mentorProfileById = mentorProfileRepository.findById(id);
+        boolean isMentorProfileExist = mentorProfileById.isPresent();
 
-        if (!isMentorExist) {
+        if (!isMentorProfileExist) {
             logger.warn("Mentor profile with id {} not found", id);
             throw new EntityNotFoundException();
         }
 
-        mentorById.get().setId(id);
-        mentorById.get().setLinkedinUrl(request.getLinkedinUrl());
-        mentorById.get().setRequirement(request.getRequirement());
-        mentorById.get().setDescription(request.getDescription());
-        mentorById.get().setShortDescription(request.getShortDescription());
-        mentorById.get().setProfilePicture(request.getProfilePicture());
+        var mentorById = mentorRepository.findById(request.getMentorId());
+        boolean isMentorExist = mentorById.isPresent();
 
-        mentorProfileRepository.save(mentorById.get());
+        if (!isMentorExist) {
+            logger.warn("Mentor with id {} not found", id);
+            throw new EntityNotFoundException();
+        }
+
+        mentorProfileById.get().setId(id);
+        mentorProfileById.get().setMentor(mentorById.get());
+        mentorProfileById.get().setLinkedinUrl(request.getLinkedinUrl());
+        mentorProfileById.get().setRequirement(request.getRequirement());
+        mentorProfileById.get().setDescription(request.getDescription());
+        mentorProfileById.get().setShortDescription(request.getShortDescription());
+        mentorProfileById.get().setProfilePicture(request.getProfilePicture());
+
+        mentorProfileRepository.save(mentorProfileById.get());
 
         return true;
     }
