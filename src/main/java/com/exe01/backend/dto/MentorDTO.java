@@ -1,7 +1,9 @@
 package com.exe01.backend.dto;
 
-import com.exe01.backend.entity.MentorProfile;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;

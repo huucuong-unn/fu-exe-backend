@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public interface IMentorService extends IGenericService<MentorDTO>{
 
-    public CreateMentorResponse create(CreateMentorRequest request);
+    CreateMentorResponse create(CreateMentorRequest request);
 
-    public Boolean update(UUID id, UpdateMentorRequest request);
+    Boolean update(UUID id, UpdateMentorRequest request);
 
-    public Boolean delete(UUID id);
+    Boolean delete(UUID id);
 
 }

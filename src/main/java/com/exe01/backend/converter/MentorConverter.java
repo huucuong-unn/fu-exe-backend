@@ -2,7 +2,6 @@ package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.MentorDTO;
-import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
 import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
