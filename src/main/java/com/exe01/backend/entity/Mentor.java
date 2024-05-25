@@ -20,7 +20,7 @@ import java.util.List;
 public class Mentor extends BaseEntity {
 
     @OneToMany(mappedBy = "mentor")
-    private List<MentorProfile> mentorProfiles;
+    private List<MentorProfile> mentorProfiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "mentor")
     private List<Application> applications;

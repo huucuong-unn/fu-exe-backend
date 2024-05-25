@@ -9,11 +9,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseMentorProfileRequest {
+
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    private UUID mentorId;
 
     private String linkedinUrl;
 

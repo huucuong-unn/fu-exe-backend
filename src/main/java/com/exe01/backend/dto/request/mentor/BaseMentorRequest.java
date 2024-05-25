@@ -17,9 +17,5 @@ public class BaseMentorRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    private UUID mentorProfileId;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
     private UUID accountId;
 }
