@@ -2,6 +2,7 @@ package com.exe01.backend.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDTO {
+public class AccountDTO implements Serializable {
 
     private UUID id;
 
