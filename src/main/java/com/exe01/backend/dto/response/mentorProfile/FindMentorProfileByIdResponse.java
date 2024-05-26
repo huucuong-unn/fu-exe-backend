@@ -1,23 +1,21 @@
-package com.exe01.backend.dto;
+package com.exe01.backend.dto.response.mentorProfile;
 
+import com.exe01.backend.dto.AccountDTO;
+import com.exe01.backend.dto.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MentorDTO extends BaseDTO implements Serializable {
+@NoArgsConstructor
+public class FindMentorProfileByIdResponse extends BaseDTO implements Serializable {
 
     private AccountDTO account;
-
-    private List<MentorProfileDTO> mentorProfiles;
 
     private String status;
 
