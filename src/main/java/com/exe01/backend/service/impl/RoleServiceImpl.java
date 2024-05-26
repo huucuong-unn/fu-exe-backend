@@ -1,8 +1,9 @@
 package com.exe01.backend.service.impl;
 
-import com.exe01.backend.converter.RoleConverter;
+import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
+import com.exe01.backend.converter.RoleConverter;
 import com.exe01.backend.dto.RoleDTO;
 import com.exe01.backend.dto.request.role.CreateRoleRequest;
 import com.exe01.backend.dto.request.role.UpdateRoleRequest;
@@ -17,10 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RoleServiceImpl implements IRoleService {
@@ -33,22 +34,30 @@ public class RoleServiceImpl implements IRoleService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public RoleDTO findById(UUID id) {
         logger.info("Find Role by id {}", id);
-        boolean isExist = roleRepository.findById(id).isPresent();
+        String hashKeyForRole = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE + id.toString();
+        RoleDTO roleDTOByRedis = (RoleDTO) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole);
+
+        if (!Objects.isNull(roleDTOByRedis)) {
+            return roleDTOByRedis;
+        }
+
+        Optional<Role> roleById = roleRepository.findById(id);
+        boolean isExist = roleById.isPresent();
 
         if (!isExist) {
             throw new EntityNotFoundException();
         }
 
-        Role role = roleRepository.findById(id).get();
+        RoleDTO roleDTO = RoleConverter.toDto(roleById.get());
 
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(role.getId());
-        roleDTO.setName(role.getName());
-        roleDTO.setDescription(role.getDescription());
-        roleDTO.setStatus(role.getStatus());
+        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole, roleDTO);
+
         return roleDTO;
     }
 
@@ -59,11 +68,21 @@ public class RoleServiceImpl implements IRoleService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Role> roles = roleRepository.findAllBy(pageable);
+        String hashKeyForRole = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE + "all:" + page + ":" + limit;
 
-        List<RoleDTO> roleDTOS = roles.stream().map(RoleConverter::toDto).toList();
+        List<RoleDTO> roleDTOs;
 
-        result.setListResult(roleDTOS);
+        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole)) {
+            logger.info("Fetching roles from cache for page {} and limit {}", page, limit);
+            roleDTOs = (List<RoleDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole);
+        } else {
+            logger.info("Fetching roles from database for page {} and limit {}", page, limit);
+            List<Role> roles = roleRepository.findAllByOrderByCreatedDate(pageable);
+            roleDTOs = roles.stream().map(RoleConverter::toDto).toList();
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole, roleDTOs);
+        }
+
+        result.setListResult(roleDTOs);
 
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
@@ -83,11 +102,21 @@ public class RoleServiceImpl implements IRoleService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<Role> roles = roleRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS,pageable);
+        String hashKeyForRole = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE + "all:" + "active:" + page + ":" + limit;
 
-        List<RoleDTO> roleDTOS = roles.stream().map(RoleConverter::toDto).toList();
+        List<RoleDTO> roleDTOs;
 
-        result.setListResult(roleDTOS);
+        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole)) {
+            logger.info("Fetching roles from cache for page {} and limit {}", page, limit);
+            roleDTOs = (List<RoleDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole);
+        } else {
+            logger.info("Fetching roles from database for page {} and limit {}", page, limit);
+            List<Role> roles = roleRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            roleDTOs = roles.stream().map(RoleConverter::toDto).toList();
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole, roleDTOs);
+        }
+
+        result.setListResult(roleDTOs);
 
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
@@ -116,6 +145,33 @@ public class RoleServiceImpl implements IRoleService {
             throw new RuntimeException("Failed to save role", ex);
         } catch (Exception ex) {
             throw new RuntimeException("An unexpected error occurred", ex);
+        }
+
+        Set<String> keysToDelete = redisTemplate.keys("Role:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
+
+        return true;
+    }
+
+    @Override
+    public Boolean delete(UUID id) {
+        Optional<Role> roleById = roleRepository.findById(id);
+        boolean isRoleExist = roleById.isPresent();
+
+        if (!isRoleExist) {
+            logger.warn("Role with id {} not found", id);
+            throw new EntityNotFoundException();
+        }
+
+        roleById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+
+        roleRepository.save(roleById.get());
+
+        Set<String> keysToDelete = redisTemplate.keys("Role:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
         }
 
         return true;
