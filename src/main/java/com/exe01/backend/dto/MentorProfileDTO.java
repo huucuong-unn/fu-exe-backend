@@ -1,5 +1,6 @@
 package com.exe01.backend.dto;
 
+import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,7 @@ public class MentorProfileDTO extends BaseDTO implements Serializable {
     private String profilePicture;
 
     private String status;
+
+    private FindMentorProfileByIdResponse mentorDTO;
 
 }
