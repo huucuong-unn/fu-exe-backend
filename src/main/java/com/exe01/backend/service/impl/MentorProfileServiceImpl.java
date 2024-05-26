@@ -4,7 +4,6 @@ import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
 import com.exe01.backend.converter.MentorProfileConverter;
-import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
