@@ -1,24 +1,20 @@
 package com.exe01.backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.Date;
-import java.util.UUID;
+import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoleDTO {
-    private UUID id;
+public class RoleDTO extends BaseDTO implements Serializable {
+
     private String name;
+
     private String description;
+
     private String status;
-    private Date createdDate;
-    private Date modifiedDate;
-    private String createBy;
-    private String modifiedBy;
+
 }
