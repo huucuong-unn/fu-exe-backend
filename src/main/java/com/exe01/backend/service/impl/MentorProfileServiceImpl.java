@@ -1,5 +1,6 @@
 package com.exe01.backend.service.impl;
 
+import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
 import com.exe01.backend.converter.MentorProfileConverter;
@@ -18,11 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class MentorProfileServiceImpl implements IMentorProfileService {
@@ -38,18 +38,32 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     @Autowired
     MentorRepository mentorRepository;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public MentorProfileDTO findById(UUID id) {
         logger.info("Find mentor profile by id {}", id);
-        var mentorById = mentorProfileRepository.findById(id);
-        boolean isMentorExist = mentorById.isPresent();
+        String hashKeyForMentorProfile = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE + id.toString();
+        MentorProfileDTO mentorProfileDTOByRedis = (MentorProfileDTO) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile);
+
+        if (!Objects.isNull(mentorProfileDTOByRedis)) {
+            return mentorProfileDTOByRedis;
+        }
+
+        Optional<MentorProfile> mentorProfileById = mentorProfileRepository.findById(id);
+        boolean isMentorExist = mentorProfileById.isPresent();
 
         if (!isMentorExist) {
             logger.warn("Mentor profile with id {} not found", id);
             throw new EntityNotFoundException();
         }
 
-        return MentorProfileConverter.toDto(mentorById.get());
+        MentorProfileDTO mentorProfileDTO = MentorProfileConverter.toDto(mentorProfileById.get());
+
+        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile, mentorProfileDTO);
+
+        return mentorProfileDTO;
     }
 
     @Override
@@ -59,11 +73,21 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByOrderByCreatedDate(pageable);
+        String hashKeyForMentorProfile = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE + "all:" + page + ":" + limit;
 
-        List<MentorProfileDTO> mentorProfileDTOS = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
+        List<MentorProfileDTO> mentorProfileDTOs;
 
-        result.setListResult(mentorProfileDTOS);
+        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile)) {
+            logger.info("Fetching mentor profile from cache for page {} and limit {}", page, limit);
+            mentorProfileDTOs = (List<MentorProfileDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile);
+        } else {
+            logger.info("Fetching mentor profile from database for page {} and limit {}", page, limit);
+            List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByOrderByCreatedDate(pageable);
+            mentorProfileDTOs = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile, mentorProfileDTOs);
+        }
+
+        result.setListResult(mentorProfileDTOs);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
 
@@ -81,11 +105,21 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+        String hashKeyForMentorProfile = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE + "all:" + "active:" + page + ":" + limit;
 
-        List<MentorProfileDTO> mentorProfileDTOS = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
+        List<MentorProfileDTO> mentorProfileDTOs;
 
-        result.setListResult(mentorProfileDTOS);
+        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile)) {
+            logger.info("Fetching mentor profile from cache for page {} and limit {}", page, limit);
+            mentorProfileDTOs = (List<MentorProfileDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile);
+        } else {
+            logger.info("Fetching mentor profile from database for page {} and limit {}", page, limit);
+            List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            mentorProfileDTOs = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile, mentorProfileDTOs);
+        }
+
+        result.setListResult(mentorProfileDTOs);
         result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
         result.setLimit(limit);
 
@@ -148,6 +182,11 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
         mentorProfileRepository.save(mentorProfileById.get());
 
+        Set<String> keysToDelete = redisTemplate.keys("MentorProfile:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
+
         return true;
     }
 
@@ -166,6 +205,11 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
         mentorById.get().setStatus(ConstStatus.INACTIVE_STATUS);
 
         mentorProfileRepository.save(mentorById.get());
+
+        Set<String> keysToDelete = redisTemplate.keys("MentorProfile:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
 
         return true;
     }
