@@ -52,4 +52,22 @@ public class ConstAPI {
         public static final String DELETE_MENTOR = "api/v1/mentor/delete/";
     }
 
+    public static class StudentAPI {
+        public static final String GET_STUDENT = "api/v1/student";
+        public static final String GET_STUDENT_STATUS_TRUE = "api/v1/student/student-status-true";
+        public static final String GET_STUDENT_BY_ID = "api/v1/student/";
+        public static final String CREATE_STUDENT = "api/v1/student/create";
+        public static final String UPDATE_STUDENT = "api/v1/student/update/";
+        public static final String DELETE_STUDENT = "api/v1/student/delete/";
+    }
+
+    public static class UniversityAPI {
+        public static final String GET_UNIVERSITY = "api/v1/university";
+        public static final String GET_UNIVERSITY_STATUS_TRUE = "api/v1/university/university-status-true";
+        public static final String GET_UNIVERSITY_BY_ID = "api/v1/university/";
+        public static final String CREATE_UNIVERSITY = "api/v1/university/create";
+        public static final String UPDATE_UNIVERSITY = "api/v1/university/update/";
+        public static final String DELETE_UNIVERSITY = "api/v1/university/delete/";
+    }
+
 }

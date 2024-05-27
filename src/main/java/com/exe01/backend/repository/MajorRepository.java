@@ -17,4 +17,5 @@ public interface MajorRepository extends JpaRepository<Major, UUID> {
     List<Major> findAllByOrderByCreatedDate(Pageable pageable);
 
     List<Major> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+
 }
