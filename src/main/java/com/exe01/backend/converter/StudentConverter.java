@@ -1,8 +1,6 @@
 package com.exe01.backend.converter;
 
-import com.exe01.backend.dto.RoleDTO;
 import com.exe01.backend.dto.StudentDTO;
-import com.exe01.backend.entity.Role;
 import com.exe01.backend.entity.Student;
 
 public class StudentConverter {
@@ -15,7 +13,7 @@ public class StudentConverter {
         studentDTO.setStatus(student.getStatus());
         studentDTO.setDob(student.getDob());
         studentDTO.setAccount(AccountConverter.toDto(student.getAccount()));
-//TODO:        studentDTO.setUniversity(UniversityConverter.toDto(student.getUniversity()));
+        studentDTO.setUniversity(UniversityConverter.toDTO(student.getUniversity()));
         studentDTO.setCreatedDate(student.getCreatedDate());
         studentDTO.setModifiedDate(student.getModifiedDate());
         studentDTO.setModifiedBy(student.getModifiedBy());
