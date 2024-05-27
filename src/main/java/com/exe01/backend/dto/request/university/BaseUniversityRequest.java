@@ -16,10 +16,6 @@ public class BaseUniversityRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    private UUID id;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
     @Size(max = 100, message = "Name must be less than or equal to 100 characters")
     private String name;
 
