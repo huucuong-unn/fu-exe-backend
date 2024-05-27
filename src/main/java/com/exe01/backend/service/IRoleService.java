@@ -7,6 +7,10 @@ import com.exe01.backend.dto.request.role.UpdateRoleRequest;
 import java.util.UUID;
 
 public interface IRoleService extends IGenericService<RoleDTO>{
-    public RoleDTO create(CreateRoleRequest request);
-    public Boolean update(UUID id, UpdateRoleRequest request);
+    RoleDTO create(CreateRoleRequest request);
+
+    Boolean update(UUID id, UpdateRoleRequest request);
+
+    Boolean delete(UUID id);
+
 }

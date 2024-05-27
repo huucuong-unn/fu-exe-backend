@@ -1,5 +1,7 @@
 package com.exe01.backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -12,14 +14,38 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories
+@EnableCaching
 public class RedisConfig {
+
+    @Value("${redis.host}")
+    private String redisHost;
+
+    @Value("${redis.username}")
+    private String redisUsername;
+
+    @Value("${redis.port}")
+    private int redisPort;
+
+    @Value("${redis.password}")
+    private String redisPassword;
+
+    @Value("${redis.connectionString}")
+    private String redisConnectionString;
+
+    @Value("${redis.usessl}")
+    private boolean useSsl;
 
     @Bean
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("localhost");
-        configuration.setPort(6379);
-        return new JedisConnectionFactory(configuration);
+        configuration.setHostName(redisHost);
+        configuration.setPort(redisPort);
+        configuration.setPassword(redisPassword);
+        configuration.setUsername(redisUsername);
+
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(configuration);
+        jedisConnectionFactory.setUseSsl(useSsl);
+        return jedisConnectionFactory;
     }
 
     @Bean
