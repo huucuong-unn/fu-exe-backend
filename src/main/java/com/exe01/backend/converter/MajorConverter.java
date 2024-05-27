@@ -5,7 +5,7 @@ import com.exe01.backend.entity.Major;
 
 public class MajorConverter {
 
-    public static MajorDTO toDTO(Major major) {
+    public static MajorDTO toDto(Major major) {
         MajorDTO majorDTO = new MajorDTO();
         majorDTO.setId(major.getId());
         majorDTO.setName(major.getName());

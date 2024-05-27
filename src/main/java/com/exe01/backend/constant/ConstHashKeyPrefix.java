@@ -12,4 +12,8 @@ public class ConstHashKeyPrefix {
 
     public static final String HASH_KEY_PREFIX_FOR_ROLE = "Role:";
 
+    public static final String HASH_KEY_PREFIX_FOR_STUDENT = "Student:";
+
+    public static final String HASH_KEY_PREFIX_FOR_UNIVERSITY = "University:";
+
 }

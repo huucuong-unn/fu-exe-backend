@@ -16,13 +16,16 @@ import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
+    private final String LOCALHOST = "http://localhost:8086/";
+
+    private final String DEPLOYHOST = "https://fu-exe.onrender.com/";
 
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI().info(new Info().title("API-service document")
                         .version("v1.0.0").description("Description")
                         .license(new License().name("Api License").url("http://domain.vn/license")))
-                .servers(List.of(new Server().url("http://localhost:8086/").description("Tortee Server")))
+                .servers(List.of(new Server().url(DEPLOYHOST).description("Tortee Server")))
                 .components(new Components().addSecuritySchemes(
                         "bearerAuth",
                         new SecurityScheme()
