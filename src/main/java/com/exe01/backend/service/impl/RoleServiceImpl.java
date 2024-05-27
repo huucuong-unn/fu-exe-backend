@@ -187,6 +187,11 @@ public class RoleServiceImpl implements IRoleService {
 
         roleRepository.save(role);
 
+        Set<String> keysToDelete = redisTemplate.keys("Role:*");
+        if (keysToDelete != null && !keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
+
         return RoleConverter.toDto(role);
     }
 }
