@@ -119,12 +119,12 @@ public class UniversityServiceImpl implements IUniversityService {
 
     @Override
     public PagingModel getAll(Integer page, Integer limit) {
-        logger.info("Get all universitys with paging");
+        logger.info("Get all universities with paging");
         PagingModel result = new PagingModel();
         result.setPage(page);
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        String cacheKey = HASH_KEY_PREFIX_FOR_UNIVERSITY + "all:" + page + ":" + limit;
+        String cacheKey = HASH_KEY_PREFIX_FOR_UNIVERSITY + "all:" + "active:" + page + ":" + limit;
 
         List<UniversityDTO> universityDTOs;
 
