@@ -79,6 +79,6 @@ public class Company extends BaseEntity {
     private String url;
 
     @OneToMany(mappedBy = "company")
-    private List<Campaign> campaigns = new ArrayList<>();
+    private List<Mentor> mentors = new ArrayList<>();
 
 }

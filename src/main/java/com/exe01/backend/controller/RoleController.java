@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.RoleDTO;
 import com.exe01.backend.dto.request.role.CreateRoleRequest;
 import com.exe01.backend.dto.request.role.UpdateRoleRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,9 +41,14 @@ public class RoleController {
 
     @Operation(summary = "Get role by id", description = "API get role by id")
     @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE_BY_ID + "{id}")
-    public RoleDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting role with id: {}", id);
-        return roleService.findById(id);
+    public RoleDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting role with id: {}", id);
+            return roleService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create role", description = "API create new role")

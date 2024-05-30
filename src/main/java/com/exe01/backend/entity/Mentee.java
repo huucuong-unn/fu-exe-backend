@@ -24,14 +24,10 @@ public class Mentee extends BaseEntity {
 
     @NotNull(message = "This field must not be null")
     @ManyToOne
-    @JoinColumn(name = "campaign_id", referencedColumnName = "id")
-    private Campaign campaign;
-
-    @NotNull(message = "This field must not be null")
-    @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @OneToMany(mappedBy = "mentee")
-    private List<Application> applications = new ArrayList<>();
+    @OneToOne(mappedBy = "mentee")
+    private MentorApply mentorApply;
+
 }
