@@ -17,6 +17,7 @@ public class AccountConverter {
         accountDTO.setStatus(account.getStatus());
         accountDTO.setEmail(account.getEmail());
         accountDTO.setRole(account.getRole().getName());
+        accountDTO.setPoint(account.getPoint());
 
         return accountDTO;
     }

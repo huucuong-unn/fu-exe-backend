@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.UniversityDTO;
 import com.exe01.backend.dto.request.university.CreateUniversityRequest;
 import com.exe01.backend.dto.request.university.UpdateUniversityRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IUniversityService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,9 +40,14 @@ public class UniversityController {
 
     @Operation(summary = "Get university by id", description = "API get university by id")
     @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY_BY_ID + "{id}")
-    public UniversityDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting university with id: {}", id);
-        return universityService.findById(id);
+    public UniversityDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting university with id: {}", id);
+            return universityService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create university", description = "API create new university")

@@ -90,9 +90,7 @@ public class RoleServiceImpl implements IRoleService {
         return result;
     }
 
-    public int totalItem() {
-        return (int) roleRepository.count();
-    }
+    public int totalItem() {return (int) roleRepository.count();}
 
 
     @Override

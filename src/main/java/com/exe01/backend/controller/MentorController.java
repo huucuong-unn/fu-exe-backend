@@ -5,6 +5,7 @@ import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
 import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IMentorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,9 +41,14 @@ public class MentorController {
 
     @Operation(summary = "Get mentor by id", description = "API get mentor by id")
     @GetMapping(value = ConstAPI.MentorAPI.GET_MENTOR_BY_ID + "{id}")
-    public MentorDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting mentor with id: {}", id);
-        return mentorService.findById(id);
+    public MentorDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting mentor with id: {}", id);
+            return mentorService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create mentor", description = "API create new mentor")
