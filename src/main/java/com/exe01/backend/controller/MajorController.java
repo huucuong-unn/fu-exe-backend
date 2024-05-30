@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.MajorDTO;
 import com.exe01.backend.dto.request.major.CreateMajorRequest;
 import com.exe01.backend.dto.request.major.UpdateMajorRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IMajorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,23 +26,28 @@ public class MajorController {
 
     @Operation(summary = "Get all major", description = "API get all major")
     @GetMapping(value = ConstAPI.MajorAPI.GET_MAJOR)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all majors with page: {}, limit: {}", page, limit);
         return majorService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all major with status active", description = "API get all major with status active")
     @GetMapping(value = ConstAPI.MajorAPI.GET_MAJOR_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws  BaseException {
         log.info("Getting all active majors with page: {}, limit: {}", page, limit);
         return majorService.findAllByStatusTrue(page, limit);
     }
 
     @Operation(summary = "Get major by id", description = "API get major by id")
     @GetMapping(value = ConstAPI.MajorAPI.GET_MAJOR_BY_ID + "{id}")
-    public MajorDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting major with id: {}", id);
-        return majorService.findById(id);
+    public MajorDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting major with id: {}", id);
+            return majorService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create major", description = "API create new major")

@@ -70,4 +70,13 @@ public class ConstAPI {
         public static final String DELETE_UNIVERSITY = "api/v1/university/delete/";
     }
 
+    public static class CampaignAPI {
+        public static final String GET_CAMPAIGN = "api/v1/campaign";
+        public static final String GET_CAMPAIGN_STATUS_TRUE = "api/v1/campaign/campaign-status-true";
+        public static final String GET_CAMPAIGN_BY_ID = "api/v1/campaign/";
+        public static final String CREATE_CAMPAIGN = "api/v1/campaign/create";
+        public static final String UPDATE_CAMPAIGN = "api/v1/campaign/update/";
+        public static final String DELETE_CAMPAIGN = "api/v1/campaign/delete/";
+    }
+
 }

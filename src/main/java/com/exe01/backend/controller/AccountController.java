@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,23 +26,28 @@ public class AccountController {
 
     @Operation(summary = "Get all account", description = "API get all account")
     @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all accounts with page: {}, limit: {}", page, limit);
         return accountService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all account with status active", description = "API get all account with status active")
     @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active accounts with page: {}, limit: {}", page, limit);
         return accountService.findAllByStatusTrue(page, limit);
     }
 
     @Operation(summary = "Get account by id", description = "API get account by id")
     @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_BY_ID + "{id}")
-    public AccountDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting account with id: {}", id);
-        return accountService.findById(id);
+    public AccountDTO findById(@PathVariable("id") UUID id) throws BaseException {
+     try {
+            log.info("Getting account with id: {}", id);
+            return accountService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create role", description = "API create new account")

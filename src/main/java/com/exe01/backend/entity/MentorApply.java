@@ -28,4 +28,8 @@ public class MentorApply extends BaseEntity {
     @JoinColumn(name = "application_id")
     private Application application;
 
+    @OneToOne
+    @JoinColumn(name = "mentee_id", referencedColumnName = "id")
+    private Mentee mentee;
+
 }

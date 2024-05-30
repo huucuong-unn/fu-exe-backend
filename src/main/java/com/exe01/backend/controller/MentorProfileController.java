@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IMentorProfileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,23 +26,28 @@ public class MentorProfileController {
 
     @Operation(summary = "Get all mentor profile", description = "API get all mentor profile")
     @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all mentor profiles with page: {}, limit: {}", page, limit);
         return mentorProfileService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all mentor profile with status true", description = "API get all mentor profile with status true")
     @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
         log.info("Getting all active mentor profiles with page: {}, limit: {}", page, limit);
         return mentorProfileService.findAllByStatusTrue(page, limit);
     }
 
     @Operation(summary = "Get mentor profile by id", description = "API get mentor profile by id")
     @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE_BY_ID + "{id}")
-    public MentorProfileDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting mentor profile with id: {}", id);
-        return mentorProfileService.findById(id);
+    public MentorProfileDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting mentor profile with id: {}", id);
+            return mentorProfileService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create mentor profile", description = "API create new mentor profile")

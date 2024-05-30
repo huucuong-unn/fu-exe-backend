@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.StudentDTO;
 import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.request.student.UpdateStudentRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IStudentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,23 +26,29 @@ public class StudentController {
 
     @Operation(summary = "Get all student", description = "API get all student")
     @GetMapping(value = ConstAPI.StudentAPI.GET_STUDENT)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all students with page: {}, limit: {}", page, limit);
         return studentService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all student with status active", description = "API get all student with status active")
     @GetMapping(value = ConstAPI.StudentAPI.GET_STUDENT_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
         log.info("Getting all active students with page: {}, limit: {}", page, limit);
         return studentService.findAllByStatusTrue(page, limit);
     }
 
     @Operation(summary = "Get student by id", description = "API get student by id")
     @GetMapping(value = ConstAPI.StudentAPI.GET_STUDENT_BY_ID + "{id}")
-    public StudentDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting student with id: {}", id);
-        return studentService.findById(id);
+    public StudentDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting student with id: {}", id);
+            return studentService.findById(id);
+        }catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
+
     }
 
     @Operation(summary = "Create student", description = "API create new student")

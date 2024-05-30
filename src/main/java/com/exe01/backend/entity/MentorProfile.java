@@ -51,4 +51,6 @@ public class MentorProfile extends BaseEntity {
     @JoinColumn(name = "mentor_id", referencedColumnName = "id")
     private Mentor mentor;
 
+    @OneToMany(mappedBy = "mentorProfile")
+    private List<CampaignMentorProfile> campaignMentorProfiles = new ArrayList<>();
 }

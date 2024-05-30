@@ -35,4 +35,6 @@ public class AccountDTO implements Serializable {
 
     private String role;
 
+    private Integer point;
+
 }

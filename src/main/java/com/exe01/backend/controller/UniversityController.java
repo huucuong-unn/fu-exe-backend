@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.UniversityDTO;
 import com.exe01.backend.dto.request.university.CreateUniversityRequest;
 import com.exe01.backend.dto.request.university.UpdateUniversityRequest;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IUniversityService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,23 +26,28 @@ public class UniversityController {
 
     @Operation(summary = "Get all university", description = "API get all university")
     @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all universities with page: {}, limit: {}", page, limit);
         return universityService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all university with status active", description = "API get all university with status active")
     @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active universities with page: {}, limit: {}", page, limit);
         return universityService.findAllByStatusTrue(page, limit);
     }
 
     @Operation(summary = "Get university by id", description = "API get university by id")
     @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY_BY_ID + "{id}")
-    public UniversityDTO findById(@PathVariable("id") UUID id) {
-        log.info("Getting university with id: {}", id);
-        return universityService.findById(id);
+    public UniversityDTO findById(@PathVariable("id") UUID id) throws BaseException {
+        try {
+            log.info("Getting university with id: {}", id);
+            return universityService.findById(id);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            throw new BaseException(500, e.getMessage(), "Internal Server Error");
+        }
     }
 
     @Operation(summary = "Create university", description = "API create new university")

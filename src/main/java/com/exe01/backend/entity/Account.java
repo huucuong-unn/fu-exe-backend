@@ -48,6 +48,10 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "point")
+    private Integer point;
+
+
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
