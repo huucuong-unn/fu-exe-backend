@@ -26,14 +26,14 @@ public class UniversityController {
 
     @Operation(summary = "Get all university", description = "API get all university")
     @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all universities with page: {}, limit: {}", page, limit);
         return universityService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all university with status active", description = "API get all university with status active")
     @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active universities with page: {}, limit: {}", page, limit);
         return universityService.findAllByStatusTrue(page, limit);
     }

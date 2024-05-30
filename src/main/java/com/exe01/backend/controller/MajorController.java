@@ -26,14 +26,14 @@ public class MajorController {
 
     @Operation(summary = "Get all major", description = "API get all major")
     @GetMapping(value = ConstAPI.MajorAPI.GET_MAJOR)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all majors with page: {}, limit: {}", page, limit);
         return majorService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all major with status active", description = "API get all major with status active")
     @GetMapping(value = ConstAPI.MajorAPI.GET_MAJOR_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws  BaseException {
         log.info("Getting all active majors with page: {}, limit: {}", page, limit);
         return majorService.findAllByStatusTrue(page, limit);
     }

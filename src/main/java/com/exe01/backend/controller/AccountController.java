@@ -26,14 +26,14 @@ public class AccountController {
 
     @Operation(summary = "Get all account", description = "API get all account")
     @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all accounts with page: {}, limit: {}", page, limit);
         return accountService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all account with status active", description = "API get all account with status active")
     @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active accounts with page: {}, limit: {}", page, limit);
         return accountService.findAllByStatusTrue(page, limit);
     }
