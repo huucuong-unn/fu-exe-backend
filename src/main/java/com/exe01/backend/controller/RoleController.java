@@ -27,14 +27,14 @@ public class RoleController {
 
     @Operation(summary = "Get all role", description = "API get all role")
     @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE)
-    public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
         log.info("Getting all roles with page: {}, limit: {}", page, limit);
         return roleService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all role with status active", description = "API get all role with status active")
     @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE_STATUS_TRUE)
-    public PagingModel getAllWithStatusTrue(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getAllWithStatusTrue(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all roles with status true with page: {}, limit: {}", page, limit);
         return roleService.findAllByStatusTrue(page, limit);
     }

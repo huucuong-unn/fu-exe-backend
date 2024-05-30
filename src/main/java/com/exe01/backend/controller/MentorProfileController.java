@@ -26,14 +26,14 @@ public class MentorProfileController {
 
     @Operation(summary = "Get all mentor profile", description = "API get all mentor profile")
     @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE)
-    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all mentor profiles with page: {}, limit: {}", page, limit);
         return mentorProfileService.getAll(page, limit);
     }
 
     @Operation(summary = "Get all mentor profile with status true", description = "API get all mentor profile with status true")
     @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) {
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
         log.info("Getting all active mentor profiles with page: {}, limit: {}", page, limit);
         return mentorProfileService.findAllByStatusTrue(page, limit);
     }
