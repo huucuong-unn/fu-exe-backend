@@ -5,15 +5,18 @@ import com.exe01.backend.dto.request.major.CreateMajorRequest;
 import com.exe01.backend.dto.request.major.UpdateMajorRequest;
 import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.request.student.UpdateStudentRequest;
+import com.exe01.backend.exception.BaseException;
 
 import java.util.UUID;
 
-public interface IStudentService extends IGenericService<StudentDTO>{
+public interface IStudentService extends IGenericService<StudentDTO> {
 
-    public Boolean update(UUID id, UpdateStudentRequest request);
+    Boolean update(UUID id, UpdateStudentRequest request) throws BaseException;
 
-    StudentDTO create(CreateStudentRequest request);
+    StudentDTO create(CreateStudentRequest request) throws BaseException;
 
-    public  Boolean delete(UUID id);
+    Boolean delete(UUID id) throws BaseException;
+
+    Boolean changeStatus(UUID id) throws BaseException;
 
 }

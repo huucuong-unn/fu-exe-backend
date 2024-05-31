@@ -18,4 +18,5 @@ public interface UniversityRepository extends JpaRepository<University, UUID> {
 
     List<University> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
+    int countByStatus(String status);
 }

@@ -52,22 +52,29 @@ public class AccountController {
 
     @Operation(summary = "Create role", description = "API create new account")
     @PostMapping(value = ConstAPI.AccountAPI.CREATE_ACCOUNT)
-    public AccountDTO create(@RequestBody CreateAccountRequest request) {
+    public AccountDTO create(@RequestBody CreateAccountRequest request) throws BaseException {
         log.info("Creating new account with request: {}", request);
         return accountService.create(request);
     }
 
     @Operation(summary = "Update role", description = "API update account")
     @PutMapping(value = ConstAPI.AccountAPI.UPDATE_ACCOUNT + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateAccountRequest request) {
+    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateAccountRequest request) throws BaseException {
         log.info("Updating account with id: {}, request: {}", id, request);
         return accountService.update(id, request);
     }
 
     @Operation(summary = "Delete role", description = "API delete account")
     @DeleteMapping(value = ConstAPI.AccountAPI.DELETE_ACCOUNT + "{id}")
-    public Boolean delete(@PathVariable("id") UUID id) {
+    public Boolean delete(@PathVariable("id") UUID id) throws BaseException {
         log.info("Deleted account with id: {}", id);
         return accountService.delete(id);
+    }
+
+    @Operation(summary = "Change status account", description = "API change status account")
+    @PutMapping(value = ConstAPI.AccountAPI.CHANGE_STATUS_ACCOUNT + "{id}")
+    public Boolean changeStatus(@PathVariable("id") UUID id) throws BaseException{
+        log.info("Change status account with id: {}", id);
+        return accountService.changeStatus(id);
     }
 }

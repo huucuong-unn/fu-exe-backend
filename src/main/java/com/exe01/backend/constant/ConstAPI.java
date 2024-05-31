@@ -14,6 +14,8 @@ public class ConstAPI {
         public static final String GET_ROLE_BY_ID = "api/v1/role/";
         public static final String CREATE_ROLE = "api/v1/role/create";
         public static final String UPDATE_ROLE = "api/v1/role/update/";
+        public static final String DELETE_ROLE = "api/v1/role/delete/";
+        public static final String CHANGE_STATUS_ROLE = "api/v1/role/change-status/";
     }
 
     public static class AccountAPI {
@@ -23,6 +25,7 @@ public class ConstAPI {
         public static final String CREATE_ACCOUNT = "api/v1/account/create";
         public static final String UPDATE_ACCOUNT = "api/v1/account/update/";
         public static final String DELETE_ACCOUNT = "api/v1/account/delete/";
+        public static final String CHANGE_STATUS_ACCOUNT = "api/v1/account/change-status/";
     }
 
     public static class MajorAPI {
@@ -32,6 +35,7 @@ public class ConstAPI {
         public static final String CREATE_MAJOR = "api/v1/major/create";
         public static final String UPDATE_MAJOR = "api/v1/major/update/";
         public static final String DELETE_MAJOR = "api/v1/major/delete/";
+        public static final String CHANGE_STATUS_MAJOR = "api/v1/major/change-status/";
     }
 
     public static class MentorProfileAPI {
@@ -59,6 +63,7 @@ public class ConstAPI {
         public static final String CREATE_STUDENT = "api/v1/student/create";
         public static final String UPDATE_STUDENT = "api/v1/student/update/";
         public static final String DELETE_STUDENT = "api/v1/student/delete/";
+        public static final String CHANGE_STATUS_STUDENT = "api/v1/student/change-status/";
     }
 
     public static class UniversityAPI {
@@ -68,6 +73,8 @@ public class ConstAPI {
         public static final String CREATE_UNIVERSITY = "api/v1/university/create";
         public static final String UPDATE_UNIVERSITY = "api/v1/university/update/";
         public static final String DELETE_UNIVERSITY = "api/v1/university/delete/";
+        public static final String CHANGE_STATUS_UNIVERSITY= "api/v1/university/change-status/";
+
     }
 
     public static class CampaignAPI {

@@ -3,14 +3,17 @@ package com.exe01.backend.service;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
+import com.exe01.backend.exception.BaseException;
 
 import java.util.UUID;
 
 public interface IAccountService extends IGenericService<AccountDTO> {
     
-    public AccountDTO create(CreateAccountRequest request);
+    AccountDTO create(CreateAccountRequest request) throws BaseException;
 
-    public Boolean update(UUID id, UpdateAccountRequest request);
+    Boolean update(UUID id, UpdateAccountRequest request) throws BaseException;
 
-    public Boolean delete(UUID id);
+    Boolean delete(UUID id) throws BaseException;
+
+    Boolean changeStatus(UUID id) throws BaseException;
 }
