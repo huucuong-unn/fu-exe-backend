@@ -1,8 +1,6 @@
 package com.exe01.backend.service;
 
 import com.exe01.backend.dto.StudentDTO;
-import com.exe01.backend.dto.request.major.CreateMajorRequest;
-import com.exe01.backend.dto.request.major.UpdateMajorRequest;
 import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.request.student.UpdateStudentRequest;
 import com.exe01.backend.exception.BaseException;

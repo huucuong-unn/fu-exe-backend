@@ -15,7 +15,6 @@ import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.StudentRepository;
 import com.exe01.backend.repository.UniversityRepository;
 import com.exe01.backend.service.IStudentService;
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

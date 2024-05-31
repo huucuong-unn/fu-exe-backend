@@ -134,7 +134,7 @@ public class RoleServiceImpl implements IRoleService {
 
             result.setListResult(roleDTOs);
 
-            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setTotalPage(((int) Math.ceil((double) (totalItemWithStatusActive()) / limit)));
             result.setLimit(limit);
 
             return result;
