@@ -52,22 +52,22 @@ public class UniversityController {
 
     @Operation(summary = "Create university", description = "API create new university")
     @PostMapping(value = ConstAPI.UniversityAPI.CREATE_UNIVERSITY)
-    public UniversityDTO create(@RequestBody CreateUniversityRequest request) {
+    public UniversityDTO create(@RequestBody CreateUniversityRequest request) throws BaseException {
         log.info("Creating new university with request: {}", request);
         return universityService.create(request);
     }
 
     @Operation(summary = "Update university", description = "API update university")
     @PutMapping(value = ConstAPI.UniversityAPI.UPDATE_UNIVERSITY + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateUniversityRequest request) {
+    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateUniversityRequest request) throws BaseException {
         log.info("Updating university with id: {}, request: {}", id, request);
         return universityService.update(id, request);
     }
 
     @Operation(summary = "Delete university", description = "API delete university")
-    @DeleteMapping(value = ConstAPI.UniversityAPI.DELETE_UNIVERSITY + "{id}")
-    public Boolean delete(@PathVariable("id") UUID id) {
+    @DeleteMapping(value = ConstAPI.UniversityAPI.CHANGE_STATUS_UNIVERSITY + "{id}")
+    public Boolean delete(@PathVariable("id") UUID id) throws BaseException {
         log.info("Deleting university with id: {}", id);
-        return universityService.delete(id);
+        return universityService.changeStatus(id);
     }
 }

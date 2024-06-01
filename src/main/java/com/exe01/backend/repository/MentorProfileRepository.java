@@ -23,4 +23,6 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
     @Query(value = "SELECT * FROM mentor_profile_tbl WHERE mentor_id = :mentorId AND status = 'ACTIVE'", nativeQuery = true)
     List<MentorProfile> findAllByMentorId(@Param("mentorId") UUID mentorId);
 
+    int countByStatus(String status);
+
 }
