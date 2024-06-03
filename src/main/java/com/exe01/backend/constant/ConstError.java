@@ -26,6 +26,10 @@ public class ConstError {
         public static final String UNIVERSITY_NOT_FOUND = "University not found";
     }
 
+    public static class Skill{
+        public static final String SKILL_NOT_FOUND = "Skill not found";
+    }
+
     public static class Company {
         public static final String COMPANY_NOT_FOUND = "Company not found";
     }

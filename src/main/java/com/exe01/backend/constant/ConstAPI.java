@@ -85,6 +85,16 @@ public class ConstAPI {
         public static final String DELETE_CAMPAIGN = "api/v1/campaign/delete/";
     }
 
+    public static class SkillAPI {
+        public static final String GET_SKILL = "api/v1/skill";
+        public static final String GET_SKILL_STATUS_TRUE = "api/v1/skill/skill-status-true";
+        public static final String GET_SKILL_BY_ID = "api/v1/skill/";
+        public static final String CREATE_SKILL = "api/v1/skill/create";
+        public static final String UPDATE_SKILL = "api/v1/skill/update/";
+        public static final String DELETE_SKILL = "api/v1/skill/delete/";
+        public static final String CHANGE_STATUS_SKILL = "api/v1/skill/change-status/";
+    }
+
     public static class CompanyAPI {
         public static final String GET_COMPANY = "api/v1/company";
         public static final String GET_COMPANY_STATUS_TRUE = "api/v1/company/company-status-true";

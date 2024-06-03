@@ -46,6 +46,11 @@ public class UniversityServiceImpl implements IUniversityService {
 
             universityRepository.save(university);
 
+            Set<String> keysToDelete = redisTemplate.keys("University:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
+
             return UniversityConverter.toDTO(university);
         } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
@@ -56,7 +61,7 @@ public class UniversityServiceImpl implements IUniversityService {
     public Boolean update(UUID id, UpdateUniversityRequest request) throws BaseException {
         try {
             logger.info("Update university with id {}", id);
-            var universityById = universityRepository.findById(id);
+            Optional<University> universityById = universityRepository.findById(id);
             boolean isUniversityExist = universityById.isPresent();
 
             if (!isUniversityExist) {
@@ -67,6 +72,8 @@ public class UniversityServiceImpl implements IUniversityService {
             universityById.get().setId(id);
             universityById.get().setName(request.getName());
             universityById.get().setAddress(request.getAddress());
+
+            universityRepository.save(universityById.get());
 
             Set<String> keysToDelete = redisTemplate.keys("University:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -130,6 +137,7 @@ public class UniversityServiceImpl implements IUniversityService {
             } else {
                 universityById.get().setStatus(ConstStatus.ACTIVE_STATUS);
             }
+
             universityRepository.save(universityById.get());
 
             Set<String> keysToDelete = redisTemplate.keys("University:*");
@@ -167,6 +175,8 @@ public class UniversityServiceImpl implements IUniversityService {
 
             universityDTO = UniversityConverter.toDTO(universityById.get());
 
+            redisTemplate.opsForHash().put(HASH_KEY_PREFIX_FOR_UNIVERSITY, hashKey, universityDTO);
+
             return universityDTO;
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
@@ -184,7 +194,7 @@ public class UniversityServiceImpl implements IUniversityService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String cacheKey = HASH_KEY_PREFIX_FOR_UNIVERSITY + "all:" + "active:" + page + ":" + limit;
+            String cacheKey = HASH_KEY_PREFIX_FOR_UNIVERSITY + "all:" + page + ":" + limit;
 
             List<UniversityDTO> universityDTOs;
 
