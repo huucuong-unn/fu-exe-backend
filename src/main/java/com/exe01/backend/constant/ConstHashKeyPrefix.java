@@ -18,4 +18,6 @@ public class ConstHashKeyPrefix {
 
     public static final String HASH_KEY_PREFIX_FOR_CAMPAIGN = "Campaign:";
 
+    public static final String HASH_KEY_PREFIX_FOR_SKILL = "Skill:";
+
 }
