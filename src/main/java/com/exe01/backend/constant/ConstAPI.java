@@ -73,7 +73,7 @@ public class ConstAPI {
         public static final String CREATE_UNIVERSITY = "api/v1/university/create";
         public static final String UPDATE_UNIVERSITY = "api/v1/university/update/";
         public static final String DELETE_UNIVERSITY = "api/v1/university/delete/";
-        public static final String CHANGE_STATUS_UNIVERSITY= "api/v1/university/change-status/";
+        public static final String CHANGE_STATUS_UNIVERSITY = "api/v1/university/change-status/";
 
     }
 
@@ -84,6 +84,16 @@ public class ConstAPI {
         public static final String CREATE_CAMPAIGN = "api/v1/campaign/create";
         public static final String UPDATE_CAMPAIGN = "api/v1/campaign/update/";
         public static final String DELETE_CAMPAIGN = "api/v1/campaign/delete/";
+    }
+
+    public static class SkillAPI {
+        public static final String GET_SKILL = "api/v1/skill";
+        public static final String GET_SKILL_STATUS_TRUE = "api/v1/skill/skill-status-true";
+        public static final String GET_SKILL_BY_ID = "api/v1/skill/";
+        public static final String CREATE_SKILL = "api/v1/skill/create";
+        public static final String UPDATE_SKILL = "api/v1/skill/update/";
+        public static final String DELETE_SKILL = "api/v1/skill/delete/";
+        public static final String CHANGE_STATUS_SKILL = "api/v1/skill/change-status/";
     }
 
 }
