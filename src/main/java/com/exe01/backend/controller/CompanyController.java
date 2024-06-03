@@ -1,10 +1,7 @@
 package com.exe01.backend.controller;
 
 import com.exe01.backend.constant.ConstAPI;
-import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.CompanyDTO;
-import com.exe01.backend.dto.request.account.CreateAccountRequest;
-import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.dto.request.company.BaseCompanyRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;

@@ -1,6 +1,5 @@
 package com.exe01.backend.repository;
 
-import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Company;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
