@@ -65,9 +65,10 @@ public class UniversityController {
     }
 
     @Operation(summary = "Delete university", description = "API delete university")
-    @DeleteMapping(value = ConstAPI.UniversityAPI.CHANGE_STATUS_UNIVERSITY + "{id}")
-    public Boolean delete(@PathVariable("id") UUID id) throws BaseException {
+    @PutMapping(value = ConstAPI.UniversityAPI.CHANGE_STATUS_UNIVERSITY + "{id}")
+    public Boolean changeStatus(@PathVariable("id") UUID id) throws BaseException {
         log.info("Deleting university with id: {}", id);
         return universityService.changeStatus(id);
     }
+
 }

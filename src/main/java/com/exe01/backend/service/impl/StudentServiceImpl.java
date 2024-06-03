@@ -8,6 +8,7 @@ import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.request.student.UpdateStudentRequest;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Student;
+import com.exe01.backend.entity.University;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
@@ -65,7 +66,7 @@ public class StudentServiceImpl implements IStudentService {
 
             student.setAccount(accountById.get());
 
-            var universityById = universityRepository.findById(request.getUniversityId());
+            Optional<University> universityById = universityRepository.findById(request.getUniversityId());
             boolean isUniversityExist = universityById.isPresent() && universityById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
 
             if (!isUniversityExist) {
@@ -76,6 +77,11 @@ public class StudentServiceImpl implements IStudentService {
             student.setUniversity(universityById.get());
 
             studentRepository.save(student);
+
+            Set<String> keysToDelete = redisTemplate.keys("Student:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
 
             return StudentConverter.toDto(student);
         } catch (Exception baseException) {
@@ -91,7 +97,7 @@ public class StudentServiceImpl implements IStudentService {
     public Boolean update(UUID id, UpdateStudentRequest request) throws BaseException {
         try {
             logger.info("Update student with id {}", id);
-            var studentById = studentRepository.findById(id);
+            Optional<Student> studentById = studentRepository.findById(id);
             boolean isStudentExist = studentById.isPresent();
 
             if (!isStudentExist) {
@@ -99,7 +105,7 @@ public class StudentServiceImpl implements IStudentService {
                 throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Student.STUDENT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
 
-            var accountById = accountRepository.findById(request.getAccountId());
+            Optional<Account> accountById = accountRepository.findById(request.getAccountId());
             boolean isAccountExist = accountById.isPresent();
 
             if (!isAccountExist) {
@@ -107,7 +113,7 @@ public class StudentServiceImpl implements IStudentService {
                 throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
 
-            var universityById = universityRepository.findById(request.getUniversityId());
+            Optional<University> universityById = universityRepository.findById(request.getUniversityId());
             boolean isUniversityExist = universityById.isPresent() && universityById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
 
             if (!isUniversityExist) {
@@ -223,6 +229,8 @@ public class StudentServiceImpl implements IStudentService {
             }
 
             studentDTO = StudentConverter.toDto(studentById.get());
+
+            redisTemplate.opsForHash().put(HASH_KEY_PREFIX_FOR_STUDENT, hashKey, studentDTO);
 
             return studentDTO;
         } catch (Exception baseException) {
