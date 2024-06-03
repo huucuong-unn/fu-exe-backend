@@ -8,6 +8,7 @@ import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.entity.Account;
+import com.exe01.backend.entity.Role;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
@@ -51,7 +52,7 @@ public class AccountServiceImpl implements IAccountService {
             account.setEmail(request.getEmail());
             account.setPoint(0);
 
-            var roleById = roleRepository.findById(request.getRoleId());
+            Optional<Role> roleById = roleRepository.findById(request.getRoleId());
             boolean isRoleExist = roleById.isPresent() && roleById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
 
             if (!isRoleExist) {
@@ -82,7 +83,7 @@ public class AccountServiceImpl implements IAccountService {
     public Boolean update(UUID id, UpdateAccountRequest request) throws BaseException {
         try {
             logger.info("Update major");
-            var accountById = accountRepository.findById(id);
+            Optional<Account> accountById = accountRepository.findById(id);
             boolean isAccountExist = accountById.isPresent();
 
             if (!isAccountExist) {
@@ -98,8 +99,8 @@ public class AccountServiceImpl implements IAccountService {
             account.setStatus(request.getStatus());
             account.setEmail(request.getEmail());
 
-            var roleById = roleRepository.findById(request.getRoleId());
-            boolean isRoleExist = roleById.isPresent();
+            Optional<Role> roleById = roleRepository.findById(request.getRoleId());
+            boolean isRoleExist = roleById.isPresent() && roleById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
 
             if (!isRoleExist) {
                 logger.warn("Role with id {} is not found", request.getRoleId());

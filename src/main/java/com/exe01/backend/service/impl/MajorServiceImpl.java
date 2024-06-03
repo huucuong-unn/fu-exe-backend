@@ -174,7 +174,7 @@ public class MajorServiceImpl implements IMajorService {
         try {
             logger.info("Update major with id {}", id);
             logger.info("Find major by id {}", id);
-            var majorById = majorRepository.findById(id);
+            Optional<Major> majorById = majorRepository.findById(id);
             boolean isMajorExist = majorById.isPresent();
 
             if (!isMajorExist) {
