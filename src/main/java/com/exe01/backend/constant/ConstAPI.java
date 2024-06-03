@@ -72,8 +72,7 @@ public class ConstAPI {
         public static final String GET_UNIVERSITY_BY_ID = "api/v1/university/";
         public static final String CREATE_UNIVERSITY = "api/v1/university/create";
         public static final String UPDATE_UNIVERSITY = "api/v1/university/update/";
-        public static final String DELETE_UNIVERSITY = "api/v1/university/delete/";
-        public static final String CHANGE_STATUS_UNIVERSITY= "api/v1/university/change-status/";
+        public static final String CHANGE_STATUS_UNIVERSITY = "api/v1/university/change-status/";
 
     }
 
@@ -84,6 +83,15 @@ public class ConstAPI {
         public static final String CREATE_CAMPAIGN = "api/v1/campaign/create";
         public static final String UPDATE_CAMPAIGN = "api/v1/campaign/update/";
         public static final String DELETE_CAMPAIGN = "api/v1/campaign/delete/";
+    }
+
+    public static class CompanyAPI {
+        public static final String GET_COMPANY = "api/v1/company";
+        public static final String GET_COMPANY_STATUS_TRUE = "api/v1/company/company-status-true";
+        public static final String GET_COMPANY_BY_ID = "api/v1/company/";
+        public static final String CREATE_COMPANY = "api/v1/company/create";
+        public static final String UPDATE_COMPANY = "api/v1/company/update/";
+        public static final String CHANGE_STATUS_COMPANY = "api/v1/company/change-status/";
     }
 
 }

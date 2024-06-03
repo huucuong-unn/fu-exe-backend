@@ -16,4 +16,5 @@ public interface IMajorService extends IGenericService<MajorDTO>{
     Boolean delete(UUID id) throws BaseException;
 
     Boolean changeStatus(UUID id) throws BaseException;
+
 }
