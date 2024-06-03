@@ -72,7 +72,6 @@ public class ConstAPI {
         public static final String GET_UNIVERSITY_BY_ID = "api/v1/university/";
         public static final String CREATE_UNIVERSITY = "api/v1/university/create";
         public static final String UPDATE_UNIVERSITY = "api/v1/university/update/";
-        public static final String DELETE_UNIVERSITY = "api/v1/university/delete/";
         public static final String CHANGE_STATUS_UNIVERSITY = "api/v1/university/change-status/";
 
     }
