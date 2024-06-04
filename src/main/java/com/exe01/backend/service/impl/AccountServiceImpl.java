@@ -221,11 +221,11 @@ public class AccountServiceImpl implements IAccountService {
         }
     }
 
-    public int totalItem() {
+    private int totalItem() {
         return (int) accountRepository.count();
     }
 
-    public int totalItemWithStatusActive() {
+    private int totalItemWithStatusActive() {
         return (int) accountRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 

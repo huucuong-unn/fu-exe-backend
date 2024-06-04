@@ -20,4 +20,6 @@ public class ConstHashKeyPrefix {
 
     public static final String HASH_KEY_PREFIX_FOR_SKILL = "Skill:";
 
+    public static final String HASH_KEY_PREFIX_FOR_COMPANY = "Company:";
+
 }
