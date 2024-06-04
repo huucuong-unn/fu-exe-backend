@@ -3,6 +3,7 @@ package com.exe01.backend.converter;
 import com.exe01.backend.dto.MentorApplyDTO;
 import com.exe01.backend.entity.MentorApply;
 import com.exe01.backend.dto.ApplicationDTO;
+import com.exe01.backend.exception.BaseException;
 
 public class MentorApplyConverter {
 
@@ -18,7 +19,7 @@ public class MentorApplyConverter {
         return mentorApplyDTO;
     }
 
-    public static MentorApply toEntity(MentorApplyDTO mentorApplyDTO) {
+    public static MentorApply toEntity(MentorApplyDTO mentorApplyDTO) throws BaseException {
         if (mentorApplyDTO == null) {
             return null;
         }

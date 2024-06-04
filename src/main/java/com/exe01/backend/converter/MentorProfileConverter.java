@@ -3,6 +3,7 @@ package com.exe01.backend.converter;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import com.exe01.backend.entity.MentorProfile;
+import com.exe01.backend.exception.BaseException;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class MentorProfileConverter {
         return mentorProfileDTO;
     }
 
-    public static MentorProfile toEntity(MentorProfileDTO mentorProfileDTO) {
+    public static MentorProfile toEntity(MentorProfileDTO mentorProfileDTO) throws BaseException {
         MentorProfile mentorProfile = new MentorProfile();
         mentorProfile.setId(mentorProfileDTO.getId());
         mentorProfile.setProfilePicture(mentorProfileDTO.getProfilePicture());

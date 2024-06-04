@@ -2,6 +2,7 @@ package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.ApplicationDTO;
 import com.exe01.backend.entity.Application;
+import com.exe01.backend.exception.BaseException;
 
 public class ApplicationConverter {
 
@@ -31,7 +32,7 @@ public class ApplicationConverter {
         return applicationDto;
     }
 
-    public static Application toEntity(ApplicationDTO applicationDto) {
+    public static Application toEntity(ApplicationDTO applicationDto) throws BaseException {
         if (applicationDto == null) {
             return null;
         }
