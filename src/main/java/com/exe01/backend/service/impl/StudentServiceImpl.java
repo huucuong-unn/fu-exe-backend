@@ -2,7 +2,9 @@ package com.exe01.backend.service.impl;
 
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstStatus;
+import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.converter.StudentConverter;
+import com.exe01.backend.converter.UniversityConverter;
 import com.exe01.backend.dto.StudentDTO;
 import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.request.student.UpdateStudentRequest;
@@ -15,7 +17,9 @@ import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.StudentRepository;
 import com.exe01.backend.repository.UniversityRepository;
+import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.IStudentService;
+import com.exe01.backend.service.IUniversityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +41,10 @@ public class StudentServiceImpl implements IStudentService {
     private StudentRepository studentRepository;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private IAccountService accountService;
 
     @Autowired
-    private UniversityRepository universityRepository;
+    private IUniversityService universityService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -56,25 +60,23 @@ public class StudentServiceImpl implements IStudentService {
             student.setDob(request.getDob());
             student.setStatus(ConstStatus.ACTIVE_STATUS);
 
-            Optional<Account> accountById = accountRepository.findById(request.getAccountId());
-            boolean isAccountExist = accountById.isPresent() && accountById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
+            Account accountById = AccountConverter.toEntity(accountService.findById(request.getAccountId()));
 
-            if (!isAccountExist) {
-                logger.warn("Account with id {} is not found", request.getAccountId());
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Student.STUDENT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            if (accountById.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
+                logger.warn("Account with id {} is not found", request.getUniversityId());
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
 
-            student.setAccount(accountById.get());
+            student.setAccount(accountById);
 
-            Optional<University> universityById = universityRepository.findById(request.getUniversityId());
-            boolean isUniversityExist = universityById.isPresent() && universityById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
+            University universityById = UniversityConverter.toEntity(universityService.findById(request.getUniversityId()));
 
-            if (!isUniversityExist) {
+            if (universityById.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
                 logger.warn("University with id {} is not found", request.getUniversityId());
                 throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.University.UNIVERSITY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
 
-            student.setUniversity(universityById.get());
+            student.setUniversity(universityById);
 
             studentRepository.save(student);
 
@@ -97,38 +99,30 @@ public class StudentServiceImpl implements IStudentService {
     public Boolean update(UUID id, UpdateStudentRequest request) throws BaseException {
         try {
             logger.info("Update student with id {}", id);
-            Optional<Student> studentById = studentRepository.findById(id);
-            boolean isStudentExist = studentById.isPresent();
+            Student studentById = StudentConverter.toEntity(findById(id));
 
-            if (!isStudentExist) {
-                logger.warn("Student with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Student.STUDENT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            Account accountById = AccountConverter.toEntity(accountService.findById(request.getAccountId()));
 
-            Optional<Account> accountById = accountRepository.findById(request.getAccountId());
-            boolean isAccountExist = accountById.isPresent();
-
-            if (!isAccountExist) {
-                logger.warn("Account with id {} is not found", id);
+            if (accountById.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
+                logger.warn("Account with id {} is not found", request.getUniversityId());
                 throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
 
-            Optional<University> universityById = universityRepository.findById(request.getUniversityId());
-            boolean isUniversityExist = universityById.isPresent() && universityById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
+            University universityById = UniversityConverter.toEntity(universityService.findById(request.getUniversityId()));
 
-            if (!isUniversityExist) {
+            if (universityById.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
                 logger.warn("University with id {} is not found", request.getUniversityId());
                 throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.University.UNIVERSITY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
 
-            studentById.get().setId(id);
-            studentById.get().setName(request.getName());
-            studentById.get().setStudentCode(request.getStudentCode());
-            studentById.get().setDob(request.getDob());
-            studentById.get().setAccount(accountById.get());
-            studentById.get().setUniversity(universityById.get());
+            studentById.setId(id);
+            studentById.setName(request.getName());
+            studentById.setStudentCode(request.getStudentCode());
+            studentById.setDob(request.getDob());
+            studentById.setAccount(accountById);
+            studentById.setUniversity(universityById);
 
-            studentRepository.save(studentById.get());
+            studentRepository.save(studentById);
 
             Set<String> keysToDelete = redisTemplate.keys("Student:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -179,21 +173,15 @@ public class StudentServiceImpl implements IStudentService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Delete student with id {}", id);
-            var studentById = studentRepository.findById(id);
-            boolean isStudentExist = studentById.isPresent();
+            Student studentById = StudentConverter.toEntity(findById(id));
 
-            if (!isStudentExist) {
-                logger.warn("Student with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Student.STUDENT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            if (studentById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                studentById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+            if (studentById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                studentById.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                studentById.get().setStatus(ConstStatus.ACTIVE_STATUS);
+                studentById.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            studentRepository.save(studentById.get());
+            studentRepository.save(studentById);
 
             Set<String> keysToDelete = redisTemplate.keys("Student:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -279,7 +267,7 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     private int totalItemWithStatusActive() {
-        return (int) studentRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return studentRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override

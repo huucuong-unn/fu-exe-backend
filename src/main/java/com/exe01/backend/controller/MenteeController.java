@@ -56,13 +56,6 @@ public class MenteeController {
         return menteeService.create(request);
     }
 
-    @Operation(summary = "Update mentee", description = "API update mentee")
-    @PutMapping(value = ConstAPI.MenteeAPI.UPDATE_MENTEE + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody MenteeRequest request) throws BaseException {
-        log.info("Updating mentee with id: {}, request: {}", id, request);
-        return menteeService.update(id, request);
-    }
-
     @Operation(summary = "Delete mentee", description = "API delete mentee")
     @DeleteMapping(value = ConstAPI.MenteeAPI.CHANGE_STATUS_MENTEE + "{id}")
     public Boolean changStatus(@PathVariable("id") UUID id) throws BaseException {

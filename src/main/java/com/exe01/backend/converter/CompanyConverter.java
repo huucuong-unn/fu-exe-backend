@@ -28,4 +28,27 @@ public class CompanyConverter {
         return companyDTO;
     }
 
+    public static Company toEntity(CompanyDTO companyDTO) {
+        Company company = new Company();
+        company.setId(companyDTO.getId());
+        company.setName(companyDTO.getName());
+        company.setCountry(companyDTO.getCountry());
+        company.setAddress(companyDTO.getAddress());
+        company.setAvatarUrl(companyDTO.getAvatarUrl());
+        company.setImg(companyDTO.getImg());
+        company.setKeySkill(companyDTO.getKeySkill());
+        company.setTopReason(companyDTO.getTopReason());
+        company.setUrl(companyDTO.getUrl());
+        company.setWorkingTime(companyDTO.getWorkingTime());
+        company.setCompanySize(companyDTO.getCompanySize());
+        company.setCompanyType(companyDTO.getCompanyType());
+        company.setOvertimePolicy(companyDTO.getOvertimePolicy());
+        company.setStatus(companyDTO.getStatus());
+        company.setCreatedDate(companyDTO.getCreatedDate());
+        company.setModifiedDate(companyDTO.getModifiedDate());
+        company.setCreatedBy(companyDTO.getCreatedBy());
+        company.setModifiedBy(companyDTO.getModifiedBy());
+        return company;
+    }
+
 }

@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
+import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.MentorProfileConverter;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
@@ -16,6 +17,7 @@ import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.service.IMentorProfileService;
+import com.exe01.backend.service.IMentorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,9 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
     @Autowired
     MentorRepository mentorRepository;
+
+    @Autowired
+    IMentorService mentorService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -163,15 +168,9 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             logger.info("Create mentor profile");
             MentorProfile mentorProfile = new MentorProfile();
 
-            Optional<Mentor> mentorById = mentorRepository.findById(request.getMentorId());
-            boolean isMentorExist = mentorById.isPresent();
+            Mentor mentorById = MentorConverter.toEntity(mentorService.findById(request.getMentorId()));
 
-            if (!isMentorExist) {
-                logger.warn("Mentor with id {} not found", request.getMentorId());
-                throw new EntityNotFoundException();
-            }
-
-            mentorProfile.setMentor(mentorById.get());
+            mentorProfile.setMentor(mentorById);
             mentorProfile.setLinkedinUrl(request.getLinkedinUrl());
             mentorProfile.setRequirement(request.getRequirement());
             mentorProfile.setDescription(request.getDescription());
@@ -198,31 +197,19 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
             logger.info("Update mentor profile with id {}", id);
             logger.info("Find mentor profile by id {}", id);
-            var mentorProfileById = mentorProfileRepository.findById(id);
-            boolean isMentorProfileExist = mentorProfileById.isPresent();
+            MentorProfile mentorProfileById = MentorProfileConverter.toEntity(findById(id));
 
-            if (!isMentorProfileExist) {
-                logger.warn("Mentor profile with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            Mentor mentorById = MentorConverter.toEntity(mentorService.findById(request.getMentorId()));
 
-            var mentorById = mentorRepository.findById(request.getMentorId());
-            boolean isMentorExist = mentorById.isPresent();
+            mentorProfileById.setId(id);
+            mentorProfileById.setMentor(mentorById);
+            mentorProfileById.setLinkedinUrl(request.getLinkedinUrl());
+            mentorProfileById.setRequirement(request.getRequirement());
+            mentorProfileById.setDescription(request.getDescription());
+            mentorProfileById.setShortDescription(request.getShortDescription());
+            mentorProfileById.setProfilePicture(request.getProfilePicture());
 
-            if (!isMentorExist) {
-                logger.warn("Mentor with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Mentor.MENTOR_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            mentorProfileById.get().setId(id);
-            mentorProfileById.get().setMentor(mentorById.get());
-            mentorProfileById.get().setLinkedinUrl(request.getLinkedinUrl());
-            mentorProfileById.get().setRequirement(request.getRequirement());
-            mentorProfileById.get().setDescription(request.getDescription());
-            mentorProfileById.get().setShortDescription(request.getShortDescription());
-            mentorProfileById.get().setProfilePicture(request.getProfilePicture());
-
-            mentorProfileRepository.save(mentorProfileById.get());
+            mentorProfileRepository.save(mentorProfileById);
 
             Set<String> keysToDelete = redisTemplate.keys("MentorProfile:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -240,7 +227,6 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
     @Override
     public Boolean delete(UUID id) throws BaseException {
-
         try {
 
             logger.info("Delete mentor profile with id {}", id);
@@ -270,4 +256,36 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public Boolean changeStatus(UUID id) throws BaseException {
+        try {
+            logger.info("Change status mentor profile with id {}", id);
+            MentorProfile mentorProfileById = MentorProfileConverter.toEntity(findById(id));
+
+            mentorProfileById.setId(id);
+
+            if (mentorProfileById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                mentorProfileById.setStatus(ConstStatus.INACTIVE_STATUS);
+            } else {
+                mentorProfileById.setStatus(ConstStatus.ACTIVE_STATUS);
+            }
+
+            mentorProfileRepository.save(mentorProfileById);
+
+            Set<String> keysToDelete = redisTemplate.keys("MentorProfile:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+
 }

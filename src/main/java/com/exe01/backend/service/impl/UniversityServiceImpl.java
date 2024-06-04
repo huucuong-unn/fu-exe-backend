@@ -61,19 +61,13 @@ public class UniversityServiceImpl implements IUniversityService {
     public Boolean update(UUID id, UpdateUniversityRequest request) throws BaseException {
         try {
             logger.info("Update university with id {}", id);
-            Optional<University> universityById = universityRepository.findById(id);
-            boolean isUniversityExist = universityById.isPresent();
+            University universityById = UniversityConverter.toEntity(findById(id));
 
-            if (!isUniversityExist) {
-                logger.warn("University with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.University.UNIVERSITY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            universityById.setId(id);
+            universityById.setName(request.getName());
+            universityById.setAddress(request.getAddress());
 
-            universityById.get().setId(id);
-            universityById.get().setName(request.getName());
-            universityById.get().setAddress(request.getAddress());
-
-            universityRepository.save(universityById.get());
+            universityRepository.save(universityById);
 
             Set<String> keysToDelete = redisTemplate.keys("University:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -124,21 +118,15 @@ public class UniversityServiceImpl implements IUniversityService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Delete university with id {}", id);
-            var universityById = universityRepository.findById(id);
-            boolean isUniversityExist = universityById.isPresent();
+            University universityById = UniversityConverter.toEntity(findById(id));
 
-            if (!isUniversityExist) {
-                logger.warn("University with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.University.UNIVERSITY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            if (universityById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                universityById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+            if (universityById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                universityById.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                universityById.get().setStatus(ConstStatus.ACTIVE_STATUS);
+                universityById.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            universityRepository.save(universityById.get());
+            universityRepository.save(universityById);
 
             Set<String> keysToDelete = redisTemplate.keys("University:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {

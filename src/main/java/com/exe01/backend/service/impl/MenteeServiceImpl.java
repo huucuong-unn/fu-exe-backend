@@ -178,20 +178,6 @@ public class MenteeServiceImpl implements IMenteeService {
     }
 
     @Override
-    public Boolean update(UUID id, MenteeRequest menteeRequest) throws BaseException {
-        try {
-
-          return false;
-
-        } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
-            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
-        }
-    }
-
-    @Override
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Change status mentee with id {}", id);
