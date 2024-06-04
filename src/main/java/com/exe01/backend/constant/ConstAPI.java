@@ -98,7 +98,6 @@ public class ConstAPI {
         public static final String GET_MENTEE_STATUS_TRUE = "api/v1/mentee/mentee-status-true";
         public static final String GET_MENTEE_BY_ID = "api/v1/mentee/";
         public static final String CREATE_MENTEE = "api/v1/mentee/create";
-        public static final String UPDATE_MENTEE = "api/v1/mentee/update/";
         public static final String CHANGE_STATUS_MENTEE = "api/v1/mentee/change-status/";
 
     }
@@ -143,5 +142,12 @@ public class ConstAPI {
         public static final String GET_MENTOR_APPLY_BY_MENTEE_ID = "api/v1/mentor-apply/mentee/";
     }
 
+
+    public static class TransactionAPI {
+        public static final String GET_TRANSACTION = "api/v1/transaction";
+        public static final String GET_TRANSACTION_STATUS_TRUE = "api/v1/transaction/transaction-status-true";
+        public static final String GET_TRANSACTION_BY_ID = "api/v1/transaction/";
+        public static final String CREATE_TRANSACTION = "api/v1/transaction/create";
+    }
 
 }
