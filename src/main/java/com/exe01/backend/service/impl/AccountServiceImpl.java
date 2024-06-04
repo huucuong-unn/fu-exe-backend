@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.AccountConverter;
+import com.exe01.backend.converter.RoleConverter;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
@@ -13,8 +14,8 @@ import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
-import com.exe01.backend.repository.RoleRepository;
 import com.exe01.backend.service.IAccountService;
+import com.exe01.backend.service.IRoleService;
 import com.exe01.backend.validation.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class AccountServiceImpl implements IAccountService {
     private AccountRepository accountRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private IRoleService roleService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -52,15 +53,9 @@ public class AccountServiceImpl implements IAccountService {
             account.setEmail(request.getEmail());
             account.setPoint(0);
 
-            Optional<Role> roleById = roleRepository.findById(request.getRoleId());
-            boolean isRoleExist = roleById.isPresent() && roleById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
+            Role role = RoleConverter.toEntity(roleService.findById(request.getRoleId()));
 
-            if (!isRoleExist) {
-                logger.warn("Role with id {} is not found", request.getRoleId());
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Role.ROLE_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            account.setRole(roleById.get());
+            account.setRole(role);
 
             accountRepository.save(account);
 
@@ -83,33 +78,21 @@ public class AccountServiceImpl implements IAccountService {
     public Boolean update(UUID id, UpdateAccountRequest request) throws BaseException {
         try {
             logger.info("Update major");
-            Optional<Account> accountById = accountRepository.findById(id);
-            boolean isAccountExist = accountById.isPresent();
 
-            if (!isAccountExist) {
-                logger.warn("Account with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            Account accountById = AccountConverter.toEntity(findById(id));
 
-            Account account = new Account();
-            account.setId(id);
-            account.setUsername(request.getUsername());
-            account.setPassword(request.getPassword());
-            account.setAvatarUrl(request.getAvatarUrl());
-            account.setStatus(request.getStatus());
-            account.setEmail(request.getEmail());
+            accountById.setId(id);
+            accountById.setUsername(request.getUsername());
+            accountById.setPassword(request.getPassword());
+            accountById.setAvatarUrl(request.getAvatarUrl());
+            accountById.setStatus(request.getStatus());
+            accountById.setEmail(request.getEmail());
 
-            Optional<Role> roleById = roleRepository.findById(request.getRoleId());
-            boolean isRoleExist = roleById.isPresent() && roleById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS);
+            Role roleById = RoleConverter.toEntity(roleService.findById(request.getRoleId()));
 
-            if (!isRoleExist) {
-                logger.warn("Role with id {} is not found", request.getRoleId());
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Role.ROLE_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            accountById.setRole(roleById);
 
-            account.setRole(roleById.get());
-
-            accountRepository.save(account);
+            accountRepository.save(accountById);
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -130,17 +113,12 @@ public class AccountServiceImpl implements IAccountService {
     public Boolean delete(UUID id) throws BaseException {
         try {
             logger.info("Delete account");
-            var accountById = accountRepository.findById(id);
-            boolean isAccountExist = accountById.isPresent();
+            Account accountById = AccountConverter.toEntity(findById(id));
 
-            if (!isAccountExist) {
-                logger.warn("Account with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            accountById.setId(id);
+            accountById.setStatus(ConstStatus.INACTIVE_STATUS);
 
-            accountById.get().setStatus(ConstStatus.INACTIVE_STATUS);
-
-            accountRepository.save(accountById.get());
+            accountRepository.save(accountById);
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -226,7 +204,7 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     private int totalItemWithStatusActive() {
-        return (int) accountRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return accountRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
@@ -265,21 +243,15 @@ public class AccountServiceImpl implements IAccountService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Find account by id {}", id);
-            Optional<Account> accountById = accountRepository.findById(id);
-            boolean isAccountExist = accountById.isPresent();
+            Account accountById = AccountConverter.toEntity(findById(id));
 
-            if (!isAccountExist) {
-                logger.warn("Account with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            if (accountById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                accountById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+            if (accountById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                accountById.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                accountById.get().setStatus(ConstStatus.ACTIVE_STATUS);
+                accountById.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            accountRepository.save(accountById.get());
+            accountRepository.save(accountById);
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {

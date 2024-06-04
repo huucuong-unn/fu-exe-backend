@@ -9,10 +9,12 @@ import java.util.UUID;
 
 public interface IMentorProfileService extends IGenericService<MentorProfileDTO> {
 
-    public MentorProfileDTO create(CreateMentorProfileRequest request) throws BaseException;
+    MentorProfileDTO create(CreateMentorProfileRequest request) throws BaseException;
 
-    public Boolean update(UUID id, UpdateMentorProfileRequest request) throws BaseException;
+    Boolean update(UUID id, UpdateMentorProfileRequest request) throws BaseException;
 
-    public Boolean delete(UUID id) throws BaseException;
+    Boolean delete(UUID id) throws BaseException;
+
+    Boolean changeStatus(UUID id) throws BaseException;
 
 }

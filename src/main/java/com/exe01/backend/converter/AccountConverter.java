@@ -47,7 +47,6 @@ public class AccountConverter {
         account.setEmail(accountDTO.getEmail());
         Role role = RoleConverter.toEntity(roleService.findByName(accountDTO.getRole()));
         account.setRole(role);
-
         account.setPoint(accountDTO.getPoint());
 
         return account;

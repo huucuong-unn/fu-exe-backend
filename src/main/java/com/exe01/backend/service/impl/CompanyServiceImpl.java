@@ -71,15 +71,8 @@ public class CompanyServiceImpl implements ICompanyService {
     public Boolean update(UUID id, BaseCompanyRequest request) throws BaseException {
         try {
             logger.info("Update company");
-            Optional<Company> companyById = companyRepository.findById(id);
-            boolean isCompanyExist = companyById.isPresent();
+            Company company = CompanyConverter.toEntity(findById(id));
 
-            if (!isCompanyExist) {
-                logger.warn("Company with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Company.COMPANY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            Company company = new Company();
             company.setId(id);
             company.setName(request.getName());
             company.setCountry(request.getCountry());
@@ -120,21 +113,15 @@ public class CompanyServiceImpl implements ICompanyService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Change status company");
-            Optional<Company> companyById = companyRepository.findById(id);
-            boolean isCompanyExist = companyById.isPresent();
+            Company company = CompanyConverter.toEntity(findById(id));
 
-            if (!isCompanyExist) {
-                logger.warn("Company with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Company.COMPANY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            if (companyById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                companyById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+            if (company.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                company.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                companyById.get().setStatus(ConstStatus.ACTIVE_STATUS);
+                company.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            companyRepository.save(companyById.get());
+            companyRepository.save(company);
 
             Set<String> keysToDelete = redisTemplate.keys("Company:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {

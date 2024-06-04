@@ -113,7 +113,7 @@ public class MenteeServiceImpl implements IMenteeService {
     }
 
     public int totalItemByStatusActive() {
-        return (int) menteeRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return menteeRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
@@ -144,9 +144,6 @@ public class MenteeServiceImpl implements IMenteeService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
@@ -164,20 +161,6 @@ public class MenteeServiceImpl implements IMenteeService {
 
             menteeRepository.save(mentee);
             return MenteeConverter.toDto(mentee);
-        } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
-            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
-        }
-    }
-
-    @Override
-    public Boolean update(UUID id, MenteeRequest menteeRequest) throws BaseException {
-        try {
-
-            return false;
-
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException; // rethrow the original BaseException

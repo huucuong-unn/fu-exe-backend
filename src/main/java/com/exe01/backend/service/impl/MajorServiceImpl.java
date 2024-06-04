@@ -111,7 +111,7 @@ public class MajorServiceImpl implements IMajorService {
     }
 
     private int totalItemWithStatusActive() {
-        return (int) majorRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return majorRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
@@ -174,20 +174,14 @@ public class MajorServiceImpl implements IMajorService {
         try {
             logger.info("Update major with id {}", id);
             logger.info("Find major by id {}", id);
-            Optional<Major> majorById = majorRepository.findById(id);
-            boolean isMajorExist = majorById.isPresent();
+            Major majorById = MajorConverter.toEntity(findById(id));
 
-            if (!isMajorExist) {
-                logger.warn("Major with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Major.Major_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            majorById.setId(id);
+            majorById.setName(request.getName());
+            majorById.setDescription(request.getDescription());
+            majorById.setStatus(request.getStatus());
 
-            majorById.get().setId(id);
-            majorById.get().setName(request.getName());
-            majorById.get().setDescription(request.getDescription());
-            majorById.get().setStatus(request.getStatus());
-
-            majorRepository.save(majorById.get());
+            majorRepository.save(majorById);
 
             Set<String> keysToDelete = redisTemplate.keys("Major:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -207,18 +201,12 @@ public class MajorServiceImpl implements IMajorService {
     public Boolean delete(UUID id) throws BaseException {
         try {
             logger.info("Delete major with id {}", id);
-            Optional<Major> majorById = majorRepository.findById(id);
-            boolean isMajorExist = majorById.isPresent();
+            Major majorById = MajorConverter.toEntity(findById(id));
 
-            if (!isMajorExist) {
-                logger.warn("Major with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Major.Major_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            majorById.setId(id);
+            majorById.setStatus(ConstStatus.INACTIVE_STATUS);
 
-            majorById.get().setId(id);
-            majorById.get().setStatus(ConstStatus.INACTIVE_STATUS);
-
-            majorRepository.save(majorById.get());
+            majorRepository.save(majorById);
 
             Set<String> keysToDelete = redisTemplate.keys("Major:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {
@@ -238,21 +226,15 @@ public class MajorServiceImpl implements IMajorService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Change status major with id {}", id);
-            Optional<Major> majorById = majorRepository.findById(id);
-            boolean isMajorExist = majorById.isPresent();
+            Major majorById = MajorConverter.toEntity(findById(id));
 
-            if (!isMajorExist) {
-                logger.warn("Major with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Major.Major_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            if (majorById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                majorById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+            if (majorById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                majorById.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                majorById.get().setStatus(ConstStatus.ACTIVE_STATUS);
+                majorById.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            majorRepository.save(majorById.get());
+            majorRepository.save(majorById);
 
             Set<String> keysToDelete = redisTemplate.keys("Major:*");
             if (keysToDelete != null && !keysToDelete.isEmpty()) {

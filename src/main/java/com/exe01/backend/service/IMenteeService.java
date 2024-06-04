@@ -10,9 +10,8 @@ public interface IMenteeService extends IGenericService<MenteeDTO> {
 
     MenteeDTO create(MenteeRequest menteeRequest) throws BaseException;
 
-    Boolean update(UUID id, MenteeRequest menteeRequest) throws BaseException;
-
     Boolean changeStatus(UUID id) throws BaseException;
+
 
 
 }
