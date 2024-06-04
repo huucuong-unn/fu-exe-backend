@@ -1,16 +1,11 @@
 package com.exe01.backend.converter;
 
-import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.dto.CampaignMentorProfileDTO;
 import com.exe01.backend.entity.CampaignMentorProfile;
 import com.exe01.backend.exception.BaseException;
-import com.exe01.backend.service.IMentorProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class CampaignMentorProfileConverter {
-    public static CampaignMentorProfileDTO toDto(CampaignMentorProfile campaignMentorProfile){
+    public static CampaignMentorProfileDTO toDto(CampaignMentorProfile campaignMentorProfile) {
         CampaignMentorProfileDTO campaignMentorProfileDTO = new CampaignMentorProfileDTO();
         campaignMentorProfileDTO.setId(campaignMentorProfile.getId());
         campaignMentorProfileDTO.setMentorProfile(MentorProfileConverter.toDto(campaignMentorProfile.getMentorProfile()));

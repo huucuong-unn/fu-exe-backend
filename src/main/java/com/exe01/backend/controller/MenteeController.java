@@ -2,7 +2,7 @@ package com.exe01.backend.controller;
 
 import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.MenteeDTO;
-import com.exe01.backend.dto.request.Mentee.MenteeRequest;
+import com.exe01.backend.dto.request.mentee.MenteeRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IMenteeService;
@@ -32,7 +32,7 @@ public class MenteeController {
 
     @Operation(summary = "Get all mentee with status active", description = "API get all mentee with status active")
     @GetMapping(value = ConstAPI.MenteeAPI.GET_MENTEE_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active mentee with page: {}, limit: {}", page, limit);
         return menteeService.findAllByStatusTrue(page, limit);
     }

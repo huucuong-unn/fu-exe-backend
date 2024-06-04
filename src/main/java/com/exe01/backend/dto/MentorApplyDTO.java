@@ -17,5 +17,6 @@ public class MentorApplyDTO {
 
     private String feedback;
     private ApplicationDTO application;
+    private MenteeDTO mentee;
 
 }

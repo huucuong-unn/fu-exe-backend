@@ -2,7 +2,6 @@ package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.MentorApplyDTO;
 import com.exe01.backend.entity.MentorApply;
-import com.exe01.backend.dto.ApplicationDTO;
 import com.exe01.backend.exception.BaseException;
 
 public class MentorApplyConverter {
@@ -15,6 +14,7 @@ public class MentorApplyConverter {
         MentorApplyDTO mentorApplyDTO = new MentorApplyDTO();
         mentorApplyDTO.setFeedback(mentorApply.getFeedback());
         mentorApplyDTO.setApplication(ApplicationConverter.toDto(mentorApply.getApplication()));
+        mentorApplyDTO.setMentee(MenteeConverter.toDto(mentorApply.getMentee()));
 
         return mentorApplyDTO;
     }
@@ -27,6 +27,7 @@ public class MentorApplyConverter {
         MentorApply mentorApply = new MentorApply();
         mentorApply.setFeedback(mentorApplyDTO.getFeedback());
         mentorApply.setApplication(ApplicationConverter.toEntity(mentorApplyDTO.getApplication()));
+        mentorApply.setMentee(MenteeConverter.toEntity(mentorApplyDTO.getMentee()));
 
         return mentorApply;
     }

@@ -7,7 +7,7 @@ import com.exe01.backend.exception.BaseException;
 
 import java.util.UUID;
 
-public interface ICampaignMentorProfileService {
+public interface ICampaignMentorProfileService{
 
     CampaignMentorProfileDTO findById(UUID id) throws BaseException;
 

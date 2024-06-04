@@ -6,13 +6,15 @@ import com.exe01.backend.entity.Role;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class AccountConverter {
 
     @Autowired
     private static IRoleService roleService;
+
     public static AccountDTO toDto(Account account) {
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setPassword(account.getPassword());

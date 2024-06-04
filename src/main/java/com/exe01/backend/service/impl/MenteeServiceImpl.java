@@ -4,14 +4,9 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.MenteeConverter;
-import com.exe01.backend.converter.MenteeConverter;
-import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.StudentConverter;
 import com.exe01.backend.dto.MenteeDTO;
-import com.exe01.backend.dto.MenteeDTO;
-import com.exe01.backend.dto.request.Mentee.MenteeRequest;
-import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Mentor;
+import com.exe01.backend.dto.request.mentee.MenteeRequest;
 import com.exe01.backend.entity.Student;
 import com.exe01.backend.entity.Mentee;
 import com.exe01.backend.enums.ErrorCode;
@@ -181,7 +176,7 @@ public class MenteeServiceImpl implements IMenteeService {
     public Boolean update(UUID id, MenteeRequest menteeRequest) throws BaseException {
         try {
 
-          return false;
+            return false;
 
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {

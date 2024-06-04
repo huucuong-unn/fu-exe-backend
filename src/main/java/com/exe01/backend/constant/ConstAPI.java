@@ -89,10 +89,10 @@ public class ConstAPI {
         public static final String GET_CAMPAIGN_MENTOR_PROFILE_BY_ID = "api/v1/campaign-mentor-profile/";
         public static final String CREATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/create";
         public static final String UPDATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/update/";
-        public static final String CHANGE_STATUS_CAMPAIGN_MENTOR_PROFILE= "api/v1/campaign-mentor-profile/change-status/";
+        public static final String CHANGE_STATUS_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/change-status/";
     }
 
-    public static class MenteeAPI{
+    public static class MenteeAPI {
 
         public static final String GET_MENTEE = "api/v1/mentee";
         public static final String GET_MENTEE_STATUS_TRUE = "api/v1/mentee/mentee-status-true";
@@ -122,5 +122,26 @@ public class ConstAPI {
         public static final String UPDATE_COMPANY = "api/v1/company/update/";
         public static final String CHANGE_STATUS_COMPANY = "api/v1/company/change-status/";
     }
+
+    public static class ApplicationAPI {
+        public static final String GET_APPLICATION = "api/v1/application";
+        public static final String GET_APPLICATION_BY_ID = "api/v1/application/";
+        public static final String CREATE_APPLICATION = "api/v1/application/create";
+        public static final String UPDATE_APPLICATION = "api/v1/application/update/";
+        public static final String CHANGE_STATUS_APPLICATION = "api/v1/application/change-status/";
+        public static final String GET_APPLICATION_BY_MENTOR_ID = "api/v1/application/mentor/";
+        public static final String GET_APPLICATION_BY_MENTEE_ID = "api/v1/application/mentee/";
+    }
+
+    public static class MentorApplyAPI {
+        public static final String GET_MENTOR_APPLY = "api/v1/mentor-apply";
+        public static final String GET_MENTOR_APPLY_BY_ID = "api/v1/mentor-apply/";
+        public static final String CREATE_MENTOR_APPLY = "api/v1/mentor-apply/create";
+        public static final String UPDATE_MENTOR_APPLY = "api/v1/mentor-apply/update/";
+        public static final String CHANGE_STATUS_MENTOR_APPLY = "api/v1/mentor-apply/change-status/";
+        public static final String GET_MENTOR_APPLY_BY_MENTOR_ID = "api/v1/mentor-apply/mentor/";
+        public static final String GET_MENTOR_APPLY_BY_MENTEE_ID = "api/v1/mentor-apply/mentee/";
+    }
+
 
 }
