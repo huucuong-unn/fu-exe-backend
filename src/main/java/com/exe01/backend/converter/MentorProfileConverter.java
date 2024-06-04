@@ -4,6 +4,8 @@ import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import com.exe01.backend.entity.MentorProfile;
 
+import java.util.ArrayList;
+
 public class MentorProfileConverter {
 
     public static MentorProfileDTO toDto(MentorProfile mentorProfile) {
@@ -19,17 +21,27 @@ public class MentorProfileConverter {
         mentorProfileDTO.setCreatedBy(mentorProfile.getCreatedBy());
         mentorProfileDTO.setModifiedBy(mentorProfile.getModifiedBy());
         mentorProfileDTO.setStatus(mentorProfile.getStatus());
-        FindMentorProfileByIdResponse findMentorProfileByIdResponse = new FindMentorProfileByIdResponse();
-        findMentorProfileByIdResponse.setAccount(AccountConverter.toDto(mentorProfile.getMentor().getAccount()));
-        findMentorProfileByIdResponse.setStatus(mentorProfile.getMentor().getStatus());
-        findMentorProfileByIdResponse.setId(mentorProfile.getMentor().getId());
-        findMentorProfileByIdResponse.setCreatedDate(mentorProfile.getMentor().getCreatedDate());
-        findMentorProfileByIdResponse.setModifiedDate(mentorProfile.getMentor().getModifiedDate());
-        findMentorProfileByIdResponse.setCreatedBy(mentorProfile.getMentor().getCreatedBy());
-        findMentorProfileByIdResponse.setModifiedBy(mentorProfile.getMentor().getModifiedBy());
-        mentorProfileDTO.setMentorDTO(findMentorProfileByIdResponse);
+        mentorProfileDTO.setMentorDTO(MentorConverter.toDto(mentorProfile.getMentor()));
 
         return mentorProfileDTO;
+    }
+
+    public static MentorProfile toEntity(MentorProfileDTO mentorProfileDTO) {
+        MentorProfile mentorProfile = new MentorProfile();
+        mentorProfile.setId(mentorProfileDTO.getId());
+        mentorProfile.setProfilePicture(mentorProfileDTO.getProfilePicture());
+        mentorProfile.setDescription(mentorProfileDTO.getDescription());
+        mentorProfile.setShortDescription(mentorProfileDTO.getShortDescription());
+        mentorProfile.setLinkedinUrl(mentorProfileDTO.getLinkedinUrl());
+        mentorProfile.setRequirement(mentorProfileDTO.getRequirement());
+        mentorProfile.setCreatedDate(mentorProfileDTO.getCreatedDate());
+        mentorProfile.setModifiedDate(mentorProfileDTO.getModifiedDate());
+        mentorProfile.setCreatedBy(mentorProfileDTO.getCreatedBy());
+        mentorProfile.setModifiedBy(mentorProfileDTO.getModifiedBy());
+        mentorProfile.setStatus(mentorProfileDTO.getStatus());
+        mentorProfile.setMentor(MentorConverter.toEntity(mentorProfileDTO.getMentorDTO()));
+
+        return mentorProfile;
     }
 
 }

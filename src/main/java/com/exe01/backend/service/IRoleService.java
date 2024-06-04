@@ -13,4 +13,7 @@ public interface IRoleService extends IGenericService<RoleDTO>{
 
     Boolean delete(UUID id);
 
+    RoleDTO findByName(String name);
+
+
 }

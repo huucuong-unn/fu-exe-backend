@@ -4,10 +4,12 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.CampaignConverter;
+import com.exe01.backend.converter.MenteeConverter;
 import com.exe01.backend.dto.CampaignDTO;
 import com.exe01.backend.dto.request.campaign.CreateCampaignRequest;
 import com.exe01.backend.dto.request.campaign.UpdateCampaignRequest;
 import com.exe01.backend.entity.Campaign;
+import com.exe01.backend.entity.Mentee;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
@@ -54,7 +56,7 @@ public class CampaignServiceImpl implements ICampaignService {
 
         CampaignDTO campaignDTO = CampaignConverter.toDto(campaign.get());
 
-        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForCampaign, campaignDTO);
+        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTO);
 
         return campaignDTO;
        }catch (Exception baseException){
@@ -84,7 +86,7 @@ public class CampaignServiceImpl implements ICampaignService {
             logger.info("Fetching campaigns from database for page {} and limit {}", page, limit);
             List<Campaign> campaigns = campaignRepository.findAllByOrderByCreatedDate(pageable);
             campaignDTOs = campaigns.stream().map(CampaignConverter::toDto).toList();
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForCampaign, campaignDTOs);
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTOs);
         }
 
         result.setListResult(campaignDTOs);
@@ -186,26 +188,17 @@ public class CampaignServiceImpl implements ICampaignService {
 
       try {
         logger.info("Update campaign");
-        var campaign = campaignRepository.findById(id);
-        boolean isCampaignExist = campaign.isPresent();
+        Campaign campaign = CampaignConverter.toEntity(findById(id));
 
-        if (!isCampaignExist) {
-            throw new BaseException(ErrorCode.ERROR_500.getCode(), "Campaign not found",ErrorCode.ERROR_500.getMessage());
-        }
+          campaign.setName(request.getName());
+          campaign.setCompanyApplyStartDate(request.getCompanyApplyStartDate());
+          campaign.setCompanyApplyEndDate(request.getCompanyApplyEndDate());
+          campaign.setMenteeApplyStartDate(request.getMenteeApplyStartDate());
+          campaign.setMenteeApplyEndDate(request.getMenteeApplyEndDate());
+          campaign.setTrainingStartDate(request.getTrainingStartDate());
+          campaign.setTrainingEndDate(request.getTrainingEndDate());
 
-        Campaign entity = campaign.get();
-        entity.setId(id);
-        entity.setName(request.getName());
-        entity.setCompanyApplyStartDate(request.getCompanyApplyStartDate());
-        entity.setCompanyApplyEndDate(request.getCompanyApplyEndDate());
-        entity.setMenteeApplyStartDate(request.getMenteeApplyStartDate());
-        entity.setMenteeApplyEndDate(request.getMenteeApplyEndDate());
-        entity.setTrainingStartDate(request.getTrainingStartDate());
-        entity.setTrainingEndDate(request.getTrainingEndDate());
-        entity.setCreatedDate(campaign.get().getCreatedDate());
-       // entity.setCreatedBy(campaign.get().getCreatedBy());
-
-          campaignRepository.save(entity);
+          campaignRepository.save(campaign);
 
         Set<String> keysToDelete = redisTemplate.keys("Campaign:*");
         if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -223,32 +216,30 @@ public class CampaignServiceImpl implements ICampaignService {
     }
 
     @Override
-    public Boolean delete(UUID id) throws BaseException{
+    public Boolean changeStatus(UUID id) throws BaseException{
         try {
-        Optional<Campaign> campaign = campaignRepository.findById(id);
-        boolean isCampaignExist = campaign.isPresent();
+            logger.info("Change status mentee with id {}", id);
+            Campaign campaign = CampaignConverter.toEntity(findById(id));
 
-        if (!isCampaignExist) {
-            logger.warn("Campaign with id {} not found", id);
-            throw new BaseException(ErrorCode.ERROR_500.getCode(), "Campaign not found",ErrorCode.ERROR_500.getMessage());
-         }
-
-        campaign.get().setStatus(ConstStatus.INACTIVE_STATUS);
-
-        campaignRepository.save(campaign.get());
-
-        Set<String> keysToDelete = redisTemplate.keys("Campaign:*");
-        if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)){
-            redisTemplate.delete(keysToDelete);
-        }
-
-        return true;
-
-        }catch (Exception baseException){
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
+            if (campaign.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                campaign.setStatus(ConstStatus.INACTIVE_STATUS);
+            } else {
+                campaign.setStatus(ConstStatus.ACTIVE_STATUS);
             }
-            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(),ErrorCode.ERROR_500.getMessage());
+
+            campaignRepository.save(campaign);
+
+            Set<String> keysToDelete = redisTemplate.keys("Campaign:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
 }

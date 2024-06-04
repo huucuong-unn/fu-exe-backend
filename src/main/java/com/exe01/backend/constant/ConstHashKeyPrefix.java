@@ -4,6 +4,8 @@ public class ConstHashKeyPrefix {
 
     public static final String HASH_KEY_PREFIX_FOR_MENTOR = "Mentor:";
 
+    public static final String HASH_KEY_PREFIX_FOR_MENTOR_ENTITY = "MentorEntity:";
+
     public static final String HASH_KEY_PREFIX_FOR_MENTOR_PROFILE = "MentorProfile:";
 
     public static final String HASH_KEY_PREFIX_FOR_ACCOUNT = "Account:";
@@ -17,5 +19,16 @@ public class ConstHashKeyPrefix {
     public static final String HASH_KEY_PREFIX_FOR_UNIVERSITY = "University:";
 
     public static final String HASH_KEY_PREFIX_FOR_CAMPAIGN = "Campaign:";
+
+    public static final String HASH_KEY_PREFIX_FOR_CAMPAIGN_MENTOR_PROFILE = "CampaignMentorProfile:";
+
+    public static final String HASH_KEY_PREFIX_FOR_MENTEE = "Mentee:";
+
+    public static final String HASH_KEY_PREFIX_FOR_APPLICATION = "Application:";
+
+    public static final String HASH_KEY_PREFIX_FOR_MENTOR_APPLY = "MentorApply:";
+
+
+
 
 }

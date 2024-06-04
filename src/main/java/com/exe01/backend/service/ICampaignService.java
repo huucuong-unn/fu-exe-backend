@@ -16,6 +16,6 @@ public interface ICampaignService extends IGenericService<CampaignDTO>{
 
     Boolean update(UUID id, UpdateCampaignRequest request) throws BaseException;
 
-    Boolean delete(UUID id) throws BaseException;
+    Boolean changeStatus(UUID id) throws BaseException;
 
 }
