@@ -78,20 +78,20 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
 
     @Override
     public CampaignMentorProfileDTO create(CreateCampaignMentorProfileRequest request) throws BaseException {
-            try {
-                logger.info("Create CampaignMentorProfile with request {}", request);
+        try {
+            logger.info("Create CampaignMentorProfile with request {}", request);
 
-                CampaignMentorProfile campaignMentorProfile = new CampaignMentorProfile();
-                campaignMentorProfile.setCampaign(CampaignConverter.toEntity(campaignService.findById(request.getCampaignId())));
-                campaignMentorProfile.setMentorProfile(MentorProfileConverter.toEntity(mentorProfileService.findById(request.getMentorProfileId())));
-                campaignMentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
+            CampaignMentorProfile campaignMentorProfile = new CampaignMentorProfile();
+            campaignMentorProfile.setCampaign(CampaignConverter.toEntity(campaignService.findById(request.getCampaignId())));
+            campaignMentorProfile.setMentorProfile(MentorProfileConverter.toEntity(mentorProfileService.findById(request.getMentorProfileId())));
+            campaignMentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
 
-                Set<String> keysToDelete = redisTemplate.keys("CampaignMentorProfile:*");
-                if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                    redisTemplate.delete(keysToDelete);
-                }
+            Set<String> keysToDelete = redisTemplate.keys("CampaignMentorProfile:*");
+            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+                redisTemplate.delete(keysToDelete);
+            }
 
-                return CampaignMentorProfileConverter.toDto(campaignMentorProfileRepository.save(campaignMentorProfile));
+            return CampaignMentorProfileConverter.toDto(campaignMentorProfileRepository.save(campaignMentorProfile));
 
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
@@ -106,14 +106,8 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
         try {
             logger.info("Create CampaignMentorProfile with request {}", request);
             logger.info("Update campaign");
-            Optional<CampaignMentorProfile>  campaignMentorProfileEntity = campaignMentorProfileRepository.findById(id);
-            boolean isCampaignMentorProfileExist = campaignMentorProfileEntity.isPresent();
 
-            if (!isCampaignMentorProfileExist) {
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.CampaignMentorProfile.CAMPAIGN_MENTOR_PROFILE_NOT_FOUND,ErrorCode.ERROR_500.getMessage());
-            }
-
-            CampaignMentorProfile campaignMentorProfile = campaignMentorProfileEntity.get();
+            CampaignMentorProfile campaignMentorProfile = CampaignMentorProfileConverter.toEntity(findById(id));
             campaignMentorProfile.setCampaign(CampaignConverter.toEntity(campaignService.findById(request.getCampaignId())));
             campaignMentorProfile.setMentorProfile(MentorProfileConverter.toEntity(mentorProfileService.findById(request.getMentorProfileId())));
 

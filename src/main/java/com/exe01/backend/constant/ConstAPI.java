@@ -122,6 +122,27 @@ public class ConstAPI {
         public static final String CHANGE_STATUS_COMPANY = "api/v1/company/change-status/";
     }
 
+    public static class ApplicationAPI {
+        public static final String GET_APPLICATION = "api/v1/application";
+        public static final String GET_APPLICATION_BY_ID = "api/v1/application/";
+        public static final String CREATE_APPLICATION = "api/v1/application/create";
+        public static final String UPDATE_APPLICATION = "api/v1/application/update/";
+        public static final String CHANGE_STATUS_APPLICATION = "api/v1/application/change-status/";
+        public static final String GET_APPLICATION_BY_MENTOR_ID = "api/v1/application/mentor/";
+        public static final String GET_APPLICATION_BY_MENTEE_ID = "api/v1/application/mentee/";
+    }
+
+    public static class MentorApplyAPI {
+        public static final String GET_MENTOR_APPLY = "api/v1/mentor-apply";
+        public static final String GET_MENTOR_APPLY_BY_ID = "api/v1/mentor-apply/";
+        public static final String CREATE_MENTOR_APPLY = "api/v1/mentor-apply/create";
+        public static final String UPDATE_MENTOR_APPLY = "api/v1/mentor-apply/update/";
+        public static final String CHANGE_STATUS_MENTOR_APPLY = "api/v1/mentor-apply/change-status/";
+        public static final String GET_MENTOR_APPLY_BY_MENTOR_ID = "api/v1/mentor-apply/mentor/";
+        public static final String GET_MENTOR_APPLY_BY_MENTEE_ID = "api/v1/mentor-apply/mentee/";
+    }
+
+
     public static class TransactionAPI {
         public static final String GET_TRANSACTION = "api/v1/transaction";
         public static final String GET_TRANSACTION_STATUS_TRUE = "api/v1/transaction/transaction-status-true";

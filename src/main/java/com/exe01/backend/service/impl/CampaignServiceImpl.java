@@ -54,7 +54,7 @@ public class CampaignServiceImpl implements ICampaignService {
 
             CampaignDTO campaignDTO = CampaignConverter.toDto(campaign.get());
 
-        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTO);
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTO);
 
             return campaignDTO;
         } catch (Exception baseException) {
@@ -77,15 +77,15 @@ public class CampaignServiceImpl implements ICampaignService {
 
             List<CampaignDTO> campaignDTOs;
 
-        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
-            logger.info("Fetching campaigns from cache for page {} and limit {}", page, limit);
-            campaignDTOs = (List<CampaignDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign);
-        } else {
-            logger.info("Fetching campaigns from database for page {} and limit {}", page, limit);
-            List<Campaign> campaigns = campaignRepository.findAllByOrderByCreatedDate(pageable);
-            campaignDTOs = campaigns.stream().map(CampaignConverter::toDto).toList();
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTOs);
-        }
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
+                logger.info("Fetching campaigns from cache for page {} and limit {}", page, limit);
+                campaignDTOs = (List<CampaignDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign);
+            } else {
+                logger.info("Fetching campaigns from database for page {} and limit {}", page, limit);
+                List<Campaign> campaigns = campaignRepository.findAllByOrderByCreatedDate(pageable);
+                campaignDTOs = campaigns.stream().map(CampaignConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTOs);
+            }
 
             result.setListResult(campaignDTOs);
 
@@ -178,19 +178,19 @@ public class CampaignServiceImpl implements ICampaignService {
     @Override
     public Boolean update(UUID id, UpdateCampaignRequest request) throws BaseException {
 
-      try {
-        logger.info("Update campaign");
-        Campaign campaign = CampaignConverter.toEntity(findById(id));
+        try {
+            logger.info("Update campaign");
+            Campaign campaign = CampaignConverter.toEntity(findById(id));
 
-          campaign.setName(request.getName());
-          campaign.setCompanyApplyStartDate(request.getCompanyApplyStartDate());
-          campaign.setCompanyApplyEndDate(request.getCompanyApplyEndDate());
-          campaign.setMenteeApplyStartDate(request.getMenteeApplyStartDate());
-          campaign.setMenteeApplyEndDate(request.getMenteeApplyEndDate());
-          campaign.setTrainingStartDate(request.getTrainingStartDate());
-          campaign.setTrainingEndDate(request.getTrainingEndDate());
+            campaign.setName(request.getName());
+            campaign.setCompanyApplyStartDate(request.getCompanyApplyStartDate());
+            campaign.setCompanyApplyEndDate(request.getCompanyApplyEndDate());
+            campaign.setMenteeApplyStartDate(request.getMenteeApplyStartDate());
+            campaign.setMenteeApplyEndDate(request.getMenteeApplyEndDate());
+            campaign.setTrainingStartDate(request.getTrainingStartDate());
+            campaign.setTrainingEndDate(request.getTrainingEndDate());
 
-          campaignRepository.save(campaign);
+            campaignRepository.save(campaign);
 
             Set<String> keysToDelete = redisTemplate.keys("Campaign:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -208,7 +208,7 @@ public class CampaignServiceImpl implements ICampaignService {
     }
 
     @Override
-    public Boolean changeStatus(UUID id) throws BaseException{
+    public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Change status mentee with id {}", id);
             Campaign campaign = CampaignConverter.toEntity(findById(id));
