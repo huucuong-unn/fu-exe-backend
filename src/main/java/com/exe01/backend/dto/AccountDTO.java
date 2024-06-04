@@ -33,7 +33,7 @@ public class AccountDTO implements Serializable {
 
     private String email;
 
-    private String role;
+    private RoleDTO role;
 
     private Integer point;
 

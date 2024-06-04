@@ -56,7 +56,11 @@ public class ConstError {
     }
 
     public static class Application{
-        public static final String APPLICATION_NOT_FOUND ="Application";
+        public static final String APPLICATION_NOT_FOUND ="Application not found";
+    }
+
+    public static class Transaction{
+        public static final String TRANSACTION_NOT_FOUND ="Transaction not found";
     }
 
 }
