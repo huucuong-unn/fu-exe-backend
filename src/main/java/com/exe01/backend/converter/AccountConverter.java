@@ -4,10 +4,6 @@ import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Role;
 import com.exe01.backend.exception.BaseException;
-import com.exe01.backend.service.IRoleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 public class AccountConverter {
 
