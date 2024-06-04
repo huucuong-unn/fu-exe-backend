@@ -3,6 +3,7 @@ package com.exe01.backend.converter;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.dto.CampaignMentorProfileDTO;
 import com.exe01.backend.entity.CampaignMentorProfile;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.service.IMentorProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class CampaignMentorProfileConverter {
         return campaignMentorProfileDTO;
     }
 
-    public static CampaignMentorProfile toEntity(CampaignMentorProfileDTO campaignMentorProfileDTO) {
+    public static CampaignMentorProfile toEntity(CampaignMentorProfileDTO campaignMentorProfileDTO) throws BaseException {
         CampaignMentorProfile campaignMentorProfile = new CampaignMentorProfile();
         campaignMentorProfile.setId(campaignMentorProfileDTO.getId());
         campaignMentorProfile.setMentorProfile(MentorProfileConverter.toEntity(campaignMentorProfileDTO.getMentorProfile()));
