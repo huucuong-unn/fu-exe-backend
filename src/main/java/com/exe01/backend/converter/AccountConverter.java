@@ -3,6 +3,7 @@ package com.exe01.backend.converter;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Role;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class AccountConverter {
         return accountDTO;
     }
 
-    public static Account toEntity(AccountDTO accountDTO) {
+    public static Account toEntity(AccountDTO accountDTO) throws BaseException {
         Account account = new Account();
         account.setId(accountDTO.getId());
         account.setPassword(accountDTO.getPassword());
