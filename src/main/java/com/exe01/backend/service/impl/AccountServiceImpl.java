@@ -14,7 +14,6 @@ import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
-import com.exe01.backend.repository.RoleRepository;
 import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.IRoleService;
 import com.exe01.backend.validation.ValidateUtil;

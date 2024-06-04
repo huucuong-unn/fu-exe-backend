@@ -111,7 +111,7 @@ public class MajorServiceImpl implements IMajorService {
     }
 
     private int totalItemWithStatusActive() {
-        return (int) majorRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return majorRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override

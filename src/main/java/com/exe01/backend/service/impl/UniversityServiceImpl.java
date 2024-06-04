@@ -212,7 +212,7 @@ public class UniversityServiceImpl implements IUniversityService {
     }
 
     private int totalItemWithStatusActive() {
-        return (int) universityRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return universityRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override

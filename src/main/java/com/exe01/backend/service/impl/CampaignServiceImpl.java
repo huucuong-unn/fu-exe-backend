@@ -94,9 +94,6 @@ public class CampaignServiceImpl implements ICampaignService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
@@ -113,7 +110,7 @@ public class CampaignServiceImpl implements ICampaignService {
 
             String hashKeyForCampaign = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN + "all:" + "active:" + page + ":" + limit;
 
-            List<CampaignDTO> campaignDTOs = new ArrayList<>();
+            List<CampaignDTO> campaignDTOs ;
 
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
                 logger.info("Fetching campaigns from cache for page {} and limit {}", page, limit);
@@ -133,9 +130,6 @@ public class CampaignServiceImpl implements ICampaignService {
             return result;
 
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
@@ -145,7 +139,7 @@ public class CampaignServiceImpl implements ICampaignService {
     }
 
     public int totalItemByStatusTrue() {
-        return (int) campaignRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return campaignRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
@@ -176,9 +170,6 @@ public class CampaignServiceImpl implements ICampaignService {
             return CampaignConverter.toDto(campaign);
 
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

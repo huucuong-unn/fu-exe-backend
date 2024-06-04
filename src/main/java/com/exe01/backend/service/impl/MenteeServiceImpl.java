@@ -4,16 +4,11 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.MenteeConverter;
-import com.exe01.backend.converter.MenteeConverter;
-import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.StudentConverter;
 import com.exe01.backend.dto.MenteeDTO;
-import com.exe01.backend.dto.MenteeDTO;
 import com.exe01.backend.dto.request.Mentee.MenteeRequest;
-import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Mentor;
-import com.exe01.backend.entity.Student;
 import com.exe01.backend.entity.Mentee;
+import com.exe01.backend.entity.Student;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
@@ -118,7 +113,7 @@ public class MenteeServiceImpl implements IMenteeService {
     }
 
     public int totalItemByStatusActive() {
-        return (int) menteeRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return menteeRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
@@ -149,9 +144,6 @@ public class MenteeServiceImpl implements IMenteeService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

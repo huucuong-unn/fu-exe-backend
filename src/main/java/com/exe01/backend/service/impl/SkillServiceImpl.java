@@ -14,7 +14,6 @@ import com.exe01.backend.entity.Skill;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
-import com.exe01.backend.repository.MajorRepository;
 import com.exe01.backend.repository.SkillRepository;
 import com.exe01.backend.service.IMajorService;
 import com.exe01.backend.service.ISkillService;

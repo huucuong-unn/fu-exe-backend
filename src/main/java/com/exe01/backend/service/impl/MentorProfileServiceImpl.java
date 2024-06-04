@@ -75,9 +75,6 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
             return mentorProfileDTO;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
@@ -112,9 +109,6 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
@@ -153,9 +147,6 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
