@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
+import com.exe01.backend.converter.MajorConverter;
 import com.exe01.backend.converter.SkillConverter;
 import com.exe01.backend.dto.SkillDTO;
 import com.exe01.backend.dto.request.skill.CreateSkillRequest;
@@ -13,8 +14,8 @@ import com.exe01.backend.entity.Skill;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
-import com.exe01.backend.repository.MajorRepository;
 import com.exe01.backend.repository.SkillRepository;
+import com.exe01.backend.service.IMajorService;
 import com.exe01.backend.service.ISkillService;
 import com.exe01.backend.validation.ValidateUtil;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class SkillServiceImpl implements ISkillService {
     private SkillRepository skillRepository;
 
     @Autowired
-    private MajorRepository majorRepository;
+    private IMajorService majorService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -115,7 +116,7 @@ public class SkillServiceImpl implements ISkillService {
     }
 
     public int totalItemWithStatusActive() {
-        return (int) skillRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
+        return skillRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
@@ -158,15 +159,9 @@ public class SkillServiceImpl implements ISkillService {
             Skill skill = new Skill();
             skill.setName(request.getName());
 
-            Optional<Major> majorById = majorRepository.findById(request.getMajorId());
-            boolean isMajorExist = majorById.isPresent();
+            Major majorById = MajorConverter.toEntity(majorService.findById(request.getMajorId()));
 
-            if (!isMajorExist) {
-                logger.warn("Major with id {} not found", request.getMajorId());
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Major.Major_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            skill.setMajor(majorById.get());
+            skill.setMajor(majorById);
             skill.setStatus(ConstStatus.ACTIVE_STATUS);
 
             skillRepository.save(skill);
@@ -190,29 +185,17 @@ public class SkillServiceImpl implements ISkillService {
     public Boolean update(UUID id, UpdateSkillRequest request) throws BaseException {
         try {
             logger.info("Update skill");
-            Optional<Skill> skillById = skillRepository.findById(id);
-            boolean isSkillExist = skillById.isPresent();
+            Skill skillById = SkillConverter.toEntity(findById(id));
 
-            if (!isSkillExist) {
-                logger.warn("Skill with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Skill.SKILL_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
+            skillById.setId(id);
+            skillById.setName(request.getName());
+            skillById.setStatus(request.getStatus());
 
-            skillById.get().setId(id);
-            skillById.get().setName(request.getName());
-            skillById.get().setStatus(request.getStatus());
+            Major majorById = MajorConverter.toEntity(majorService.findById(request.getMajorId()));
 
-            Optional<Major> majorById = majorRepository.findById(request.getMajorId());
-            boolean isMajorExist = majorById.isPresent();
+            skillById.setMajor(majorById);
 
-            if (!isMajorExist) {
-                logger.warn("Major with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Major.Major_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            skillById.get().setMajor(majorById.get());
-
-            skillRepository.save(skillById.get());
+            skillRepository.save(skillById);
 
             Set<String> keysToDelete = redisTemplate.keys("Skill:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -237,21 +220,15 @@ public class SkillServiceImpl implements ISkillService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Find skill by id {}", id);
-            Optional<Skill> skillById = skillRepository.findById(id);
-            boolean isSkillExist = skillById.isPresent();
+            Skill skillById = SkillConverter.toEntity(findById(id));
 
-            if (!isSkillExist) {
-                logger.warn("Skill with id {} is not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Skill.SKILL_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
-            }
-
-            if (skillById.get().getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                skillById.get().setStatus(ConstStatus.INACTIVE_STATUS);
+            if (skillById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                skillById.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                skillById.get().setStatus(ConstStatus.ACTIVE_STATUS);
+                skillById.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            skillRepository.save(skillById.get());
+            skillRepository.save(skillById);
 
             Set<String> keysToDelete = redisTemplate.keys("Skill:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
