@@ -26,6 +26,11 @@ public class RoleConverter {
         role.setId(roleDTO.getId());
         role.setName(roleDTO.getName());
         role.setDescription(roleDTO.getDescription());
+        role.setStatus(roleDTO.getStatus());
+        role.setCreatedDate(roleDTO.getCreatedDate());
+        role.setModifiedDate(roleDTO.getModifiedDate());
+        role.setModifiedBy(roleDTO.getModifiedBy());
+        role.setCreatedBy(roleDTO.getCreatedBy());
 
         return role;
     }

@@ -6,13 +6,11 @@ import com.exe01.backend.entity.Role;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
 public class AccountConverter {
 
-    @Autowired
-    private static IRoleService roleService;
     public static AccountDTO toDto(Account account) {
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setPassword(account.getPassword());
@@ -25,7 +23,7 @@ public class AccountConverter {
         accountDTO.setModifiedBy(account.getModifiedBy());
         accountDTO.setStatus(account.getStatus());
         accountDTO.setEmail(account.getEmail());
-        accountDTO.setRole(account.getRole().getName());
+        accountDTO.setRole(RoleConverter.toDto(account.getRole()));
         accountDTO.setPoint(account.getPoint());
 
         return accountDTO;
@@ -43,7 +41,7 @@ public class AccountConverter {
         account.setModifiedBy(accountDTO.getModifiedBy());
         account.setStatus(accountDTO.getStatus());
         account.setEmail(accountDTO.getEmail());
-        Role role = RoleConverter.toEntity(roleService.findByName(accountDTO.getRole()));
+        Role role = RoleConverter.toEntity(accountDTO.getRole());
         account.setRole(role);
         account.setPoint(accountDTO.getPoint());
 

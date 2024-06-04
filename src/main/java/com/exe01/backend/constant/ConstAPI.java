@@ -89,10 +89,10 @@ public class ConstAPI {
         public static final String GET_CAMPAIGN_MENTOR_PROFILE_BY_ID = "api/v1/campaign-mentor-profile/";
         public static final String CREATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/create";
         public static final String UPDATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/update/";
-        public static final String CHANGE_STATUS_CAMPAIGN_MENTOR_PROFILE= "api/v1/campaign-mentor-profile/change-status/";
+        public static final String CHANGE_STATUS_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/change-status/";
     }
 
-    public static class MenteeAPI{
+    public static class MenteeAPI {
 
         public static final String GET_MENTEE = "api/v1/mentee";
         public static final String GET_MENTEE_STATUS_TRUE = "api/v1/mentee/mentee-status-true";
@@ -121,6 +121,13 @@ public class ConstAPI {
         public static final String CREATE_COMPANY = "api/v1/company/create";
         public static final String UPDATE_COMPANY = "api/v1/company/update/";
         public static final String CHANGE_STATUS_COMPANY = "api/v1/company/change-status/";
+    }
+
+    public static class TransactionAPI {
+        public static final String GET_TRANSACTION = "api/v1/transaction";
+        public static final String GET_TRANSACTION_STATUS_TRUE = "api/v1/transaction/transaction-status-true";
+        public static final String GET_TRANSACTION_BY_ID = "api/v1/transaction/";
+        public static final String CREATE_TRANSACTION = "api/v1/transaction/create";
     }
 
 }
