@@ -238,6 +238,30 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
+    public RoleDTO findByName(String name) throws BaseException {
+
+        String hashKeyForRole = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE + name;
+        RoleDTO roleDTOByRedis = (RoleDTO) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole);
+
+        if (!Objects.isNull(roleDTOByRedis)) {
+            return roleDTOByRedis;
+        }
+
+        Optional<Role> roleById = roleRepository.findByName(name);
+        boolean isExist = roleById.isPresent();
+
+        if (!isExist) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Role.ROLE_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+        }
+
+        RoleDTO roleDTO = RoleConverter.toDto(roleById.get());
+
+        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ROLE, hashKeyForRole, roleDTO);
+
+        return roleDTO;
+    }
+
+    @Override
     public RoleDTO create(CreateRoleRequest request) throws BaseException {
         try {
             logger.info("Create Role");

@@ -53,7 +53,7 @@ public class ConstAPI {
         public static final String GET_MENTOR_BY_ID = "api/v1/mentor/";
         public static final String CREATE_MENTOR = "api/v1/mentor/create";
         public static final String UPDATE_MENTOR = "api/v1/mentor/update/";
-        public static final String DELETE_MENTOR = "api/v1/mentor/delete/";
+        public static final String CHANGE_STATUS_MENTOR = "api/v1/mentor/change-status/";
     }
 
     public static class StudentAPI {
@@ -82,8 +82,27 @@ public class ConstAPI {
         public static final String GET_CAMPAIGN_BY_ID = "api/v1/campaign/";
         public static final String CREATE_CAMPAIGN = "api/v1/campaign/create";
         public static final String UPDATE_CAMPAIGN = "api/v1/campaign/update/";
-        public static final String DELETE_CAMPAIGN = "api/v1/campaign/delete/";
+        public static final String CHANGE_STATUS_CAMPAIGN = "api/v1/campaign/change-status/";
     }
+
+    public static class CampaignMentorProfileAPI {
+        public static final String GET_CAMPAIGN_MENTOR_PROFILE_BY_ID = "api/v1/campaign-mentor-profile/";
+        public static final String CREATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/create";
+        public static final String UPDATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/update/";
+        public static final String CHANGE_STATUS_CAMPAIGN_MENTOR_PROFILE= "api/v1/campaign-mentor-profile/change-status/";
+    }
+
+    public static class MenteeAPI{
+
+        public static final String GET_MENTEE = "api/v1/mentor";
+        public static final String GET_MENTEE_STATUS_TRUE = "api/v1/mentor/mentor-status-true";
+        public static final String GET_MENTEE_BY_ID = "api/v1/mentor/";
+        public static final String CREATE_MENTEE = "api/v1/mentor/create";
+        public static final String UPDATE_MENTEE = "api/v1/mentor/update/";
+        public static final String CHANGE_STATUS_MENTEE = "api/v1/mentor/change-status/";
+
+    }
+
 
     public static class SkillAPI {
         public static final String GET_SKILL = "api/v1/skill";

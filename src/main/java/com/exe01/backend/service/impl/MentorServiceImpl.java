@@ -1,23 +1,27 @@
 package com.exe01.backend.service.impl;
 
+import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
-import com.exe01.backend.converter.GenericConverter;
-import com.exe01.backend.converter.MentorConverter;
-import com.exe01.backend.converter.MentorProfileConverter;
+import com.exe01.backend.converter.*;
 import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
 import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
 import com.exe01.backend.entity.Account;
+import com.exe01.backend.entity.Mentee;
 import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
+import com.exe01.backend.enums.ErrorCode;
+import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
+import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.IMentorService;
+import com.exe01.backend.validation.ValidateUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,88 +39,86 @@ public class MentorServiceImpl implements IMentorService {
     Logger logger = LoggerFactory.getLogger(MentorServiceImpl.class);
 
     @Autowired
-    GenericConverter genericConverter;
-
-    @Autowired
     MentorRepository mentorRepository;
 
     @Autowired
     MentorProfileRepository mentorProfileRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    IAccountService accountService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public MentorDTO findById(UUID id) {
-        logger.info("Find mentor by id {}", id);
-        String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR + id.toString();
-        MentorDTO mentorDTOByRedis = (MentorDTO) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor);
+    public MentorDTO findById(UUID id) throws BaseException {
 
-        if (!Objects.isNull(mentorDTOByRedis)) {
-            return mentorDTOByRedis;
-        }
+        try {
+            logger.info("Find mentor by id {}", id);
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR + id.toString();
+            MentorDTO mentorDTOByRedis = (MentorDTO) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor);
 
-        Optional<Mentor> mentorById = mentorRepository.findById(id);
-        boolean isMentorExist = mentorById.isPresent();
+            if (!Objects.isNull(mentorDTOByRedis)) {
+                return mentorDTOByRedis;
+            }
 
-        if (!isMentorExist) {
-            logger.warn("Mentor with id {} not found", id);
-            throw new EntityNotFoundException();
-        }
+            Optional<Mentor> mentorById = mentorRepository.findById(id);
+            boolean isMentorExist = mentorById.isPresent();
 
-        String hashKeyForMentorProfile = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE + "all";
-        List<MentorProfile> mentorProfilesByRedis = (List<MentorProfile>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile);
+            if (!isMentorExist) {
+                logger.warn("Mentor with id {} not found", id);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Mentor.MENTOR_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
 
-        MentorDTO mentorDTO;
-
-
-        if (mentorProfilesByRedis != null && !mentorProfilesByRedis.isEmpty()) {
-            mentorDTO = MentorConverter.toDto(mentorById.get(), mentorProfilesByRedis);
-        } else {
             logger.info("Find mentor profile list by mentor id {}", id);
-            List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorId(mentorById.get().getId());
-            List<MentorProfileDTO> mentorProfileDTOs = mentorProfiles.stream().map(MentorProfileConverter::toDto).toList();
-            mentorDTO = MentorConverter.toDto(mentorById.get(), mentorProfiles);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_PROFILE, hashKeyForMentorProfile, mentorProfileDTOs);
+            MentorDTO mentorDTO = MentorConverter.toDto(mentorById.get());
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor, mentorDTO);
+
+            return mentorDTO;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
 
-        redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor, mentorDTO);
-
-        return mentorDTO;
     }
 
     @Override
-    public PagingModel getAll(Integer page, Integer limit) {
-        logger.info("Get all mentor");
-        PagingModel result = new PagingModel();
-        result.setPage(page);
-        Pageable pageable = PageRequest.of(page - 1, limit);
+    public PagingModel getAll(Integer page, Integer limit) throws BaseException {
+        try {
 
-        String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR + "all:" + page + ":" + limit;
+            logger.info("Get all mentor");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<MentorDTO> mentorDTOs;
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR + "all:" + page + ":" + limit;
 
-        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor)) {
-            logger.info("Fetching mentors from cache for page {} and limit {}", page, limit);
-            mentorDTOs = (List<MentorDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor);
-        } else {
-            logger.info("Fetching mentors from database for page {} and limit {}", page, limit);
-            List<Mentor> mentors = mentorRepository.findAllByOrderByCreatedDate(pageable);
-            mentorDTOs = mentors.stream().map(mentor -> {
-                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorId(mentor.getId());
-                return MentorConverter.toDto(mentor, mentorProfiles);
-            }).toList();
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor, mentorDTOs);
+            List<MentorDTO> mentorDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor)) {
+                logger.info("Fetching mentors from cache for page {} and limit {}", page, limit);
+                mentorDTOs = (List<MentorDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor);
+            } else {
+                logger.info("Fetching mentors from database for page {} and limit {}", page, limit);
+                List<Mentor> mentors = mentorRepository.findAllByOrderByCreatedDate(pageable);
+                mentorDTOs = mentors.stream().map(MentorConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor, mentorDTOs);
+            }
+
+            result.setListResult(mentorDTOs);
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
-
-        result.setListResult(mentorDTOs);
-        result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
-        result.setLimit(limit);
-
-        return result;
     }
 
     public int totalItem() {
@@ -124,104 +126,118 @@ public class MentorServiceImpl implements IMentorService {
     }
 
     @Override
-    public PagingModel findAllByStatusTrue(Integer page, Integer limit) {
-        logger.info("Get all mentor with status active");
-        PagingModel result = new PagingModel();
-        result.setPage(page);
-        Pageable pageable = PageRequest.of(page - 1, limit);
+    public PagingModel findAllByStatusTrue(Integer page, Integer limit) throws BaseException {
 
-        String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR + "all:" + "active:" + page + ":" + limit;
+        try {
+            logger.info("Get all mentor with status active");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
 
-        List<MentorDTO> mentorDTOs;
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR + "all:" + "active:" + page + ":" + limit;
 
-        if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor)) {
-            logger.info("Fetching mentors from cache for page {} and limit {}", page, limit);
-            mentorDTOs = (List<MentorDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor);
-        } else {
-            logger.info("Fetching mentors from database for page {} and limit {}", page, limit);
-            List<Mentor> mentors = mentorRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
-            mentorDTOs = mentors.stream().map(mentor -> {
-                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorId(mentor.getId());
-                return MentorConverter.toDto(mentor, mentorProfiles);
-            }).toList();
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor, mentorDTOs);
+            List<MentorDTO> mentorDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor)) {
+                logger.info("Fetching mentors from cache for page {} and limit {}", page, limit);
+                mentorDTOs = (List<MentorDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor);
+            } else {
+                logger.info("Fetching mentors from database for page {} and limit {}", page, limit);
+                List<Mentor> mentors = mentorRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+                mentorDTOs = mentors.stream().map(MentorConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR, hashKeyForMentor, mentorDTOs);
+            }
+
+            result.setListResult(mentorDTOs);
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
-
-        result.setListResult(mentorDTOs);
-        result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
-        result.setLimit(limit);
-
-        return result;
     }
 
     @Override
-    public CreateMentorResponse create(CreateMentorRequest request) {
-        logger.info("Create mentor");
-        logger.info("Find account by id {}", request.getAccountId());
-        Optional<Account> accountById = accountRepository.findById(request.getAccountId());
-        boolean isAccountExist = accountById.isPresent();
+    public CreateMentorResponse create(CreateMentorRequest request) throws BaseException {
 
-        if (!isAccountExist) {
-            logger.warn("Account with id {} not found", request.getAccountId());
-            throw new EntityNotFoundException();
+        try {
+
+            logger.info("Create mentor");
+            logger.info("Find account by id {}", request.getAccountId());
+            Account account = AccountConverter.toEntity(accountService.findById(request.getAccountId()));
+            Mentor mentor = new Mentor();
+            mentor.setAccount(account);
+            mentor.setStatus(ConstStatus.ACTIVE_STATUS);
+
+            Mentor saveMentor = mentorRepository.save(mentor);
+            return MentorConverter.toCreateMentorResponse(saveMentor);
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
-
-        Mentor mentor = new Mentor();
-        mentor.setAccount(accountById.get());
-        mentor.setStatus(ConstStatus.ACTIVE_STATUS);
-
-        Mentor saveMentor = mentorRepository.save(mentor);
-        return MentorConverter.toCreateMentorResponse(saveMentor);
     }
 
     @Override
-    public Boolean update(UUID id, UpdateMentorRequest request) {
-        logger.info("Update mentor");
-        logger.info("Find account by id {}", request.getAccountId());
-        Optional<Account> accountById = accountRepository.findById(request.getAccountId());
-        boolean isAccountExist = accountById.isPresent();
+    public Boolean update(UUID id, UpdateMentorRequest request) throws BaseException {
 
-        if (!isAccountExist) {
-            logger.warn("Account with id {} not found", request.getAccountId());
-            throw new EntityNotFoundException();
+        try {
+
+            logger.info("Update mentor");
+            logger.info("Find account by id {}", request.getAccountId());
+            Account account = AccountConverter.toEntity(accountService.findById(request.getAccountId()));
+
+            Mentor mentor = MentorConverter.toEntity(findById(id));
+
+            mentor.setAccount(account);
+
+            mentorRepository.save(mentor);
+
+            Set<String> keysToDelete = redisTemplate.keys("Mentor:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
-
-        Mentor mentor = new Mentor();
-        mentor.setId(id);
-        mentor.setAccount(accountById.get());
-        mentor.setStatus(request.getStatus());
-
-        mentorRepository.save(mentor);
-
-        Set<String> keysToDelete = redisTemplate.keys("Mentor:*");
-        if (keysToDelete != null && !keysToDelete.isEmpty()) {
-            redisTemplate.delete(keysToDelete);
-        }
-
-        return true;
     }
 
     @Override
-    public Boolean delete(UUID id) {
-        logger.info("Delete mentor");
-        logger.info("Find mentor by id {}", id);
-        Optional<Mentor> mentorById = mentorRepository.findById(id);
-        boolean mentorIsExist = mentorById.isPresent();
+    public Boolean changeStatus(UUID id) throws BaseException {
 
-        if (!mentorIsExist) {
-            logger.warn("Mentor profile with id {} not found", id);
-            throw new EntityNotFoundException();
+        try {
+            logger.info("Change status mentee with id {}", id);
+            Mentor mentor = MentorConverter.toEntity(findById(id));
+
+            if (mentor.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                mentor.setStatus(ConstStatus.INACTIVE_STATUS);
+            } else {
+                mentor.setStatus(ConstStatus.ACTIVE_STATUS);
+            }
+
+            mentorRepository.save(mentor);
+
+            Set<String> keysToDelete = redisTemplate.keys("Mentor:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
-
-        mentorById.get().setStatus(ConstStatus.INACTIVE_STATUS);
-
-        mentorRepository.save(mentorById.get());
-
-        Set<String> keysToDelete = redisTemplate.keys("Mentor:*");
-        if (keysToDelete != null && !keysToDelete.isEmpty()) {
-            redisTemplate.delete(keysToDelete);
-        }
-        return true;
     }
-
 }

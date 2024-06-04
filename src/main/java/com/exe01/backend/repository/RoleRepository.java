@@ -18,6 +18,9 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
 
     List<Role> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
+    Optional<Role> findByName(String name);
+
+
     int countByStatus(String status);
 
 }

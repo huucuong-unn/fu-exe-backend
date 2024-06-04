@@ -18,6 +18,17 @@ public class ConstHashKeyPrefix {
 
     public static final String HASH_KEY_PREFIX_FOR_CAMPAIGN = "Campaign:";
 
+    public static final String HASH_KEY_PREFIX_FOR_CAMPAIGN_MENTOR_PROFILE = "CampaignMentorProfile:";
+
+    public static final String HASH_KEY_PREFIX_FOR_MENTEE = "Mentee:";
+
+    public static final String HASH_KEY_PREFIX_FOR_APPLICATION = "Application:";
+
+    public static final String HASH_KEY_PREFIX_FOR_MENTOR_APPLY = "MentorApply:";
+
+
+
+
     public static final String HASH_KEY_PREFIX_FOR_SKILL = "Skill:";
 
     public static final String HASH_KEY_PREFIX_FOR_COMPANY = "Company:";

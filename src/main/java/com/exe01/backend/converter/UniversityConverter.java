@@ -20,4 +20,16 @@ public class UniversityConverter {
 
     }
 
+    public static University toEntity(UniversityDTO universityDTO) {
+
+        University university = new University();
+        university.setId(universityDTO.getId());
+        university.setName(universityDTO.getName());
+        university.setAddress(universityDTO.getAddress());
+        university.setStatus(universityDTO.getStatus());
+
+        return university;
+    }
+
+
 }

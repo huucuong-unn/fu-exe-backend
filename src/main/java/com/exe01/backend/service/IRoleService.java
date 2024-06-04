@@ -16,4 +16,7 @@ public interface IRoleService extends IGenericService<RoleDTO>{
 
     Boolean changeStatus(UUID id) throws BaseException;
 
+    RoleDTO findByName(String name) throws BaseException;
+
+
 }
