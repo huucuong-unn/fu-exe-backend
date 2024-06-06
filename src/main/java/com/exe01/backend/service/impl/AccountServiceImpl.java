@@ -79,13 +79,12 @@ public class AccountServiceImpl implements IAccountService {
             accountRepository.save(account);
             var jwtToken = jwtService.generateToken(account);
 
-
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
                 redisTemplate.delete(keysToDelete);
             }
 
-       return MappingjwtAuthenticationRespone(account);
+            return MappingjwtAuthenticationRespone(account);
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException;
@@ -303,12 +302,11 @@ public class AccountServiceImpl implements IAccountService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
 
-       // Account account = findByUsername(loginRequest.getUsername());
-return MappingjwtAuthenticationRespone(account);
+        // Account account = findByUsername(loginRequest.getUsername());
+        return MappingjwtAuthenticationRespone(account);
     }
 
-    private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account)
-    {
+    private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account) {
         JwtAuthenticationResponse jwtAuthenticationRespone = new JwtAuthenticationResponse();
         jwtAuthenticationRespone.setId(account.getId());
         jwtAuthenticationRespone.setUsername(account.getUsername());
@@ -344,7 +342,6 @@ return MappingjwtAuthenticationRespone(account);
                 logger.warn("Account with id {} is not found", username);
                 throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
             }
-
 
             redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount, accountById.get());
 

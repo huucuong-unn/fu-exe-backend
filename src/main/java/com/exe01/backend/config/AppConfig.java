@@ -21,7 +21,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 @Configuration
 public class AppConfig {
     @Autowired
-AccountRepository accountRepository;
+    AccountRepository accountRepository;
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -31,11 +32,11 @@ AccountRepository accountRepository;
             }
         };
     }
+
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() throws BaseException {

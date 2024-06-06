@@ -1,4 +1,5 @@
 package com.exe01.backend.config;
+
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.service.IAccountService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration implements WebMvcConfigurer {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-     private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationProvider authenticationProvider;
 
 
     @Bean
@@ -40,8 +41,6 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 );
         return http.build();
     }
-
-
 
 
     @Override

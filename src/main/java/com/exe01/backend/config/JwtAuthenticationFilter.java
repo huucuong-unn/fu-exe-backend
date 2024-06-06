@@ -45,30 +45,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUserName(jwt);
-try {
+        try {
 
-        if (!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            if (!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
+                    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
 
-                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                securityContext.setAuthentication(token);
-                SecurityContextHolder.setContext(securityContext);
+                    token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    securityContext.setAuthentication(token);
+                    SecurityContextHolder.setContext(securityContext);
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception baseException) {
+            try {
+                throw new BaseException(401, "Unauthorized", baseException.getMessage());
+            } catch (BaseException e) {
+                throw new RuntimeException(e);
             }
         }
-        filterChain.doFilter(request, response);
-}catch (Exception baseException){
-    try {
-        throw new BaseException(401, "Unauthorized", baseException.getMessage());
-    } catch (BaseException e) {
-        throw new RuntimeException(e);
-    }
-}
     }
 }
