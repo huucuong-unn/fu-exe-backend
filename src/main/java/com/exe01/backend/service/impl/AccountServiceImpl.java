@@ -7,7 +7,9 @@ import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.converter.RoleConverter;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
+import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
+import com.exe01.backend.dto.response.JwtAuthenticationResponse;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Role;
 import com.exe01.backend.enums.ErrorCode;
@@ -23,6 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -39,15 +48,25 @@ public class AccountServiceImpl implements IAccountService {
     private IRoleService roleService;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JWTServiceImpl jwtService;
+
+    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public AccountDTO create(CreateAccountRequest request) throws BaseException {
+    public JwtAuthenticationResponse create(CreateAccountRequest request) throws BaseException {
         try {
-            logger.info("Create major");
+            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+            logger.info("Create account");
             Account account = new Account();
             account.setUsername(request.getUsername());
-            account.setPassword(request.getPassword());
+            account.setPassword(passwordEncoder.encode(request.getPassword()));
             account.setAvatarUrl(request.getAvatarUrl());
             account.setStatus(ConstStatus.ACTIVE_STATUS);
             account.setEmail(request.getEmail());
@@ -58,13 +77,15 @@ public class AccountServiceImpl implements IAccountService {
             account.setRole(role);
 
             accountRepository.save(account);
+            var jwtToken = jwtService.generateToken(account);
+
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
                 redisTemplate.delete(keysToDelete);
             }
 
-            return AccountConverter.toDto(account);
+       return MappingjwtAuthenticationRespone(account);
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException;
@@ -259,6 +280,75 @@ public class AccountServiceImpl implements IAccountService {
             }
 
             return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public JwtAuthenticationResponse login(LoginRequest loginRequest) throws BaseException {
+        // * method authenticate() của AuthenticationManager dùng để tạo ra một object Authentication object
+        // ? Với UsernamePasswordAuthenticationToken là class implements từ Authentication, đại diện cho 1 authentication object
+        // todo Trả về một object Authentication và đưa vào Security Context để quản lý
+        Account account = findByUsername(loginRequest.getUsername());
+
+        // Check if the account is disabled
+        if (account.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), "User is disabled", ErrorCode.ERROR_500.getMessage());
+        }
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                loginRequest.getPassword()));
+
+       // Account account = findByUsername(loginRequest.getUsername());
+return MappingjwtAuthenticationRespone(account);
+    }
+
+    private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account)
+    {
+        JwtAuthenticationResponse jwtAuthenticationRespone = new JwtAuthenticationResponse();
+        jwtAuthenticationRespone.setId(account.getId());
+        jwtAuthenticationRespone.setUsername(account.getUsername());
+        jwtAuthenticationRespone.setAvatarUrl(account.getAvatarUrl());
+        jwtAuthenticationRespone.setStatus(account.getStatus());
+        jwtAuthenticationRespone.setEmail(account.getEmail());
+        jwtAuthenticationRespone.setRole(account.getRole().getName());
+        jwtAuthenticationRespone.setPoint(account.getPoint());
+
+        var jwt = jwtService.generateToken(account);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), account);
+
+        jwtAuthenticationRespone.setToken(jwt);
+        jwtAuthenticationRespone.setRefreshToken(refreshToken);
+        return jwtAuthenticationRespone;
+    }
+
+    @Override
+    public Account findByUsername(String username) throws BaseException {
+        try {
+            logger.info("Find account by username {}", username);
+            String hashKeyForAccount = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT + username;
+            Account accountDTOByRedis = (Account) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount);
+
+            if (!Objects.isNull(accountDTOByRedis)) {
+                return accountDTOByRedis;
+            }
+
+            Optional<Account> accountById = accountRepository.findByUsername(username);
+            boolean isAccountExist = accountById.isPresent();
+
+            if (!isAccountExist) {
+                logger.warn("Account with id {} is not found", username);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount, accountById.get());
+
+            return accountById.get();
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException;
