@@ -1,9 +1,8 @@
 package com.exe01.backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,11 +11,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MentorDTO extends BaseDTO implements Serializable {
 
     private AccountDTO account;
-
-    private List<MentorProfileDTO> mentorProfiles;
 
     private String status;
 

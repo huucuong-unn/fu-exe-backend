@@ -17,4 +17,8 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     List<Account> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
+    int countByStatus(String status);
+
+    Optional<Account> findByUsername(String username);
+
 }

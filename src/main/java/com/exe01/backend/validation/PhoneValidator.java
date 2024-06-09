@@ -3,49 +3,38 @@ package com.exe01.backend.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PhoneValidator implements ConstraintValidator<ValidPhone, String> {
-    private static final String PHONE_PATTERN = "^0\\d{9,10}$";
+    private static final String PHONE_PATTERN = "^(\\+84|0)\\d{9,10}$";
     private String nullMessage;
     private String invalidFormatMessage;
-    private int nullIntegerValue;
-    private int invalidIntegerValue;
 
     @Override
     public void initialize(ValidPhone constraintAnnotation) {
         nullMessage = constraintAnnotation.nullMessage();
         invalidFormatMessage = constraintAnnotation.message();
-        nullIntegerValue = constraintAnnotation.nullIntegerValue();
-        invalidIntegerValue = constraintAnnotation.invalidIntegerValue();
     }
 
     @Override
     public boolean isValid(String phone, ConstraintValidatorContext context) {
         if (phone == null) {
-            handleValidationFailure(context, nullMessage, nullIntegerValue);
+            handleValidationFailure(context, nullMessage);
             return false;
         }
 
         Pattern pattern = Pattern.compile(PHONE_PATTERN);
-        Matcher matcher = pattern.matcher(phone);
-
-        if (!matcher.matches()) {
-            handleValidationFailure(context, invalidFormatMessage, invalidIntegerValue);
+        if (!pattern.matcher(phone).matches()) {
+            handleValidationFailure(context, invalidFormatMessage);
             return false;
         }
 
         return true;
     }
 
-    private void handleValidationFailure(
-            ConstraintValidatorContext context,
-            String message,
-            int integerValue
-    ) {
+    private void handleValidationFailure(ConstraintValidatorContext context, String message) {
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(message)// Adjust to your actual property name
+        context.buildConstraintViolationWithTemplate(message)
                 .addConstraintViolation();
     }
 }

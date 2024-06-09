@@ -17,7 +17,6 @@ import java.util.UUID;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
-    //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @Id
     @Column(updatable = false)
     private UUID id;
@@ -40,14 +39,14 @@ public abstract class BaseEntity implements Serializable {
 
     @PrePersist
     protected void onCreate() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null) {
-//            createBy = "Anonymous";
-//            modifiedBy = "Anonymous";
-//        } else {
-//            createBy = authentication.getName();
-//            modifiedBy = authentication.getName();
-//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            createdBy = "Anonymous";
+            modifiedBy = "Anonymous";
+        } else {
+            createdBy = authentication.getName();
+            modifiedBy = authentication.getName();
+        }
         id = UUID.randomUUID();
 
         createdDate = new Date();
@@ -56,13 +55,8 @@ public abstract class BaseEntity implements Serializable {
 
     @PreUpdate
     protected void onUpdate() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        modifiedBy = authentication.getName();
+     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+     modifiedBy = authentication.getName();
         modifiedDate = new Date();
-    }
-
-
-    public void markModified() {
-        this.onUpdate();
     }
 }

@@ -13,8 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CampaignMentorProfileDTO extends BaseDTO{
 
-    private UUID campaignId;
+    private CampaignDTO campaign;
 
-    private UUID mentorProfileId;
+    private MentorProfileDTO mentorProfile;
 
 }

@@ -14,4 +14,9 @@ public class ConstStatus {
 
     }
 
+    public static class  TransactionStatus {
+        public static final String SUCCESS_STATUS = "SUCCESS";
+        public static final String FAILED_STATUS = "FAILED";
+    }
+
 }

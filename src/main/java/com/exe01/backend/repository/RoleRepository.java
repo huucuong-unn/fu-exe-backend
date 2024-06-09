@@ -11,8 +11,16 @@ import java.util.UUID;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, UUID> {
+
     Optional<Role> findById(UUID id);
+
     List<Role> findAllByOrderByCreatedDate(Pageable pageable);
 
     List<Role> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+
+    Optional<Role> findByName(String name);
+
+
+    int countByStatus(String status);
+
 }

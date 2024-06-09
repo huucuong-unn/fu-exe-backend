@@ -21,10 +21,14 @@ public class MajorConverter {
 
     public static Major toEntity(MajorDTO majorDTO) {
         Major major = new Major();
-        major.setId(major.getId());
-        major.setName(major.getName());
-        major.setDescription(major.getDescription());
-        major.setStatus(major.getStatus());
+        major.setId(majorDTO.getId());
+        major.setName(majorDTO.getName());
+        major.setDescription(majorDTO.getDescription());
+        major.setStatus(majorDTO.getStatus());
+        major.setCreatedDate(majorDTO.getCreatedDate());
+        major.setModifiedDate(majorDTO.getModifiedDate());
+        major.setCreatedBy(majorDTO.getCreatedBy());
+        major.setModifiedBy(majorDTO.getModifiedBy());
 
         return major;
     }
