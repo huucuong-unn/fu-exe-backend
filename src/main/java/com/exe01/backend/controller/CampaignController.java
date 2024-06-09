@@ -60,9 +60,9 @@ public class CampaignController {
     }
 
     @Operation(summary = "Delete campagin", description = "API delete campagin")
-    @DeleteMapping(value = ConstAPI.CampaignAPI.DELETE_CAMPAIGN + "{id}")
+    @DeleteMapping(value = ConstAPI.CampaignAPI.CHANGE_STATUS_CAMPAIGN + "{id}")
     public Boolean delete(@PathVariable("id") UUID id) throws BaseException{
         log.info("Deleting university with id: {}", id);
-        return campaignService.delete(id);
+        return campaignService.changeStatus(id);
     }
 }

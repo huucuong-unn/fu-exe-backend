@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -27,7 +26,7 @@ public class RoleController {
 
     @Operation(summary = "Get all role", description = "API get all role")
     @GetMapping(value = ConstAPI.RoleAPI.GET_ROLE)
-    public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
+    public PagingModel getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all roles with page: {}, limit: {}", page, limit);
         return roleService.getAll(page, limit);
     }
@@ -53,15 +52,29 @@ public class RoleController {
 
     @Operation(summary = "Create role", description = "API create new role")
     @PostMapping(value = ConstAPI.RoleAPI.CREATE_ROLE)
-    public RoleDTO create(@RequestBody CreateRoleRequest request) {
+    public RoleDTO create(@RequestBody CreateRoleRequest request) throws BaseException {
         log.info("Creating new role with request: {}", request);
         return roleService.create(request);
     }
 
     @Operation(summary = "Update role", description = "API update role")
     @PutMapping(value = ConstAPI.RoleAPI.UPDATE_ROLE + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateRoleRequest request) {
+    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateRoleRequest request) throws BaseException {
         log.info("Updating role with id: {}, request: {}", id, request);
         return roleService.update(id, request);
+    }
+
+    @Operation(summary = "Delete role", description = "API delete role")
+    @DeleteMapping(value = ConstAPI.RoleAPI.DELETE_ROLE + "{id}")
+    public Boolean delete(@PathVariable("id") UUID id) throws BaseException {
+        log.info("Deleting role with id: {}", id);
+        return roleService.delete(id);
+    }
+
+    @Operation(summary = "Change status role", description = "API change status role")
+    @PutMapping(value = ConstAPI.RoleAPI.CHANGE_STATUS_ROLE + "{id}")
+    public Boolean changeStatus(@PathVariable("id") UUID id) throws BaseException {
+        log.info("Change status role with id: {}", id);
+        return roleService.changeStatus(id);
     }
 }

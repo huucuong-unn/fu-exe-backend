@@ -52,21 +52,21 @@ public class MentorProfileController {
 
     @Operation(summary = "Create mentor profile", description = "API create new mentor profile")
     @PostMapping(value = ConstAPI.MentorProfileAPI.CREATE_MENTOR_PROFILE)
-    public MentorProfileDTO create(@RequestBody CreateMentorProfileRequest request) {
+    public MentorProfileDTO create(@RequestBody CreateMentorProfileRequest request) throws BaseException{
         log.info("Creating new mentor profile with request: {}", request);
         return mentorProfileService.create(request);
     }
 
     @Operation(summary = "Update mentor profile", description = "API update mentor profile")
     @PutMapping(value = ConstAPI.MentorProfileAPI.UPDATE_MENTOR_PROFILE + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateMentorProfileRequest request) {
+    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateMentorProfileRequest request) throws BaseException{
         log.info("Updating mentor profile with id: {}, request: {}", id, request);
         return mentorProfileService.update(id, request);
     }
 
     @Operation(summary = "Delete mentor profile", description = "API delete mentor profile")
     @DeleteMapping(value = ConstAPI.MentorProfileAPI.DELETE_MENTOR_PROFILE + "{id}")
-    public Boolean delete(@PathVariable("id") UUID id) {
+    public Boolean delete(@PathVariable("id") UUID id)  throws BaseException{
         log.info("Deleting mentor profile with id: {}", id);
         return mentorProfileService.delete(id);
     }

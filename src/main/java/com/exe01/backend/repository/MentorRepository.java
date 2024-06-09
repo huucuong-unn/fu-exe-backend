@@ -19,4 +19,6 @@ public interface MentorRepository extends JpaRepository<Mentor, UUID> {
 
     List<Mentor> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
+    int countByStatus(String status);
+
 }

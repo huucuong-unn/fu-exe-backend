@@ -3,7 +3,9 @@ package com.exe01.backend.controller;
 import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
+import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
+import com.exe01.backend.dto.response.JwtAuthenticationResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IAccountService;
@@ -41,33 +43,42 @@ public class AccountController {
     @Operation(summary = "Get account by id", description = "API get account by id")
     @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_BY_ID + "{id}")
     public AccountDTO findById(@PathVariable("id") UUID id) throws BaseException {
-     try {
             log.info("Getting account with id: {}", id);
             return accountService.findById(id);
-        } catch (Exception e) {
-            log.error("Error: {}", e.getMessage());
-            throw new BaseException(500, e.getMessage(), "Internal Server Error");
-        }
     }
 
-    @Operation(summary = "Create role", description = "API create new account")
+    @Operation(summary = "Create account", description = "API create new account")
     @PostMapping(value = ConstAPI.AccountAPI.CREATE_ACCOUNT)
-    public AccountDTO create(@RequestBody CreateAccountRequest request) {
+    public JwtAuthenticationResponse create(@RequestBody CreateAccountRequest request) throws BaseException {
         log.info("Creating new account with request: {}", request);
         return accountService.create(request);
     }
 
+    @Operation(summary = "Login", description = "API login ")
+    @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_PASSWORD_USERNAME)
+    public JwtAuthenticationResponse loginj(@RequestBody LoginRequest request) throws BaseException {
+        log.info("Creating new account with request: {}", request);
+        return accountService.login(request);
+    }
+
     @Operation(summary = "Update role", description = "API update account")
     @PutMapping(value = ConstAPI.AccountAPI.UPDATE_ACCOUNT + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateAccountRequest request) {
+    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateAccountRequest request) throws BaseException {
         log.info("Updating account with id: {}, request: {}", id, request);
         return accountService.update(id, request);
     }
 
     @Operation(summary = "Delete role", description = "API delete account")
     @DeleteMapping(value = ConstAPI.AccountAPI.DELETE_ACCOUNT + "{id}")
-    public Boolean delete(@PathVariable("id") UUID id) {
+    public Boolean delete(@PathVariable("id") UUID id) throws BaseException {
         log.info("Deleted account with id: {}", id);
         return accountService.delete(id);
+    }
+
+    @Operation(summary = "Change status account", description = "API change status account")
+    @PutMapping(value = ConstAPI.AccountAPI.CHANGE_STATUS_ACCOUNT + "{id}")
+    public Boolean changeStatus(@PathVariable("id") UUID id) throws BaseException{
+        log.info("Change status account with id: {}", id);
+        return accountService.changeStatus(id);
     }
 }

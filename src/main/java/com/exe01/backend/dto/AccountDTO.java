@@ -17,8 +17,6 @@ public class AccountDTO implements Serializable {
 
     private String username;
 
-    private String password;
-
     private String avatarUrl;
 
     private Date createdDate;
@@ -33,7 +31,7 @@ public class AccountDTO implements Serializable {
 
     private String email;
 
-    private String role;
+    private RoleDTO role;
 
     private Integer point;
 
