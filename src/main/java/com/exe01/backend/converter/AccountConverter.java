@@ -9,7 +9,6 @@ public class AccountConverter {
 
     public static AccountDTO toDto(Account account) {
         AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setPassword(account.getPassword());
         accountDTO.setId(account.getId());
         accountDTO.setUsername(account.getUsername());
         accountDTO.setAvatarUrl(account.getAvatarUrl());
@@ -28,7 +27,6 @@ public class AccountConverter {
     public static Account toEntity(AccountDTO accountDTO) throws BaseException {
         Account account = new Account();
         account.setId(accountDTO.getId());
-        account.setPassword(accountDTO.getPassword());
         account.setUsername(accountDTO.getUsername());
         account.setAvatarUrl(accountDTO.getAvatarUrl());
         account.setCreatedDate(accountDTO.getCreatedDate());

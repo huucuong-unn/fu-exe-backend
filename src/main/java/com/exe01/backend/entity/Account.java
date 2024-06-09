@@ -85,7 +85,7 @@ public class Account extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
 }
