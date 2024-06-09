@@ -18,7 +18,7 @@ import java.util.List;
 public class OpenApiConfig {
     private final String LOCALHOST = "http://localhost:8086/";
 
-    private final String DEPLOYHOST = "https://fu-exe-backend.onrender.com/";
+    private final String DEPLOYHOST = "https://tortee-463vt.ondigitalocean.app/";
 
     @Bean
     public OpenAPI openAPI() {
