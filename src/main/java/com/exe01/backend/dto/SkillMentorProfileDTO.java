@@ -1,6 +1,5 @@
 package com.exe01.backend.dto;
 
-import com.exe01.backend.entity.Skill;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 

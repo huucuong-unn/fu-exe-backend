@@ -3,27 +3,27 @@ package com.exe01.backend.service.impl;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
-import com.exe01.backend.converter.*;
+import com.exe01.backend.converter.AccountConverter;
+import com.exe01.backend.converter.MentorConverter;
+import com.exe01.backend.converter.MentorProfileConverter;
+import com.exe01.backend.converter.SkillMentorProfileConverter;
 import com.exe01.backend.dto.MentorDTO;
-import com.exe01.backend.dto.MentorProfileDTO;
-import com.exe01.backend.dto.SkillDTO;
 import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
 import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
 import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
-import com.exe01.backend.entity.*;
+import com.exe01.backend.entity.Account;
+import com.exe01.backend.entity.Mentor;
+import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
-import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.repository.SkillMentorProfileRepository;
 import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.IMentorService;
-import com.exe01.backend.validation.ValidateUtil;
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class MentorServiceImpl implements IMentorService {
@@ -206,9 +205,6 @@ public class MentorServiceImpl implements IMentorService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

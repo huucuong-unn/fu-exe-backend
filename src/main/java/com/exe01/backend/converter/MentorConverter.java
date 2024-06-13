@@ -5,11 +5,7 @@ import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Mentor;
-import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.exception.BaseException;
-import com.exe01.backend.validation.ValidateUtil;
-
-import java.util.List;
 
 public class MentorConverter {
 

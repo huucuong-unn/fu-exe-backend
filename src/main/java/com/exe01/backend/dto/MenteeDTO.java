@@ -1,7 +1,5 @@
 package com.exe01.backend.dto;
 
-import com.exe01.backend.entity.MentorApply;
-import com.exe01.backend.entity.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
