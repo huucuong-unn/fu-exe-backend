@@ -16,6 +16,8 @@ public class MentorProfileConverter {
         mentorProfileDTO.setDescription(mentorProfile.getDescription());
         mentorProfileDTO.setShortDescription(mentorProfile.getShortDescription());
         mentorProfileDTO.setLinkedinUrl(mentorProfile.getLinkedinUrl());
+        mentorProfileDTO.setFacebookUrl(mentorProfile.getFacebookUrl());
+        mentorProfileDTO.setGoogleMeetUrl(mentorProfile.getGoogleMeetUrl());
         mentorProfileDTO.setRequirement(mentorProfile.getRequirement());
         mentorProfileDTO.setCreatedDate(mentorProfile.getCreatedDate());
         mentorProfileDTO.setModifiedDate(mentorProfile.getModifiedDate());
@@ -34,6 +36,8 @@ public class MentorProfileConverter {
         mentorProfile.setDescription(mentorProfileDTO.getDescription());
         mentorProfile.setShortDescription(mentorProfileDTO.getShortDescription());
         mentorProfile.setLinkedinUrl(mentorProfileDTO.getLinkedinUrl());
+        mentorProfile.setFacebookUrl(mentorProfileDTO.getFacebookUrl());
+        mentorProfile.setGoogleMeetUrl(mentorProfileDTO.getGoogleMeetUrl());
         mentorProfile.setRequirement(mentorProfileDTO.getRequirement());
         mentorProfile.setCreatedDate(mentorProfileDTO.getCreatedDate());
         mentorProfile.setModifiedDate(mentorProfileDTO.getModifiedDate());

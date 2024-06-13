@@ -4,6 +4,7 @@ import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
 import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
+import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 
@@ -16,6 +17,8 @@ public interface IMentorService extends IGenericService<MentorDTO>{
     Boolean update(UUID id, UpdateMentorRequest request) throws BaseException;
 
     PagingModel getMentorsWithAllInformation(Integer page, Integer limit) throws BaseException;
+
+    MentorsResponse getMentorByMentorProfileId(UUID id) throws BaseException;
 
     Boolean changeStatus(UUID id) throws BaseException;
 

@@ -15,6 +15,10 @@ public class MentorProfileDTO extends BaseDTO implements Serializable {
 
     private String linkedinUrl;
 
+    private String facebookUrl;
+
+    private String googleMeetUrl;
+
     private String requirement;
 
     private String description;
