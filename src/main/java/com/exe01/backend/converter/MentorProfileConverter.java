@@ -1,11 +1,8 @@
 package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.MentorProfileDTO;
-import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.exception.BaseException;
-
-import java.util.ArrayList;
 
 public class MentorProfileConverter {
 
