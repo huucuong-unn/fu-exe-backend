@@ -1,11 +1,8 @@
 package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.MentorProfileDTO;
-import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.exception.BaseException;
-
-import java.util.ArrayList;
 
 public class MentorProfileConverter {
 
@@ -16,6 +13,8 @@ public class MentorProfileConverter {
         mentorProfileDTO.setDescription(mentorProfile.getDescription());
         mentorProfileDTO.setShortDescription(mentorProfile.getShortDescription());
         mentorProfileDTO.setLinkedinUrl(mentorProfile.getLinkedinUrl());
+        mentorProfileDTO.setFacebookUrl(mentorProfile.getFacebookUrl());
+        mentorProfileDTO.setGoogleMeetUrl(mentorProfile.getGoogleMeetUrl());
         mentorProfileDTO.setRequirement(mentorProfile.getRequirement());
         mentorProfileDTO.setCreatedDate(mentorProfile.getCreatedDate());
         mentorProfileDTO.setModifiedDate(mentorProfile.getModifiedDate());
@@ -34,6 +33,8 @@ public class MentorProfileConverter {
         mentorProfile.setDescription(mentorProfileDTO.getDescription());
         mentorProfile.setShortDescription(mentorProfileDTO.getShortDescription());
         mentorProfile.setLinkedinUrl(mentorProfileDTO.getLinkedinUrl());
+        mentorProfile.setFacebookUrl(mentorProfileDTO.getFacebookUrl());
+        mentorProfile.setGoogleMeetUrl(mentorProfileDTO.getGoogleMeetUrl());
         mentorProfile.setRequirement(mentorProfileDTO.getRequirement());
         mentorProfile.setCreatedDate(mentorProfileDTO.getCreatedDate());
         mentorProfile.setModifiedDate(mentorProfileDTO.getModifiedDate());

@@ -129,6 +129,43 @@ public class MentorServiceImpl implements IMentorService {
 
             return result;
         } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public MentorsResponse getMentorByMentorProfileId(UUID id) throws BaseException {
+        try {
+            logger.info("Find mentor by id {}", id);
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + id.toString();
+            MentorsResponse mentorDTOByRedis = (MentorsResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
+
+            if (!Objects.isNull(mentorDTOByRedis)) {
+                return mentorDTOByRedis;
+            }
+
+            Optional<MentorProfile> mentorProfileById = mentorProfileRepository.findById(id);
+            boolean isMentorProfileExits = mentorProfileById.isPresent();
+
+            if (!isMentorProfileExits) {
+                logger.warn("Mentor profile with id {} not found", id);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Mentor.MENTOR_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(id)
+                    .stream()
+                    .map(SkillMentorProfileConverter::toDto)
+                    .toList();
+
+            MentorsResponse mentorsResponse = new MentorsResponse();
+            mentorsResponse.setMentorProfile(MentorProfileConverter.toDto(mentorProfileById.get()));
+            mentorsResponse.setSkills(skillDTOs);
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor, mentorsResponse);
+
+            return mentorsResponse;
+
+        } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException; // rethrow the original BaseException
             }

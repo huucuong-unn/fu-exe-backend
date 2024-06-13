@@ -5,6 +5,7 @@ import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
 import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
+import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IMentorService;
@@ -41,7 +42,7 @@ public class MentorController {
 
     @Operation(summary = "Get all mentor with status active", description = "API get all mentor with status active")
     @GetMapping(value = ConstAPI.MentorAPI.GET_MENTOR_STATUS_TRUE)
-    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException{
+    public PagingModel findAllWithStatusActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active mentor with page: {}, limit: {}", page, limit);
         return mentorService.findAllByStatusTrue(page, limit);
     }
@@ -56,6 +57,13 @@ public class MentorController {
             log.error("Error: {}", e.getMessage());
             throw new BaseException(500, e.getMessage(), "Internal Server Error");
         }
+    }
+
+    @Operation(summary = "Get mentor by mentor profile id", description = "API get mentor by mentor profile id")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_MENTOR_BY_MENTOR_PROFILE_ID + "{id}")
+    public MentorsResponse findByMentorProfileId(@PathVariable("id") UUID id) throws BaseException {
+        log.info("Getting mentor with mentor profile id: {}", id);
+        return mentorService.getMentorByMentorProfileId(id);
     }
 
     @Operation(summary = "Create mentor", description = "API create new mentor")
