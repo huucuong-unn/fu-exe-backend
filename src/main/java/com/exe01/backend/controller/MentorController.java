@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -64,6 +65,13 @@ public class MentorController {
     public MentorsResponse findByMentorProfileId(@PathVariable("id") UUID id) throws BaseException {
         log.info("Getting mentor with mentor profile id: {}", id);
         return mentorService.getMentorByMentorProfileId(id);
+    }
+
+    @Operation(summary = "Get mentors by company id", description = "API get mentors by company id")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_MENTORS_BY_COMPANY_ID + "{id}")
+    public List<MentorsResponse> findByCompanyId(@PathVariable("id") UUID id) throws BaseException {
+        log.info("Getting mentors with company id: {}", id);
+        return mentorService.getMentorsByCompanyId(id);
     }
 
     @Operation(summary = "Create mentor", description = "API create new mentor")
