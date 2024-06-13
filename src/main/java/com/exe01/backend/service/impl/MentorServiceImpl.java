@@ -174,6 +174,43 @@ public class MentorServiceImpl implements IMentorService {
     }
 
     @Override
+    public List<MentorsResponse> getMentorsByCompanyId(UUID id) throws BaseException {
+        try {
+            logger.info("Find mentors by company id {}", id);
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "companyId:" + id.toString();
+            List<MentorsResponse> mentorsDTOByRedis = (List<MentorsResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
+
+            if (!Objects.isNull(mentorsDTOByRedis)) {
+                return mentorsDTOByRedis;
+            }
+
+            List<MentorProfile> mentorProfiles = mentorProfileRepository.findByCompanyId(id);
+
+            List<MentorsResponse> mentorsResponses = new ArrayList<>();
+
+            for (MentorProfile mentorProfile : mentorProfiles) {
+                MentorsResponse mentorsResponse = new MentorsResponse();
+                mentorsResponse.setMentorProfile(MentorProfileConverter.toDto(mentorProfile));
+
+                List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
+                        .stream()
+                        .map(SkillMentorProfileConverter::toDto)
+                        .toList();
+
+                mentorsResponse.setSkills(skillDTOs);
+
+                mentorsResponses.add(mentorsResponse);
+            }
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor, mentorsResponses);
+
+            return mentorsResponses;
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
     public PagingModel getAll(Integer page, Integer limit) throws BaseException {
         try {
 

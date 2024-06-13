@@ -8,6 +8,7 @@ import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IMentorService extends IGenericService<MentorDTO>{
@@ -19,6 +20,8 @@ public interface IMentorService extends IGenericService<MentorDTO>{
     PagingModel getMentorsWithAllInformation(Integer page, Integer limit) throws BaseException;
 
     MentorsResponse getMentorByMentorProfileId(UUID id) throws BaseException;
+
+    List<MentorsResponse> getMentorsByCompanyId(UUID id) throws BaseException;
 
     Boolean changeStatus(UUID id) throws BaseException;
 
