@@ -1,6 +1,5 @@
 package com.exe01.backend.dto;
 
-import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import lombok.*;
 
 import java.io.Serializable;
@@ -11,6 +10,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class MentorProfileDTO extends BaseDTO implements Serializable {
+
+    private MentorDTO mentorDTO;
 
     private String linkedinUrl;
 
@@ -24,5 +25,5 @@ public class MentorProfileDTO extends BaseDTO implements Serializable {
 
     private String status;
 
-    private MentorDTO mentorDTO;
+
 }

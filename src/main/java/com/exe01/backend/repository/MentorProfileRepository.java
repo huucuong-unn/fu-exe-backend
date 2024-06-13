@@ -18,10 +18,13 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
 
     List<MentorProfile> findAllByOrderByCreatedDate(Pageable pageable);
 
+    @Query(value = "SELECT * FROM mentor_profile_tbl WHERE status = 'USING' ORDER BY created_date", nativeQuery = true)
+    List<MentorProfile> findAllBy(Pageable pageable);
+
     List<MentorProfile> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
     @Query(value = "SELECT * FROM mentor_profile_tbl WHERE mentor_id = :mentorId AND status = 'ACTIVE'", nativeQuery = true)
-    List<MentorProfile> findAllByMentorId(@Param("mentorId") UUID mentorId);
+    MentorProfile findAllByMentorId(@Param("mentorId") UUID mentorId);
 
     int countByStatus(String status);
 

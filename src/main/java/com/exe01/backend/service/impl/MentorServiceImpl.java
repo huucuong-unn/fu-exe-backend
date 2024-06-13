@@ -3,26 +3,27 @@ package com.exe01.backend.service.impl;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
-import com.exe01.backend.converter.*;
+import com.exe01.backend.converter.AccountConverter;
+import com.exe01.backend.converter.MentorConverter;
+import com.exe01.backend.converter.MentorProfileConverter;
+import com.exe01.backend.converter.SkillMentorProfileConverter;
 import com.exe01.backend.dto.MentorDTO;
-import com.exe01.backend.dto.MentorProfileDTO;
+import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
 import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
+import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Mentee;
 import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
-import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
+import com.exe01.backend.repository.SkillMentorProfileRepository;
 import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.IMentorService;
-import com.exe01.backend.validation.ValidateUtil;
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class MentorServiceImpl implements IMentorService {
 
     @Autowired
     MentorProfileRepository mentorProfileRepository;
+
+    @Autowired
+    SkillMentorProfileRepository skillMentorProfileRepository;
 
     @Autowired
     IAccountService accountService;
@@ -83,6 +87,53 @@ public class MentorServiceImpl implements IMentorService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
 
+    }
+
+    @Override
+    public PagingModel getMentorsWithAllInformation(Integer page, Integer limit) throws BaseException {
+        try {
+
+            logger.info("Get all mentor with all information");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + "information:" + page + ":" + limit;
+
+            List<MentorsResponse> mentorDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor)) {
+                logger.info("Fetching mentors from cache for page {} and limit {}", page, limit);
+                mentorDTOs = (List<MentorsResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
+            } else {
+                logger.info("Fetching mentors from database for page {} and limit {}", page, limit);
+                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllBy(pageable);
+                mentorDTOs = new ArrayList<>();
+                for (MentorProfile mentorProfile : mentorProfiles) {
+                    MentorsResponse mentorsResponse = new MentorsResponse();
+                    mentorsResponse.setMentorProfile(MentorProfileConverter.toDto(mentorProfile));
+                    List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
+                            .stream()
+                            .map(SkillMentorProfileConverter::toDto)
+                            .toList();
+                    mentorsResponse.setSkills(skillDTOs);
+                    mentorDTOs.add(mentorsResponse);
+                }
+
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor, mentorDTOs);
+            }
+
+            result.setListResult(mentorDTOs);
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 
     @Override
@@ -154,9 +205,6 @@ public class MentorServiceImpl implements IMentorService {
 
             return result;
         } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

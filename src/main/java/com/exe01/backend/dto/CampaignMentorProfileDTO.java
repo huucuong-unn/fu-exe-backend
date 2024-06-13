@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CampaignMentorProfileDTO extends BaseDTO{
+public class CampaignMentorProfileDTO extends BaseDTO implements Serializable {
 
     private CampaignDTO campaign;
 

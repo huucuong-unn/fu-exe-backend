@@ -20,14 +20,14 @@ public class SkillConverter {
 
     public static Skill toEntity(SkillDTO skillDTO) {
         Skill skill = new Skill();
-        skill.setId(skill.getId());
-        skill.setName(skill.getName());
+        skill.setId(skillDTO.getId());
+        skill.setName(skillDTO.getName());
         skill.setMajor(MajorConverter.toEntity(skillDTO.getMajor()));
-        skill.setStatus(skill.getStatus());
-        skill.setCreatedDate(skill.getCreatedDate());
-        skill.setModifiedDate(skill.getModifiedDate());
-        skill.setCreatedBy(skill.getCreatedBy());
-        skill.setModifiedBy(skill.getModifiedBy());
+        skill.setStatus(skillDTO.getStatus());
+        skill.setCreatedDate(skillDTO.getCreatedDate());
+        skill.setModifiedDate(skillDTO.getModifiedDate());
+        skill.setCreatedBy(skillDTO.getCreatedBy());
+        skill.setModifiedBy(skillDTO.getModifiedBy());
         return skill;
     }
 }
