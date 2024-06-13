@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ApplicationDTO extends BaseDTO{
+public class ApplicationDTO extends BaseDTO implements Serializable {
 
     private MentorDTO mentor;
     private String fullName;

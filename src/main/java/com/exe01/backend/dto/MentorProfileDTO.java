@@ -12,6 +12,8 @@ import java.io.Serializable;
 @Builder
 public class MentorProfileDTO extends BaseDTO implements Serializable {
 
+    private MentorDTO mentorDTO;
+
     private String linkedinUrl;
 
     private String requirement;
@@ -24,5 +26,5 @@ public class MentorProfileDTO extends BaseDTO implements Serializable {
 
     private String status;
 
-    private MentorDTO mentorDTO;
+
 }

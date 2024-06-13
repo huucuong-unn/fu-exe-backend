@@ -6,6 +6,8 @@ public class ConstHashKeyPrefix {
 
     public static final String HASH_KEY_PREFIX_FOR_MENTOR_PROFILE = "MentorProfile:";
 
+    public static final String HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE = "SkillMentorProfile:";
+
     public static final String HASH_KEY_PREFIX_FOR_ACCOUNT = "Account:";
 
     public static final String HASH_KEY_PREFIX_FOR_MAJOR = "Major:";

@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 public class MentorDTO extends BaseDTO implements Serializable {
 
+    private CompanyDTO company;
+
     private AccountDTO account;
 
     private String status;

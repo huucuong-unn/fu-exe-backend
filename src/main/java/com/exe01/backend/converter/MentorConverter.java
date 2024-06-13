@@ -18,6 +18,7 @@ public class MentorConverter {
         mentorDTO.setId(mentor.getId());
         AccountDTO accountDTO = AccountConverter.toDto(mentor.getAccount());
         mentorDTO.setAccount(accountDTO);
+        mentorDTO.setCompany(CompanyConverter.toDto(mentor.getCompany()));
         mentorDTO.setStatus(mentor.getStatus());
         mentorDTO.setCreatedDate(mentor.getCreatedDate());
         mentorDTO.setModifiedDate(mentor.getModifiedDate());
@@ -32,6 +33,7 @@ public class MentorConverter {
         mentor.setId(mentorDTO.getId());
         Account account = AccountConverter.toEntity(mentorDTO.getAccount());
         mentor.setAccount(account);
+        mentor.setCompany(CompanyConverter.toEntity(mentorDTO.getCompany()));
         mentor.setStatus(mentorDTO.getStatus());
         mentor.setCreatedDate(mentorDTO.getCreatedDate());
         mentor.setModifiedDate(mentorDTO.getModifiedDate());

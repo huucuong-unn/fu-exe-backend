@@ -199,6 +199,7 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             mentorProfileById.setDescription(request.getDescription());
             mentorProfileById.setShortDescription(request.getShortDescription());
             mentorProfileById.setProfilePicture(request.getProfilePicture());
+            mentorProfileById.setStatus(request.getStatus());
 
             mentorProfileRepository.save(mentorProfileById);
 
