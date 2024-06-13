@@ -2,10 +2,13 @@ package com.exe01.backend.controller;
 
 import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.SkillDTO;
+import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.skill.CreateSkillRequest;
 import com.exe01.backend.dto.request.skill.UpdateSkillRequest;
+import com.exe01.backend.dto.request.skillMentorProfile.BaseSkillMentorProfileRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
+import com.exe01.backend.service.ISkillMentorProfileService;
 import com.exe01.backend.service.ISkillService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +26,9 @@ public class SkillController {
 
     @Autowired
     private ISkillService skillService;
+
+    @Autowired
+    private ISkillMentorProfileService skillMentorProfileService;
 
     @Operation(summary = "Get all skill", description = "API get all skill")
     @GetMapping(value = ConstAPI.SkillAPI.GET_SKILL)
@@ -55,6 +61,13 @@ public class SkillController {
     public SkillDTO create(@RequestBody CreateSkillRequest request) throws BaseException {
         log.info("Creating new skill with request: {}", request);
         return skillService.create(request);
+    }
+
+    @Operation(summary = "Create skill", description = "API create new skill mentor profile")
+    @PostMapping(value = ConstAPI.SkillAPI.CREATE_SKILL_MENTOR_PROFILE)
+    public SkillMentorProfileDTO createSkillMentorProfile(@RequestBody BaseSkillMentorProfileRequest request) throws BaseException {
+        log.info("Creating new skill mentor profile with request: {}", request);
+        return skillMentorProfileService.create(request);
     }
 
     @Operation(summary = "Update skill", description = "API update skill")
