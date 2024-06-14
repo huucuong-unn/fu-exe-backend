@@ -26,9 +26,10 @@ public class ConstAPI {
 
     }
 
-    public static class AuthenticationAPI{
+    public static class AuthenticationAPI {
         public static final String LOGIN_WITH_PASSWORD_USERNAME = "api/v1/auth/login";
     }
+
     public static class MajorAPI {
         public static final String GET_MAJOR = "api/v1/major";
         public static final String GET_MAJOR_STATUS_TRUE = "api/v1/major/major-status-true";
@@ -50,8 +51,11 @@ public class ConstAPI {
 
     public static class MentorAPI {
         public static final String GET_MENTOR = "api/v1/mentor";
+        public static final String GET_MENTOR_WITH_ALL_INFORMATION = "api/v1/mentor/mentor-with-all-information";
         public static final String GET_MENTOR_STATUS_TRUE = "api/v1/mentor/mentor-status-true";
         public static final String GET_MENTOR_BY_ID = "api/v1/mentor/";
+        public static final String GET_MENTOR_BY_MENTOR_PROFILE_ID = "api/v1/mentor/find-by-mentor-profile-id/";
+        public static final String GET_MENTORS_BY_COMPANY_ID = "api/v1/mentor/find-by-mentors-company-id/";
         public static final String CREATE_MENTOR = "api/v1/mentor/create";
         public static final String UPDATE_MENTOR = "api/v1/mentor/update/";
         public static final String CHANGE_STATUS_MENTOR = "api/v1/mentor/change-status/";
@@ -111,6 +115,7 @@ public class ConstAPI {
         public static final String GET_SKILL_STATUS_TRUE = "api/v1/skill/skill-status-true";
         public static final String GET_SKILL_BY_ID = "api/v1/skill/";
         public static final String CREATE_SKILL = "api/v1/skill/create";
+        public static final String CREATE_SKILL_MENTOR_PROFILE = "api/v1/skill/create-skill-mentor-profile";
         public static final String UPDATE_SKILL = "api/v1/skill/update/";
         public static final String DELETE_SKILL = "api/v1/skill/delete/";
         public static final String CHANGE_STATUS_SKILL = "api/v1/skill/change-status/";

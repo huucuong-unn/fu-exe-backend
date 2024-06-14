@@ -1,16 +1,21 @@
 package com.exe01.backend.dto;
 
-import com.exe01.backend.entity.Skill;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
-@Data
+import java.io.Serializable;
+
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class SkillMentorProfileDTO {
+@Builder
+public class SkillMentorProfileDTO implements Serializable {
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private MentorProfileDTO mentorProfile;
 
-    private Skill skill;
+    private SkillDTO skill;
 
     private String skillLevel;
 
