@@ -20,6 +20,10 @@ public class ConstAPI {
         public static final String UPDATE_ACCOUNT = "api/v1/account/update/";
         public static final String DELETE_ACCOUNT = "api/v1/account/delete/";
         public static final String CHANGE_STATUS_ACCOUNT = "api/v1/account/change-status/";
+        public static final String UPLOAD_IMAGE_ACCOUNT = "api/v1/account/upload-image/";
+
+        public static final String DOWNLOAD_IMAGE_ACCOUNT = "api/v1/account/download-image/";
+
     }
 
     public static class AuthenticationAPI{
@@ -70,6 +74,8 @@ public class ConstAPI {
         public static final String CREATE_UNIVERSITY = "api/v1/university/create";
         public static final String UPDATE_UNIVERSITY = "api/v1/university/update/";
         public static final String CHANGE_STATUS_UNIVERSITY = "api/v1/university/change-status/";
+
+        public static final String GET_UNIVERSITY_DROP_DOWN_LIST = "api/v1/university/drop-down-list";
 
     }
 

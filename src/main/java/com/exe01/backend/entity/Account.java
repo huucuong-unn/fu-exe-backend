@@ -36,9 +36,6 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Size(max = 200, message = "Avatar must be less than or equal to 200 characters")
     @Column(name = "avatar_url")
     private String avatarUrl;
 

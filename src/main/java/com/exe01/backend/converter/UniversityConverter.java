@@ -1,6 +1,7 @@
 package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.UniversityDTO;
+import com.exe01.backend.dto.response.university.UniversityDropDownListResponse;
 import com.exe01.backend.entity.University;
 
 public class UniversityConverter {
@@ -29,6 +30,14 @@ public class UniversityConverter {
         university.setStatus(universityDTO.getStatus());
 
         return university;
+    }
+
+    public static UniversityDropDownListResponse toDropDownListResponse(University university) {
+        UniversityDropDownListResponse response = new UniversityDropDownListResponse();
+        response.setId(university.getId());
+        response.setName(university.getName());
+        response.setAddress(university.getAddress());
+        return response;
     }
 
 

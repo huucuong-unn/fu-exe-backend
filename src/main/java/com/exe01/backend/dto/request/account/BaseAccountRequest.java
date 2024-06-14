@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class BaseAccountRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    private String avatarUrl;
+    private MultipartFile avatarUrl;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
@@ -36,5 +37,5 @@ public class BaseAccountRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    private UUID roleId;
+    private String roleName;
 }

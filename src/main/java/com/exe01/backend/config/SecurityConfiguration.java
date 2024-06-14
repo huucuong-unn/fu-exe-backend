@@ -29,7 +29,6 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -42,12 +41,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         return http.build();
     }
 
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET,POST,PATCH,PUT,DELETE,OPTIONS,HEAD")
+                .allowedOrigins("http://localhost:3000")  // specify your front-end origin
+                .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD")
                 .allowedHeaders("*")
                 .exposedHeaders("X-Get-Header");
     }
