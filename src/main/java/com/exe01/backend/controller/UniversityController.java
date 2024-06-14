@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.UniversityDTO;
 import com.exe01.backend.dto.request.university.CreateUniversityRequest;
 import com.exe01.backend.dto.request.university.UpdateUniversityRequest;
+import com.exe01.backend.dto.response.university.UniversityDropDownListResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IUniversityService;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +31,12 @@ public class UniversityController {
     public PagingModel getALl(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all universities with page: {}, limit: {}", page, limit);
         return universityService.getAll(page, limit);
+    }
+    @Operation(summary = "Get all university for drop down list ", description = "API get all university for drop down list")
+    @GetMapping(value = ConstAPI.UniversityAPI.GET_UNIVERSITY_DROP_DOWN_LIST)
+    public List<UniversityDropDownListResponse> getALlDropDownList() throws BaseException {
+        log.info("Getting all universities");
+        return universityService.getAll();
     }
 
     @Operation(summary = "Get all university with status active", description = "API get all university with status active")

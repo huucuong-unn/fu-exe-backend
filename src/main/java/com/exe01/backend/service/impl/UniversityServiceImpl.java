@@ -6,6 +6,7 @@ import com.exe01.backend.converter.UniversityConverter;
 import com.exe01.backend.dto.UniversityDTO;
 import com.exe01.backend.dto.request.university.CreateUniversityRequest;
 import com.exe01.backend.dto.request.university.UpdateUniversityRequest;
+import com.exe01.backend.dto.response.university.UniversityDropDownListResponse;
 import com.exe01.backend.entity.University;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
@@ -138,6 +139,32 @@ public class UniversityServiceImpl implements IUniversityService {
             if (baseException instanceof BaseException) {
                 throw baseException;
             }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public List<UniversityDropDownListResponse> getAll() throws BaseException {
+        try {
+            logger.info("Get all universities with paging");
+
+
+            String cacheKey = HASH_KEY_PREFIX_FOR_UNIVERSITY + "dropDownList" + "all";
+
+            List<UniversityDropDownListResponse> universityDropDownListResponses;
+
+            if (redisTemplate.opsForHash().hasKey(HASH_KEY_PREFIX_FOR_UNIVERSITY, cacheKey)) {
+                logger.info("Fetching universities from cache");
+                universityDropDownListResponses = (List<UniversityDropDownListResponse>) redisTemplate.opsForHash().get(HASH_KEY_PREFIX_FOR_UNIVERSITY, cacheKey);
+            } else {
+                logger.info("Fetching universities from database");
+                List<University> universities = universityRepository.findAll();
+                universityDropDownListResponses = universities.stream().map(UniversityConverter::toDropDownListResponse).toList();
+
+                redisTemplate.opsForHash().put(HASH_KEY_PREFIX_FOR_UNIVERSITY, cacheKey, universityDropDownListResponses);
+            }
+            return universityDropDownListResponses;
+        } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

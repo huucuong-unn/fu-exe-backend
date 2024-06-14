@@ -8,11 +8,12 @@ import com.exe01.backend.dto.response.JwtAuthenticationResponse;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.exception.BaseException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
 public interface IAccountService extends IGenericService<AccountDTO> {
-    
+
     JwtAuthenticationResponse create(CreateAccountRequest request) throws BaseException;
 
     Boolean update(UUID id, UpdateAccountRequest request) throws BaseException;
@@ -24,5 +25,9 @@ public interface IAccountService extends IGenericService<AccountDTO> {
     JwtAuthenticationResponse login(LoginRequest loginRequest) throws BaseException;
 
     Account findByUsername(String username) throws BaseException;
+
+    void uploadAccountImage(UUID accountId, MultipartFile file) throws BaseException;
+
+    byte[] downloadAccountImage(UUID username) throws BaseException;
 
 }

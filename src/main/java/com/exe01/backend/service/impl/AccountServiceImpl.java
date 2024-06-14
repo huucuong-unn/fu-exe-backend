@@ -1,5 +1,6 @@
 package com.exe01.backend.service.impl;
 
+import com.exe01.backend.bucket.BucketName;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
@@ -14,6 +15,7 @@ import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Role;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
+import com.exe01.backend.fileStore.FileStore;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.service.IAccountService;
@@ -33,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -59,6 +62,9 @@ public class AccountServiceImpl implements IAccountService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    FileStore fileStore;
+
     @Override
     public JwtAuthenticationResponse create(CreateAccountRequest request) throws BaseException {
         try {
@@ -67,16 +73,16 @@ public class AccountServiceImpl implements IAccountService {
             Account account = new Account();
             account.setUsername(request.getUsername());
             account.setPassword(passwordEncoder.encode(request.getPassword()));
-            account.setAvatarUrl(request.getAvatarUrl());
             account.setStatus(ConstStatus.ACTIVE_STATUS);
             account.setEmail(request.getEmail());
             account.setPoint(0);
 
-            Role role = RoleConverter.toEntity(roleService.findById(request.getRoleId()));
+            Role role = RoleConverter.toEntity(roleService.findByName(request.getRoleName()));
 
             account.setRole(role);
 
             accountRepository.save(account);
+            uploadAccountImage(account.getId(), request.getAvatarUrl());
             var jwtToken = jwtService.generateToken(account);
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
@@ -104,11 +110,11 @@ public class AccountServiceImpl implements IAccountService {
             accountById.setId(id);
             accountById.setUsername(request.getUsername());
             accountById.setPassword(request.getPassword());
-            accountById.setAvatarUrl(request.getAvatarUrl());
+            // accountById.setAvatarUrl(request.getAvatarUrl());
             accountById.setStatus(request.getStatus());
             accountById.setEmail(request.getEmail());
 
-            Role roleById = RoleConverter.toEntity(roleService.findById(request.getRoleId()));
+            Role roleById = RoleConverter.toEntity(roleService.findByName(request.getRoleName()));
 
             accountById.setRole(roleById);
 
@@ -271,8 +277,6 @@ public class AccountServiceImpl implements IAccountService {
                 accountById.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
-            accountRepository.save(accountById);
-
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
                 redisTemplate.delete(keysToDelete);
@@ -292,14 +296,14 @@ public class AccountServiceImpl implements IAccountService {
         // * method authenticate() của AuthenticationManager dùng để tạo ra một object Authentication object
         // ? Với UsernamePasswordAuthenticationToken là class implements từ Authentication, đại diện cho 1 authentication object
         // todo Trả về một object Authentication và đưa vào Security Context để quản lý
-        Account account = findByUsername(loginRequest.getUsername());
+        Account account = findByEmailOrUserName(loginRequest.getEmailOrUsername());
 
         // Check if the account is disabled
         if (account.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), "User is disabled", ErrorCode.ERROR_500.getMessage());
         }
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(account.getUsername(),
                 loginRequest.getPassword()));
 
         // Account account = findByUsername(loginRequest.getUsername());
@@ -353,4 +357,118 @@ public class AccountServiceImpl implements IAccountService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+
+    private Account findByEmailOrUserName(String emailOrUserName) throws BaseException {
+        try {
+            logger.info("Find account by email or username {}", emailOrUserName);
+            String hashKeyForAccount = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT + emailOrUserName;
+            Account accountDTOByRedis = (Account) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount);
+
+            if (!Objects.isNull(accountDTOByRedis)) {
+                return accountDTOByRedis;
+            }
+
+            Optional<Account> accountById;
+            accountById = accountRepository.findByEmail(emailOrUserName);
+            if (!accountById.isPresent()) {
+                accountById = accountRepository.findByUsername(emailOrUserName);
+            }
+
+            boolean isAccountExist = accountById.isPresent();
+
+            if (!isAccountExist) {
+                logger.warn("Account with email or username {} is not found", emailOrUserName);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount, accountById.get());
+
+            return accountById.get();
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+//    @Override
+//    public void uploadAccountImage(UUID accountId, MultipartFile file) throws BaseException{
+//
+//        try {
+//
+//
+//        // 1. Check if image is not empty
+//        if(file.isEmpty()){
+//            throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
+//        }
+//        // 2. If file is an image
+//        if(!Arrays.asList("image/jpeg", "image/png", "image/jpg").contains(file.getContentType())){
+//            throw new IllegalStateException("File must be an image [ " + file.getContentType() + "]");
+//        }
+//        // 3. The user is exist in our database
+//Account account = accountRepository.findById(accountId).get();
+//            // 4. Grab some metadata from file if any
+//            Map<String, String> metadata = new HashMap<>();
+//            metadata.put("Content-Type", file.getContentType());
+//            metadata.put("Content-Length", String.valueOf(file.getSize()));
+//
+//        // 5. Store the image in s3 and update database (userProfileImageLink) with s3 image link
+//           String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), account.getId());
+//         String filename =   String.format( "%s-%s", file.getOriginalFilename(), UUID.randomUUID());
+//            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+//            account.setAvatarUrl(filename);
+//          accountRepository.save(account);
+//        }catch (Exception baseException) {
+//            if (baseException instanceof BaseException) {
+//            }
+//            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+//        }
+//    }
+
+    @Override
+    public void uploadAccountImage(UUID accountId, MultipartFile file) throws BaseException {
+        try {
+            // 1. Check if image is not empty
+            if (file.isEmpty()) {
+                throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
+            }
+            // 2. If file is an image
+            if (!Arrays.asList("image/jpeg", "image/png", "image/jpg").contains(file.getContentType())) {
+                throw new IllegalStateException("File must be an image [ " + file.getContentType() + "]");
+            }
+            // 3. The user exists in our database
+            Account account = accountRepository.findById(accountId).orElseThrow(() -> new IllegalStateException("Account not found"));
+            // 4. Grab some metadata from file if any
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("Content-Type", file.getContentType());
+            metadata.put("Content-Length", String.valueOf(file.getSize()));
+
+            // 5. Store the image in S3 and update database (userProfileImageLink) with S3 image link
+            String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), account.getId());
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            String filename = String.format("%s-%s%s", UUID.randomUUID(), originalFilename.substring(0, originalFilename.lastIndexOf('.')), extension);
+            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+            account.setAvatarUrl(filename);
+            accountRepository.save(account);
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw (BaseException) baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public byte[] downloadAccountImage(UUID accountId) throws BaseException {
+        Account account = AccountConverter.toEntity(findById(accountId));
+        String path = BucketName.PROFILE_IMAGE.getBucketName();
+
+        var file = fileStore.download(path, account.getAvatarUrl());
+        return file;
+    }
+
 }
+

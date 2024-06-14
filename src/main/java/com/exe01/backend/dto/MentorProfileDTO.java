@@ -1,5 +1,6 @@
 package com.exe01.backend.dto;
 
+import com.exe01.backend.dto.response.mentorProfile.FindMentorProfileByIdResponse;
 import lombok.*;
 
 import java.io.Serializable;

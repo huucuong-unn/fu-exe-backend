@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -11,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDTO implements Serializable {
+public class AccountDTO implements Serializable  {
 
     private UUID id;
 
@@ -35,4 +36,16 @@ public class AccountDTO implements Serializable {
 
     private Integer point;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountDTO that = (AccountDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(avatarUrl, that.avatarUrl) && Objects.equals(createdDate, that.createdDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifiedBy, that.modifiedBy) && Objects.equals(modifiedDate, that.modifiedDate) && Objects.equals(status, that.status) && Objects.equals(email, that.email) && Objects.equals(role, that.role) && Objects.equals(point, that.point);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, avatarUrl, createdDate, createBy, modifiedBy, modifiedDate, status, email, role, point);
+    }
 }
