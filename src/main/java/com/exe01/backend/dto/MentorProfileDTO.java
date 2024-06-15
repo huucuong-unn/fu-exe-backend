@@ -8,7 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class MentorProfileDTO extends BaseDTO implements Serializable {
 
@@ -30,5 +29,18 @@ public class MentorProfileDTO extends BaseDTO implements Serializable {
 
     private String status;
 
+    public MentorProfileDTO(MentorDTO mentorDTO, String linkedinUrl, String facebookUrl,
+                            String googleMeetUrl, String requirement, String description,
+                            String shortDescription, String profilePicture, String status) {
+        this.mentorDTO = mentorDTO;
+        this.linkedinUrl = linkedinUrl;
+        this.facebookUrl = facebookUrl;
+        this.googleMeetUrl = googleMeetUrl;
+        this.requirement = requirement;
+        this.description = description;
+        this.shortDescription = shortDescription;
+        this.profilePicture = profilePicture;
+        this.status = status;
+    }
 
 }

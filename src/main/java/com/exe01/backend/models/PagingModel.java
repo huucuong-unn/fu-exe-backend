@@ -15,6 +15,7 @@ public class PagingModel<T> {
 
     private int page;
     private int totalPage;
+    private int totalCount;
     private int limit;
     private List<T> listResult = new ArrayList<>();
 

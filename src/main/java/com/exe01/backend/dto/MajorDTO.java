@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class MajorDTO extends BaseDTO implements Serializable {
 
@@ -19,5 +18,12 @@ public class MajorDTO extends BaseDTO implements Serializable {
     private String description;
 
     private String status;
+
+    public MajorDTO(UUID id, String name, String description, String status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
 
 }

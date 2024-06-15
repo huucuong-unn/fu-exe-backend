@@ -12,12 +12,16 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class MentorsResponse implements Serializable {
 
     private MentorProfileDTO mentorProfile;
 
     private List<SkillMentorProfileDTO> skills;
+
+    public MentorsResponse(MentorProfileDTO mentorProfile, List<SkillMentorProfileDTO> skills) {
+        this.mentorProfile = mentorProfile;
+        this.skills = skills;
+    }
 
 }

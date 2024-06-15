@@ -32,22 +32,13 @@ public class BaseCompanyRequest {
     @NotNull(message = "This field must not be null")
     private String avatarUrl;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    private String img;
+    private String companyWebsiteUrl;
+
+    private String facebookUrl;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    @Size(max = 100, message = "Key skill must be less than or equal to 100 characters")
-    private String keySkill;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    private String topReason;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    private String url;
+    private String description;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")

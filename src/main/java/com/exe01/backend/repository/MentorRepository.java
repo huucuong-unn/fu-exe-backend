@@ -1,8 +1,10 @@
 package com.exe01.backend.repository;
 
+import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.entity.Mentor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 

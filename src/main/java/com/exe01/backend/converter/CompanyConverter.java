@@ -12,10 +12,9 @@ public class CompanyConverter {
         companyDTO.setCountry(company.getCountry());
         companyDTO.setAddress(company.getAddress());
         companyDTO.setAvatarUrl(company.getAvatarUrl());
-        companyDTO.setImg(company.getImg());
-        companyDTO.setKeySkill(company.getKeySkill());
-        companyDTO.setTopReason(company.getTopReason());
-        companyDTO.setUrl(company.getUrl());
+        companyDTO.setCompanyWebsiteUrl(company.getCompany_website_url());
+        companyDTO.setFacebookUrl(company.getFacebook_url());
+        companyDTO.setDescription(company.getDescription());
         companyDTO.setWorkingTime(company.getWorkingTime());
         companyDTO.setCompanySize(company.getCompanySize());
         companyDTO.setCompanyType(company.getCompanyType());
@@ -35,10 +34,9 @@ public class CompanyConverter {
         company.setCountry(companyDTO.getCountry());
         company.setAddress(companyDTO.getAddress());
         company.setAvatarUrl(companyDTO.getAvatarUrl());
-        company.setImg(companyDTO.getImg());
-        company.setKeySkill(companyDTO.getKeySkill());
-        company.setTopReason(companyDTO.getTopReason());
-        company.setUrl(companyDTO.getUrl());
+        company.setCompany_website_url(companyDTO.getCompanyWebsiteUrl());
+        company.setFacebook_url(companyDTO.getFacebookUrl());
+        company.setDescription(companyDTO.getDescription());
         company.setWorkingTime(companyDTO.getWorkingTime());
         company.setCompanySize(companyDTO.getCompanySize());
         company.setCompanyType(companyDTO.getCompanyType());
