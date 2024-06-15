@@ -2,7 +2,6 @@ package com.exe01.backend.dto.response.mentorProfile;
 
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.SkillMentorProfileDTO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

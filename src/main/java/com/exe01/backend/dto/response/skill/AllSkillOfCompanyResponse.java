@@ -1,6 +1,5 @@
 package com.exe01.backend.dto.response.skill;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
