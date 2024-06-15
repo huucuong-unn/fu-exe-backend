@@ -6,6 +6,7 @@ import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.skill.CreateSkillRequest;
 import com.exe01.backend.dto.request.skill.UpdateSkillRequest;
 import com.exe01.backend.dto.request.skillMentorProfile.BaseSkillMentorProfileRequest;
+import com.exe01.backend.dto.response.skill.AllSkillOfCompanyResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.ISkillMentorProfileService;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -54,6 +56,13 @@ public class SkillController {
             log.error("Error: {}", e.getMessage());
             throw new BaseException(500, e.getMessage(), "Internal Server Error");
         }
+    }
+
+    @Operation(summary = "Get all skill by company id", description = "API get all skill by company id")
+    @GetMapping(value = ConstAPI.SkillAPI.GET_ALL_SKILL_BY_COMPANY_ID + "{id}")
+    public List<AllSkillOfCompanyResponse> findALLByCompanyId(@PathVariable("id") UUID id) throws BaseException {
+            log.info("Getting all skill with company id: {}", id);
+            return skillService.getAllSkillOfCompany(id);
     }
 
     @Operation(summary = "Create skill", description = "API create new skill")

@@ -37,6 +37,13 @@ public class CompanyController {
         return companyService.findAllByStatusTrue(page, limit);
     }
 
+    @Operation(summary = "Get all company with search and sort", description = "API get all company with search and sort")
+    @GetMapping(value = ConstAPI.CompanyAPI.GET_COMPANY_BY_SEARCH_SORT)
+    public PagingModel searchSortCompany(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "address", required = false) String address, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all active company with page: {}, limit: {}", page, limit);
+        return companyService.searchSortCompany(name, address, page, limit);
+    }
+
     @Operation(summary = "Get account by id", description = "API get account by id")
     @GetMapping(value = ConstAPI.CompanyAPI.GET_COMPANY_BY_ID + "{id}")
     public CompanyDTO findById(@PathVariable("id") UUID id) throws BaseException {

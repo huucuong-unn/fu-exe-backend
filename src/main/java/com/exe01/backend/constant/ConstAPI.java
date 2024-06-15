@@ -114,6 +114,7 @@ public class ConstAPI {
         public static final String GET_SKILL = "api/v1/skill";
         public static final String GET_SKILL_STATUS_TRUE = "api/v1/skill/skill-status-true";
         public static final String GET_SKILL_BY_ID = "api/v1/skill/";
+        public static final String GET_ALL_SKILL_BY_COMPANY_ID = "api/v1/skill/skills-by-company-id/";
         public static final String CREATE_SKILL = "api/v1/skill/create";
         public static final String CREATE_SKILL_MENTOR_PROFILE = "api/v1/skill/create-skill-mentor-profile";
         public static final String UPDATE_SKILL = "api/v1/skill/update/";
@@ -124,6 +125,7 @@ public class ConstAPI {
     public static class CompanyAPI {
         public static final String GET_COMPANY = "api/v1/company";
         public static final String GET_COMPANY_STATUS_TRUE = "api/v1/company/company-status-true";
+        public static final String GET_COMPANY_BY_SEARCH_SORT = "api/v1/company/search-sort";
         public static final String GET_COMPANY_BY_ID = "api/v1/company/";
         public static final String CREATE_COMPANY = "api/v1/company/create";
         public static final String UPDATE_COMPANY = "api/v1/company/update/";

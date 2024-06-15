@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class AccountDTO implements Serializable  {
@@ -35,6 +34,22 @@ public class AccountDTO implements Serializable  {
     private RoleDTO role;
 
     private Integer point;
+
+    public AccountDTO(UUID id, String username, String avatarUrl, Date createdDate,
+                      String createBy, String modifiedBy, Date modifiedDate,
+                      String status, String email, RoleDTO role, Integer point) {
+        this.id = id;
+        this.username = username;
+        this.avatarUrl = avatarUrl;
+        this.createdDate = createdDate;
+        this.createBy = createBy;
+        this.modifiedBy = modifiedBy;
+        this.modifiedDate = modifiedDate;
+        this.status = status;
+        this.email = email;
+        this.role = role;
+        this.point = point;
+    }
 
     @Override
     public boolean equals(Object o) {
