@@ -125,6 +125,7 @@ public class MentorServiceImpl implements IMentorService {
 
             result.setListResult(mentorDTOs);
             result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setTotalCount(totalItem());
             result.setLimit(limit);
 
             return result;

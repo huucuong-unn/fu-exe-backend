@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class SkillMentorProfileDTO implements Serializable {
@@ -18,5 +17,11 @@ public class SkillMentorProfileDTO implements Serializable {
     private SkillDTO skill;
 
     private String skillLevel;
+
+    public SkillMentorProfileDTO(MentorProfileDTO mentorProfile, SkillDTO skill, String skillLevel) {
+        this.mentorProfile = mentorProfile;
+        this.skill = skill;
+        this.skillLevel = skillLevel;
+    }
 
 }
