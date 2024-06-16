@@ -16,6 +16,12 @@ public class BaseCampaignRequest {
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     private String name;
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    private String img;
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    private String description;
     @NotNull(message = "This field must not be null")
     private Date startDate;
     @NotNull(message = "This field must not be null")

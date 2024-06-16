@@ -90,6 +90,7 @@ public class CampaignServiceImpl implements ICampaignService {
             result.setListResult(campaignDTOs);
 
             result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setTotalCount(totalItem());
             result.setLimit(limit);
 
             return result;
