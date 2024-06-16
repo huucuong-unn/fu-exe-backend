@@ -9,6 +9,8 @@ public class CampaignConverter {
         CampaignDTO campaignDTO = new CampaignDTO();
         campaignDTO.setId(campaign.getId());
         campaignDTO.setName(campaign.getName());
+        campaignDTO.setImg(campaign.getImg());
+        campaignDTO.setDescription(campaign.getDescription());
         campaignDTO.setStartDate(campaign.getStartDate());
         campaignDTO.setEndDate(campaign.getEndDate());
         campaignDTO.setCompanyApplyStartDate(campaign.getCompanyApplyStartDate());
@@ -27,7 +29,9 @@ public class CampaignConverter {
 
     public static Campaign toEntity(CampaignDTO campaignDTO) {
         Campaign campaign = new Campaign();
-        campaignDTO.setId(campaign.getId());
+        campaign.setId(campaign.getId());
+        campaign.setImg(campaignDTO.getImg());
+        campaign.setDescription(campaignDTO.getDescription());
         campaign.setName(campaignDTO.getName());
         campaign.setStartDate(campaignDTO.getStartDate());
         campaign.setEndDate(campaignDTO.getEndDate());
@@ -41,7 +45,7 @@ public class CampaignConverter {
         campaign.setModifiedDate(campaignDTO.getModifiedDate());
         campaign.setCreatedBy(campaignDTO.getCreatedBy());
         campaign.setModifiedBy(campaignDTO.getModifiedBy());
-        campaign.setStatus(campaign.getStatus());
+        campaign.setStatus(campaignDTO.getStatus());
         return campaign;
     }
 }
