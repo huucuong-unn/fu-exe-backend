@@ -70,6 +70,15 @@ public class AccountServiceImpl implements IAccountService {
         try {
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
             logger.info("Create account");
+            // check dupplicate usernam
+            if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.USERNAME_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+            // check dupplicate email
+            if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.EMAIL_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+
             Account account = new Account();
             account.setUsername(request.getUsername());
             account.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -468,6 +477,30 @@ public class AccountServiceImpl implements IAccountService {
 
         var file = fileStore.download(path, account.getAvatarUrl());
         return file;
+    }
+
+    @Override
+    public Boolean updatePoint(UUID id, Integer point) throws BaseException {
+        try {
+            logger.info("Update point for account");
+            Account accountById = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+            accountById.setPoint(accountById.getPoint() + point);
+
+            accountRepository.save(accountById);
+
+            Set<String> keysToDelete = redisTemplate.keys("Account:*");
+            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 
 }

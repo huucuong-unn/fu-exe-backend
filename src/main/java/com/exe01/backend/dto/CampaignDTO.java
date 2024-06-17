@@ -13,6 +13,10 @@ public class CampaignDTO extends BaseDTO implements Serializable {
 
     private String name;
 
+    private String img;
+
+    private String description;
+
     private Date startDate;
 
     private Date endDate;

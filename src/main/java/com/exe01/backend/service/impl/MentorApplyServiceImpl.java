@@ -20,6 +20,7 @@ import com.exe01.backend.validation.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
     Logger logger = LoggerFactory.getLogger(MentorApplyServiceImpl.class);
 
     @Autowired
+    @Lazy
     IApplicationService applicationService;
 
     @Autowired

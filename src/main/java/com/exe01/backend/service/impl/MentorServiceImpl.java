@@ -3,10 +3,7 @@ package com.exe01.backend.service.impl;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
-import com.exe01.backend.converter.AccountConverter;
-import com.exe01.backend.converter.MentorConverter;
-import com.exe01.backend.converter.MentorProfileConverter;
-import com.exe01.backend.converter.SkillMentorProfileConverter;
+import com.exe01.backend.converter.*;
 import com.exe01.backend.dto.MentorDTO;
 import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
@@ -14,6 +11,7 @@ import com.exe01.backend.dto.request.mentor.UpdateMentorRequest;
 import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
 import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.entity.Account;
+import com.exe01.backend.entity.Company;
 import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.enums.ErrorCode;
@@ -23,6 +21,7 @@ import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.repository.SkillMentorProfileRepository;
 import com.exe01.backend.service.IAccountService;
+import com.exe01.backend.service.ICompanyService;
 import com.exe01.backend.service.IMentorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +49,9 @@ public class MentorServiceImpl implements IMentorService {
 
     @Autowired
     IAccountService accountService;
+
+    @Autowired
+    ICompanyService companyService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -292,8 +294,10 @@ public class MentorServiceImpl implements IMentorService {
             logger.info("Create mentor");
             logger.info("Find account by id {}", request.getAccountId());
             Account account = AccountConverter.toEntity(accountService.findById(request.getAccountId()));
+            Company company = CompanyConverter.toEntity(companyService.findById(request.getCompanyId()));
             Mentor mentor = new Mentor();
             mentor.setAccount(account);
+            mentor.setCompany(company);
             mentor.setStatus(ConstStatus.ACTIVE_STATUS);
 
             Mentor saveMentor = mentorRepository.save(mentor);

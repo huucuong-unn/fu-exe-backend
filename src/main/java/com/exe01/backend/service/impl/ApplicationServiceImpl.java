@@ -7,16 +7,18 @@ import com.exe01.backend.converter.ApplicationConverter;
 import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.StudentConverter;
 import com.exe01.backend.dto.ApplicationDTO;
+import com.exe01.backend.dto.MenteeDTO;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
+import com.exe01.backend.dto.request.mentee.MenteeRequest;
+import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
 import com.exe01.backend.entity.Application;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.ApplicationRepository;
-import com.exe01.backend.service.IApplicationService;
-import com.exe01.backend.service.IMentorService;
-import com.exe01.backend.service.IStudentService;
+import com.exe01.backend.service.*;
 import com.exe01.backend.validation.ValidateUtil;
+import org.springframework.context.annotation.Lazy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,13 @@ public class ApplicationServiceImpl implements IApplicationService {
 
     @Autowired
     IMentorService mentorService;
+
+    @Autowired
+    IMenteeService menteeService;
+
+    @Autowired
+    @Lazy
+    IMentorApplyService mentorApplyService;
 
     @Autowired
     IStudentService studentService;
@@ -218,6 +227,38 @@ public class ApplicationServiceImpl implements IApplicationService {
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+    }
+
+    @Override
+    public void approveApplication(UUID applicationId) throws BaseException {
+
+        try {
+            Application application = ApplicationConverter.toEntity(findById(applicationId));
+            application.setStatus(ConstStatus.ACTIVE_STATUS);
+
+            //create mentee
+            MenteeRequest menteeRequest = new MenteeRequest();
+            menteeRequest.setStudentId(application.getStudent().getId());
+            MenteeDTO menteeDTO = menteeService.create(menteeRequest);
+
+            //create mentor apply
+            BaseMentorApplyRequest mentorApplyRequest = new BaseMentorApplyRequest();
+            mentorApplyRequest.setApplicationId(applicationId);
+            mentorApplyRequest.setMenteeId(menteeDTO.getId());
+
+            mentorApplyService.create(mentorApplyRequest);
+
+
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+
+
+        }
+
     }
 
     @Override

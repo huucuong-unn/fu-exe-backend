@@ -71,4 +71,12 @@ public class ApplicationController {
         log.info("Getting applications with mentee id: {}, page: {}, limit: {}", menteeId, page, limit);
         return applicationService.findByMenteeId(menteeId, page, limit);
     }
+
+    @Operation(summary = "Approve Application", description = "API approve application")
+    @PostMapping(value = ConstAPI.ApplicationAPI.APPROVE_COMPANY + "{applicationId}")
+    public void approveApplication(@PathVariable("applicationId") UUID applicationId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Approve application with application id: {}", applicationId);
+         applicationService.approveApplication(applicationId);
+    }
+
 }
