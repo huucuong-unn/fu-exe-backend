@@ -43,10 +43,6 @@ public class CompanyServiceImpl implements ICompanyService {
             company.setCountry(request.getCountry());
             company.setAddress(request.getAddress());
             company.setAvatarUrl(request.getAvatarUrl());
-            company.setImg(request.getImg());
-            company.setKeySkill(request.getKeySkill());
-            company.setTopReason(request.getTopReason());
-            company.setUrl(request.getUrl());
             company.setWorkingTime(request.getWorkingTime());
             company.setCompanySize(request.getCompanySize());
             company.setCompanyType(request.getCompanyType());
@@ -78,10 +74,6 @@ public class CompanyServiceImpl implements ICompanyService {
             company.setCountry(request.getCountry());
             company.setAddress(request.getAddress());
             company.setAvatarUrl(request.getAvatarUrl());
-            company.setImg(request.getImg());
-            company.setKeySkill(request.getKeySkill());
-            company.setTopReason(request.getTopReason());
-            company.setUrl(request.getUrl());
             company.setWorkingTime(request.getWorkingTime());
             company.setCompanySize(request.getCompanySize());
             company.setCompanyType(request.getCompanyType());

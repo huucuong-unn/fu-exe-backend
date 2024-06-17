@@ -12,10 +12,16 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BaseTransactionRequest {
 
-    private UUID accountId;
+    private Double amount;
 
-    private BigDecimal amount;
+    private String status;
 
     private Integer points;
+
+    private UUID accountId;
+    public String vnp_OrderInfo = "Point";
+    public String vnp_OrderType = "200000";
+    public String vnp_TxnRef;
+
 
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,12 +15,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransactionDTO extends BaseDTO implements Serializable {
 
-    private BigDecimal amount;
+    private Double amount;
 
     private String status;
 
     private Integer points;
 
-    private AccountDTO account;
+    private UUID accountId;
 
 }

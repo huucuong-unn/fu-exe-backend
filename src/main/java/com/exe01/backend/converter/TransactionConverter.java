@@ -1,6 +1,7 @@
 package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.TransactionDTO;
+import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Transaction;
 import com.exe01.backend.exception.BaseException;
 
@@ -12,7 +13,7 @@ public class TransactionConverter {
         transactionDTO.setAmount(transaction.getAmount());
         transactionDTO.setStatus(transaction.getStatus());
         transactionDTO.setPoints(transaction.getPoints());
-        transactionDTO.setAccount(AccountConverter.toDto(transaction.getAccount()));
+        transactionDTO.setAccountId(transaction.getAccount().getId());
         transactionDTO.setCreatedDate(transaction.getCreatedDate());
         transactionDTO.setModifiedDate(transaction.getModifiedDate());
         transactionDTO.setCreatedBy(transaction.getCreatedBy());
@@ -27,7 +28,9 @@ public class TransactionConverter {
         transaction.setAmount(transaction.getAmount());
         transaction.setStatus(transaction.getStatus());
         transaction.setPoints(transaction.getPoints());
-        transaction.setAccount(AccountConverter.toEntity(transactionDTO.getAccount()));
+        Account account = new Account();
+        account.setId(transactionDTO.getAccountId());
+        transaction.setAccount( account);
         transaction.setCreatedDate(transaction.getCreatedDate());
         transaction.setModifiedDate(transaction.getModifiedDate());
         transaction.setCreatedBy(transaction.getCreatedBy());

@@ -183,4 +183,38 @@ public class TransactionService implements ITransactionService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public Boolean changeStatus(UUID id) throws BaseException {
+        try {
+            logger.info("Change status transaction with id {}", id);
+            Optional<Transaction> transactionById = transactionRepository.findById(id);
+            boolean isTransactionExist = transactionById.isPresent();
+
+            if (!isTransactionExist) {
+                logger.warn("Transaction with id {} not found", id);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Transaction.TRANSACTION_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            Transaction transaction = transactionById.get();
+            transaction.setStatus(ConstStatus.TransactionStatus.FAILED_STATUS);
+
+            transactionRepository.save(transaction);
+
+            Set<String> keysToDelete = redisTemplate.keys("Transaction:*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
+
+     }
 }

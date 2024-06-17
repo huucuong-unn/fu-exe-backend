@@ -70,6 +70,15 @@ public class AccountServiceImpl implements IAccountService {
         try {
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
             logger.info("Create account");
+            // check dupplicate usernam
+            if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.USERNAME_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+            // check dupplicate email
+            if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.EMAIL_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+
             Account account = new Account();
             account.setUsername(request.getUsername());
             account.setPassword(passwordEncoder.encode(request.getPassword()));

@@ -138,6 +138,8 @@ public class ConstAPI {
         public static final String CHANGE_STATUS_APPLICATION = "api/v1/application/change-status/";
         public static final String GET_APPLICATION_BY_MENTOR_ID = "api/v1/application/mentor/";
         public static final String GET_APPLICATION_BY_MENTEE_ID = "api/v1/application/mentee/";
+        public static final String APPROVE_COMPANY = "api/v1/company/approve/";
+
     }
 
     public static class MentorApplyAPI {

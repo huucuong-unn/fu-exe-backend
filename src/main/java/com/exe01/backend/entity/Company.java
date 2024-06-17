@@ -61,26 +61,6 @@ public class Company extends BaseEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "key_skill")
-    private String keySkill;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "img")
-    private String img;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "top_reason")
-    private String topReason;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "url")
-    private String url;
-
     @OneToMany(mappedBy = "company")
     private List<Mentor> mentors = new ArrayList<>();
 

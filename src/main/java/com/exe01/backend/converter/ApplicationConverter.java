@@ -12,6 +12,7 @@ public class ApplicationConverter {
         }
 
         ApplicationDTO applicationDto = new ApplicationDTO();
+        applicationDto.setId(application.getId());
         applicationDto.setMentor(MentorConverter.toDto(application.getMentor()));
         applicationDto.setFullName(application.getFullName());
         applicationDto.setUserAddress(application.getUserAddress());
@@ -38,7 +39,7 @@ public class ApplicationConverter {
         }
 
         Application application = new Application();
-
+        application.setId(applicationDto.getId());
         application.setMentor(MentorConverter.toEntity(applicationDto.getMentor()));
         application.setFullName(applicationDto.getFullName());
         application.setUserAddress(applicationDto.getUserAddress());

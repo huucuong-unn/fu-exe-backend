@@ -20,12 +20,10 @@ public class Transaction extends BaseEntity{
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
-    @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     @Column(name = "amount")
-    private BigDecimal amount;
+    private Double amount;
 
-    @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     @Column(name = "points")
     private Integer points;
