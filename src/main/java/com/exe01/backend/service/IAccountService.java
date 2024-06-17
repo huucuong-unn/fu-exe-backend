@@ -30,4 +30,6 @@ public interface IAccountService extends IGenericService<AccountDTO> {
 
     byte[] downloadAccountImage(UUID username) throws BaseException;
 
+    Boolean updatePoint(UUID id, Integer point) throws BaseException;
+
 }

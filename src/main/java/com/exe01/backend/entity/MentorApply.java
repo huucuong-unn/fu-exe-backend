@@ -18,8 +18,6 @@ import lombok.Setter;
 @Table(name = "mentor_apply_tbl")
 public class MentorApply extends BaseEntity {
 
-    @NotNull(message = "This field must not be null")
-    @NotBlank(message = "This field must not be blank")
     @Column(name = "feedback")
     private String feedback;
 

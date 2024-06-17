@@ -19,5 +19,7 @@ public interface IApplicationService extends IGenericService<ApplicationDTO> {
 
     PagingModel findByMenteeId(UUID menteeId, int page, int limit) throws BaseException;
 
+    void approveApplication(UUID applicationId) throws BaseException;
+
 
 }

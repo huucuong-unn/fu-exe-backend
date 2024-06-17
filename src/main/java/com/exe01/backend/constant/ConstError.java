@@ -12,6 +12,8 @@ public class ConstError {
 
     public static class Account {
         public static final String ACCOUNT_NOT_FOUND = "Account not found";
+        public static final String USERNAME_EXISTED = "Username existed";
+        public static final String EMAIL_EXISTED = "Email existed";
     }
 
     public static class Major {
