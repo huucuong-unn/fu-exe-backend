@@ -479,5 +479,29 @@ public class AccountServiceImpl implements IAccountService {
         return file;
     }
 
+    @Override
+    public Boolean updatePoint(UUID id, Integer point) throws BaseException {
+        try {
+            logger.info("Update point for account");
+            Account accountById = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+            accountById.setPoint(accountById.getPoint() + point);
+
+            accountRepository.save(accountById);
+
+            Set<String> keysToDelete = redisTemplate.keys("Account:*");
+            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+            return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
 }
 
