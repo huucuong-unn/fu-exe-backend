@@ -43,6 +43,9 @@ public class CompanyServiceImpl implements ICompanyService {
             company.setCountry(request.getCountry());
             company.setAddress(request.getAddress());
             company.setAvatarUrl(request.getAvatarUrl());
+            company.setCompany_website_url(request.getCompanyWebsiteUrl());
+            company.setFacebook_url(request.getFacebookUrl());
+            company.setDescription(request.getDescription());
             company.setWorkingTime(request.getWorkingTime());
             company.setCompanySize(request.getCompanySize());
             company.setCompanyType(request.getCompanyType());
@@ -74,6 +77,9 @@ public class CompanyServiceImpl implements ICompanyService {
             company.setCountry(request.getCountry());
             company.setAddress(request.getAddress());
             company.setAvatarUrl(request.getAvatarUrl());
+            company.setCompany_website_url(request.getCompanyWebsiteUrl());
+            company.setFacebook_url(request.getFacebookUrl());
+            company.setDescription(request.getDescription());
             company.setWorkingTime(request.getWorkingTime());
             company.setCompanySize(request.getCompanySize());
             company.setCompanyType(request.getCompanyType());
@@ -126,6 +132,41 @@ public class CompanyServiceImpl implements ICompanyService {
             if (baseException instanceof BaseException) {
                 throw baseException;
             }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public PagingModel searchSortCompany(String name, String address, Integer page, Integer limit) throws BaseException {
+        try {
+            logger.info("Get all comapany with paging");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForCompany = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY + "all:" + "searchBy:" + name + ":" + address + ":" + page + ":" + limit;
+
+            List<CompanyDTO> companyDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY, hashKeyForCompany)) {
+                logger.info("Fetching company from cache for page {} and limit {}", page, limit);
+                companyDTOs = (List<CompanyDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY, hashKeyForCompany);
+            } else {
+                logger.info("Fetching company from database for page {} and limit {}", page, limit);
+                List<Company> companies = companyRepository.searchAndSortCompanies(name, address, pageable);
+                companyDTOs = companies.stream().map(CompanyConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY, hashKeyForCompany, companyDTOs);
+            }
+
+            result.setListResult(companyDTOs);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItemWithStatusActive()) / limit)));
+            result.setTotalCount(totalItemWithStatusActive());
+            result.setLimit(limit);
+
+            return result;
+
+        } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

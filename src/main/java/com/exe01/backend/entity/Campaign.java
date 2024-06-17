@@ -61,6 +61,12 @@ public class Campaign extends BaseEntity {
     @Column(name = "training_end_date")
     private Date trainingEndDate;
 
+    @Column(name = "img")
+    private String img;
+
+    @Column(name = "description")
+    private String description;
+
     @OneToMany(mappedBy = "campaign")
     private List<CampaignMentorProfile> campaignMentorProfiles = new ArrayList<>();
 

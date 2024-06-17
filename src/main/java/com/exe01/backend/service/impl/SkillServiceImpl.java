@@ -3,18 +3,22 @@ package com.exe01.backend.service.impl;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
+import com.exe01.backend.converter.CompanyConverter;
 import com.exe01.backend.converter.GenericConverter;
 import com.exe01.backend.converter.MajorConverter;
 import com.exe01.backend.converter.SkillConverter;
 import com.exe01.backend.dto.SkillDTO;
 import com.exe01.backend.dto.request.skill.CreateSkillRequest;
 import com.exe01.backend.dto.request.skill.UpdateSkillRequest;
+import com.exe01.backend.dto.response.skill.AllSkillOfCompanyResponse;
+import com.exe01.backend.entity.Company;
 import com.exe01.backend.entity.Major;
 import com.exe01.backend.entity.Skill;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.SkillRepository;
+import com.exe01.backend.service.ICompanyService;
 import com.exe01.backend.service.IMajorService;
 import com.exe01.backend.service.ISkillService;
 import com.exe01.backend.validation.ValidateUtil;
@@ -41,6 +45,9 @@ public class SkillServiceImpl implements ISkillService {
 
     @Autowired
     private IMajorService majorService;
+
+    @Autowired
+    private ICompanyService companyService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -236,6 +243,32 @@ public class SkillServiceImpl implements ISkillService {
             }
 
             return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public List<AllSkillOfCompanyResponse> getAllSkillOfCompany(UUID id) throws BaseException {
+        try {
+            logger.info("Find all skill by company id {}", id);
+            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL + "companyId:" + id.toString();
+            List<AllSkillOfCompanyResponse> skillDTOByRedis = (List<AllSkillOfCompanyResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL, hashKeyForSkill);
+
+            if (!Objects.isNull(skillDTOByRedis)) {
+                return skillDTOByRedis;
+            }
+
+            Company company = CompanyConverter.toEntity(companyService.findById(id));
+
+            List<AllSkillOfCompanyResponse> allSkillOfCompanyResponse = skillRepository.findDistinctSkillsByCompanyId(id);
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL, hashKeyForSkill, allSkillOfCompanyResponse);
+
+            return allSkillOfCompanyResponse;
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException;

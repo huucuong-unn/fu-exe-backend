@@ -7,7 +7,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class SkillDTO extends BaseDTO implements Serializable {
 
@@ -16,5 +15,12 @@ public class SkillDTO extends BaseDTO implements Serializable {
     private MajorDTO major;
 
     private String status;
+
+
+    public SkillDTO(String name, MajorDTO major, String status) {
+        this.name = name;
+        this.major = major;
+        this.status = status;
+    }
 
 }
