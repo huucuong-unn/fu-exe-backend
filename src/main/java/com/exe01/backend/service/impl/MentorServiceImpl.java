@@ -126,8 +126,8 @@ public class MentorServiceImpl implements IMentorService {
             }
 
             result.setListResult(mentorDTOs);
-            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
-            result.setTotalCount(totalItem());
+            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusUsing()) / limit)));
+            result.setTotalCount(totalItemByStatusUsing());
             result.setLimit(limit);
 
             return result;
@@ -136,6 +136,9 @@ public class MentorServiceImpl implements IMentorService {
         }
     }
 
+    private int totalItemByStatusUsing() {
+        return (int) mentorProfileRepository.countByStatus("USING");
+    }
     @Override
     public MentorsResponse getMentorByMentorProfileId(UUID id) throws BaseException {
         try {

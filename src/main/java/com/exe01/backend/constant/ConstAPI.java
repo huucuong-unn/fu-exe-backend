@@ -106,6 +106,7 @@ public class ConstAPI {
         public static final String GET_MENTEE_BY_ID = "api/v1/mentee/";
         public static final String CREATE_MENTEE = "api/v1/mentee/create";
         public static final String CHANGE_STATUS_MENTEE = "api/v1/mentee/change-status/";
+        public static final String GET_MENTEE_BY_MENTORID_CAMPAIGNID = "api/v1/mentee/mentee-status-true";
 
     }
 
@@ -140,7 +141,9 @@ public class ConstAPI {
         public static final String CHANGE_STATUS_APPLICATION = "api/v1/application/change-status/";
         public static final String GET_APPLICATION_BY_MENTOR_ID = "api/v1/application/mentor/";
         public static final String GET_APPLICATION_BY_MENTEE_ID = "api/v1/application/mentee/";
-        public static final String APPROVE_COMPANY = "api/v1/company/approve/";
+        public static final String APPROVE_APPLICATION = "api/v1/application/approve/";
+        public static final String GET_APPLICATION_BY_MENTOR_ID_AND_STATUS_AND_SORT_BY_CREATED_DATE = "api/v1/application/mentor-current-campaign/";
+        public static final String GET_APPLICATION_BY_STUDENT_ID_AND_STATUS_AND_SORT = "api/v1/application/student/";
 
     }
 
