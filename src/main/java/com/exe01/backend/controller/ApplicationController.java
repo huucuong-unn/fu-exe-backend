@@ -73,10 +73,24 @@ public class ApplicationController {
     }
 
     @Operation(summary = "Approve Application", description = "API approve application")
-    @PostMapping(value = ConstAPI.ApplicationAPI.APPROVE_COMPANY + "{applicationId}")
+    @PostMapping(value = ConstAPI.ApplicationAPI.APPROVE_APPLICATION + "{applicationId}")
     public void approveApplication(@PathVariable("applicationId") UUID applicationId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Approve application with application id: {}", applicationId);
-         applicationService.approveApplication(applicationId);
+        applicationService.approveApplication(applicationId);
+    }
+
+    @Operation(summary = "Get applications by mentor id and status and sort by created date", description = "API get applications by mentor id and status and sort by created date")
+    @GetMapping(value = ConstAPI.ApplicationAPI.GET_APPLICATION_BY_MENTOR_ID_AND_STATUS_AND_SORT_BY_CREATED_DATE + "{mentorId}")
+    public PagingModel findByMentorIdAndStatusAndSortByCreatedDate(@PathVariable("mentorId") UUID mentorId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "campaignStatus", required = false) String campaignStatus, @RequestParam(value = "createdDate", required = false) String createdDate, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting applications with mentor id: {}, status: {}, campaignStatus: {}, createdDate: {}, page: {}, limit: {}", mentorId, status, createdDate, page, limit);
+        return applicationService.findByMentorIdAndStatusAndSortByCreatedDate(mentorId, status, createdDate, page, limit);
+    }
+
+    @Operation(summary = "Get applications by student id and status and sort", description = "API get applications by student id and status and sort")
+    @GetMapping(value = ConstAPI.ApplicationAPI.GET_APPLICATION_BY_STUDENT_ID_AND_STATUS_AND_SORT+"{studentId}")
+    public PagingModel findByStudentIdAndStatusAndSort(@PathVariable(value = "studentId", required = false) UUID studentId, @RequestParam(value = "companyId", required = false) UUID companyId, @RequestParam(value = "mentorName", required = false) String mentorName, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "createdDate", required = false) String createdDate, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        return applicationService.findByStudentIdAndStatusAndSort(studentId, companyId, mentorName, status, createdDate, page, limit);
+
     }
 
 }

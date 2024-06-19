@@ -70,4 +70,7 @@ public class Campaign extends BaseEntity {
     @OneToMany(mappedBy = "campaign")
     private List<CampaignMentorProfile> campaignMentorProfiles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "campaign")
+    private List<MentorApply> mentorApplies = new ArrayList<>();
+
 }

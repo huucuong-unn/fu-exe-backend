@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.ApplicationConverter;
+import com.exe01.backend.converter.CampaignMentorProfileConverter;
 import com.exe01.backend.converter.MentorApplyConverter;
 import com.exe01.backend.converter.MenteeConverter;
 import com.exe01.backend.dto.MentorApplyDTO;
@@ -14,6 +15,7 @@ import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.MentorApplyRepository;
 import com.exe01.backend.service.IApplicationService;
+import com.exe01.backend.service.ICampaignMentorProfileService;
 import com.exe01.backend.service.IMenteeService;
 import com.exe01.backend.service.IMentorApplyService;
 import com.exe01.backend.validation.ValidateUtil;
@@ -44,6 +46,9 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    ICampaignMentorProfileService campaignMentorProfileService;
+
     @Override
     public MentorApplyDTO findById(UUID id) throws BaseException {
         return null;
@@ -58,6 +63,8 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
             mentorApply.setFeedback(request.getFeedback());
             mentorApply.setApplication(ApplicationConverter.toEntity(applicationService.findById(request.getApplicationId())));
             mentorApply.setMentee(MenteeConverter.toEntity(menteeService.findById(request.getMenteeId())));
+            mentorApply.setStatus(ConstStatus.ACTIVE_STATUS);
+            mentorApply.setCampaign(CampaignMentorProfileConverter.toEntity(campaignMentorProfileService.findByMentorIdAndStatus(mentorApply.getApplication().getMentor().getId(), ConstStatus.CampaignStatus.MENTEE_APPLY)).getCampaign());
 
             mentorApplyRepository.save(mentorApply);
 
