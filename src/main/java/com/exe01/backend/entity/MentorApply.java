@@ -30,4 +30,8 @@ public class MentorApply extends BaseEntity {
     @JoinColumn(name = "mentee_id", referencedColumnName = "id")
     private Mentee mentee;
 
+    @ManyToOne
+    @JoinColumn(name = "campaign_id", referencedColumnName = "id")
+    private Campaign campaign;
+
 }

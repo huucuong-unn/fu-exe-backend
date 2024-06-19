@@ -23,7 +23,7 @@ import java.util.List;
 public class Application extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "mentor_id")
+    @JoinColumn(name = "mentor_id",referencedColumnName = "id")
     private Mentor mentor;
 
     @Column(name = "full_name")

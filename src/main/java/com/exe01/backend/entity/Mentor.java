@@ -1,6 +1,8 @@
 package com.exe01.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +32,10 @@ public class Mentor extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
+
+    @Column(name = "full_name")
+    @NotNull
+    @NotBlank
+    private String fullName;
 
 }

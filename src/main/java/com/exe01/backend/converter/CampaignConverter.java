@@ -29,7 +29,7 @@ public class CampaignConverter {
 
     public static Campaign toEntity(CampaignDTO campaignDTO) {
         Campaign campaign = new Campaign();
-        campaign.setId(campaign.getId());
+        campaign.setId(campaignDTO.getId());
         campaign.setImg(campaignDTO.getImg());
         campaign.setDescription(campaignDTO.getDescription());
         campaign.setName(campaignDTO.getName());

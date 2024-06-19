@@ -158,4 +158,24 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
         }
     }
 
+    @Override
+    public CampaignMentorProfileDTO findByMentorIdAndStatus(UUID mentorId, String status) throws BaseException {
+      try {
+
+            logger.info("Find CampaignMentorProfile by mentorId {} and status {}", mentorId, status);
+            CampaignMentorProfile campaignMentorProfile = campaignMentorProfileRepository.findByMentorProfileMentorIdAndCampaignStatus(mentorId, status);
+            if (Objects.isNull(campaignMentorProfile)) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.CampaignMentorProfile.CAMPAIGN_MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+            return CampaignMentorProfileConverter.toDto(campaignMentorProfile);
+
+      }catch (Exception baseException) {
+          if (baseException instanceof BaseException) {
+              throw baseException;
+          }
+          throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+      }
+
+    }
+
 }

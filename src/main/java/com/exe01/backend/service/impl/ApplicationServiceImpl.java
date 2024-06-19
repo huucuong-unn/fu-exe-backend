@@ -249,7 +249,6 @@ public class ApplicationServiceImpl implements IApplicationService {
             mentorApplyService.create(mentorApplyRequest);
 
 
-
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException; // rethrow the original BaseException
@@ -257,6 +256,84 @@ public class ApplicationServiceImpl implements IApplicationService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
 
 
+        }
+
+    }
+
+    @Override
+    public PagingModel findByMentorIdAndStatusAndSortByCreatedDate(UUID mentorId, String status, String createdDate, int page, int limit) throws BaseException {
+        try {
+            logger.info("Get all Application");
+
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForApplication = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION + mentorId + "all:" + page + ":" + limit;
+
+            List<ApplicationDTO> applicationDTOs = new ArrayList<>();
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication)) {
+                logger.info("Fetching applications from cache for page {} and limit {}", page, limit);
+                applicationDTOs = (List<ApplicationDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication);
+            } else {
+                logger.info("Fetching applications from database for page {} and limit {}", page, limit);
+                List<Application> applications = applicationRepository.findAllByMentorIdAndStatusAndSortByCreatedDate(mentorId, status, ConstStatus.CampaignStatus.MENTEE_APPLY, createdDate, pageable);
+                applicationDTOs = applications.stream().map(ApplicationConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication, applicationDTOs);
+            }
+
+            result.setListResult(applicationDTOs);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public PagingModel findByStudentIdAndStatusAndSort(UUID studentId, UUID companyId, String mentorName, String status, String createdDate, int page, int limit) throws BaseException {
+
+        try {
+            logger.info("Get all Application");
+
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForApplication = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION + studentId + "all:" + page + ":" + limit;
+
+            List<ApplicationDTO> applicationDTOs = new ArrayList<>();
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication)) {
+                logger.info("Fetching applications from cache for page {} and limit {}", page, limit);
+                applicationDTOs = (List<ApplicationDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication);
+            } else {
+                logger.info("Fetching applications from database for page {} and limit {}", page, limit);
+                List<Application> applications = applicationRepository.findByStudentIdAndSearchSort(studentId, companyId, mentorName, status, createdDate, pageable);
+                applicationDTOs = applications.stream().map(ApplicationConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication, applicationDTOs);
+            }
+
+            result.setListResult(applicationDTOs);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
 
     }

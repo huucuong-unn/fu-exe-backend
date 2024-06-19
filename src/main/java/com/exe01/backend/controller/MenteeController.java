@@ -63,5 +63,12 @@ public class MenteeController {
         return menteeService.changeStatus(id);
     }
 
+//    @Operation(summary = "Get mentee by mentorId", description = "API  get mentee by mentorId")
+//    @GetMapping(value = ConstAPI.MenteeAPI.GET_MENTEE_BY_MENTORID_CAMPAIGNID + "{id}")
+//    public PagingModel findByMentorIdAndCampaignId(@PathVariable("id") UUID id) throws BaseException {
+//        log.info("Deleting mentee with id: {}", id);
+//        return menteeService.changeStatus(id);
+//    }
+
 
 }
