@@ -7,6 +7,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MentorDTO extends BaseDTO implements Serializable {
 
@@ -16,10 +17,6 @@ public class MentorDTO extends BaseDTO implements Serializable {
 
     private String status;
 
-    public MentorDTO(CompanyDTO company, AccountDTO account, String status) {
-        this.company = company;
-        this.account = account;
-        this.status = status;
-    }
+    private String fullName;
 
 }

@@ -95,4 +95,11 @@ public class MentorController {
         return mentorService.changeStatus(id);
     }
 
+    @Operation(summary = "Get all simillary mentor", description = "API get all simillary mentor")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_SIMILAR_MENTORS_BY_COMPANYID + "{companyId}")
+    public List<MentorsResponse> getAllSimillaryMentor(@PathVariable("companyId") UUID companyId, @RequestParam("mentorId") UUID mentorId) throws BaseException {
+        log.info("Getting all simillary mentor with company id: {}", companyId);
+        return mentorService.getAllSimillaryMentor(companyId, mentorId);
+    }
+
 }

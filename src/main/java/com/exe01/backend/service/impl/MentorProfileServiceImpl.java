@@ -9,6 +9,7 @@ import com.exe01.backend.converter.MentorProfileConverter;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
+import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.enums.ErrorCode;
@@ -278,6 +279,5 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
-
 
 }

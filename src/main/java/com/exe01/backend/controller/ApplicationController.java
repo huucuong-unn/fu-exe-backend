@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -38,8 +39,8 @@ public class ApplicationController {
     }
 
     @Operation(summary = "Create application", description = "API create new application")
-    @PostMapping(value = ConstAPI.ApplicationAPI.CREATE_APPLICATION)
-    public ApplicationDTO create(@RequestBody BaseApplicationRequest request) throws BaseException {
+    @PostMapping(value = ConstAPI.ApplicationAPI.CREATE_APPLICATION,consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApplicationDTO create(@ModelAttribute  BaseApplicationRequest request) throws BaseException {
         log.info("Creating new application with request: {}", request);
         return applicationService.create(request);
     }

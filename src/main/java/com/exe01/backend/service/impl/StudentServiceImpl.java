@@ -21,6 +21,7 @@ import com.exe01.backend.service.IUniversityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,6 +40,7 @@ public class StudentServiceImpl implements IStudentService {
     private StudentRepository studentRepository;
 
     @Autowired
+    @Lazy
     private IAccountService accountService;
 
     @Autowired
@@ -187,6 +189,27 @@ public class StudentServiceImpl implements IStudentService {
             }
 
             return true;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public StudentDTO findByAccountId(UUID accountId) throws BaseException {
+        try {
+            logger.info("Find student by account id {}", accountId);
+            Optional<Student> studentByAccountId = studentRepository.findByAccountId(accountId);
+            boolean isStudentExist = studentByAccountId.isPresent();
+
+            if (!isStudentExist) {
+                logger.warn("Student with account id {} not found", accountId);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Student.STUDENT_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            return StudentConverter.toDto(studentByAccountId.get());
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException;

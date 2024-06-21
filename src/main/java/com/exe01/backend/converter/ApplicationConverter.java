@@ -18,7 +18,6 @@ public class ApplicationConverter {
         applicationDto.setUserAddress(application.getUserAddress());
         applicationDto.setEmail(application.getEmail());
         applicationDto.setPhoneNumber(application.getPhoneNumber());
-        applicationDto.setJob(application.getJob());
         applicationDto.setFacebookUrl(application.getFacebookUrl());
         applicationDto.setZaloAccount(application.getZaloAccount());
         applicationDto.setReasonApply(application.getReasonApply());
@@ -29,7 +28,7 @@ public class ApplicationConverter {
         applicationDto.setModifiedDate(application.getModifiedDate());
         applicationDto.setCreatedBy(application.getCreatedBy());
         applicationDto.setModifiedBy(application.getModifiedBy());
-
+        applicationDto.setStatus(application.getStatus());
         return applicationDto;
     }
 
@@ -45,7 +44,6 @@ public class ApplicationConverter {
         application.setUserAddress(applicationDto.getUserAddress());
         application.setEmail(applicationDto.getEmail());
         application.setPhoneNumber(applicationDto.getPhoneNumber());
-        application.setJob(applicationDto.getJob());
         application.setFacebookUrl(applicationDto.getFacebookUrl());
         application.setZaloAccount(applicationDto.getZaloAccount());
         application.setReasonApply(applicationDto.getReasonApply());
@@ -56,6 +54,7 @@ public class ApplicationConverter {
         application.setCreatedBy(applicationDto.getCreatedBy());
         application.setModifiedBy(applicationDto.getModifiedBy());
         application.setStudent(StudentConverter.toEntity(applicationDto.getStudent()));
+        application.setStatus(applicationDto.getStatus());
 
         return application;
     }
