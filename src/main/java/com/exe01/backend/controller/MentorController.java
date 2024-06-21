@@ -96,10 +96,17 @@ public class MentorController {
     }
 
     @Operation(summary = "Get all simillary mentor", description = "API get all simillary mentor")
-    @GetMapping(value = ConstAPI.MentorAPI.GET_SIMILAR_MENTORS_BY_COMPANYID + "{companyId}")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_SIMILAR_MENTORS_BY_COMPANY_ID + "{companyId}")
     public List<MentorsResponse> getAllSimillaryMentor(@PathVariable("companyId") UUID companyId, @RequestParam("mentorId") UUID mentorId) throws BaseException {
         log.info("Getting all simillary mentor with company id: {}", companyId);
         return mentorService.getAllSimillaryMentor(companyId, mentorId);
+    }
+
+    @Operation(summary = "Get all mentor by student id", description = "API get all mentor by student id")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_MENTORS_BY_STUDENT_ID + "{id}")
+    public List<MentorsResponse> getAllMentorByStudentId(@PathVariable("id") UUID id) throws BaseException {
+        log.info("Getting all mentor by student id: {}", id);
+        return mentorService.getAllMentorByStudentId(id);
     }
 
 }
