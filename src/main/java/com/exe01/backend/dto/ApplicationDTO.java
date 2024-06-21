@@ -23,5 +23,6 @@ public class ApplicationDTO extends BaseDTO implements Serializable {
     private String introduce;
     private String cvFile;
     private StudentDTO student;
+    private String status;
 
 }

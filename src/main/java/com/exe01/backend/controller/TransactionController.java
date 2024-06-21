@@ -51,4 +51,11 @@ public class TransactionController {
         return transactionService.create(request);
     }
 
+    @Operation(summary = "Get all transaction with studentId", description = "API Get all transaction with studentId")
+    @GetMapping(value = ConstAPI.TransactionAPI.GET_TRANSACTION_BY_ACCOUNT_ID_AND_SORT_BY_CREATED_DATE + "{studentId}")
+    public PagingModel findAllByStudentId(@PathVariable("studentId") UUID studentId, @RequestParam(value = "createdDate") String createdDate ,@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all transaction with studentId: {}, page: {}, limit: {}", studentId, page, limit);
+        return transactionService.findAllByAccountIdAndSortByCreateDate(studentId,createdDate ,page, limit);
+    }
+
 }

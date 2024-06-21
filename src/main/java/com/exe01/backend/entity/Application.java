@@ -38,9 +38,6 @@ public class Application extends BaseEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "job")
-    private String job;
-
     @Column(name = "facebook_url")
     private String facebookUrl;
 

@@ -1,6 +1,7 @@
 package com.exe01.backend.service.impl;
 
 import com.exe01.backend.constant.ConstError;
+import com.exe01.backend.bucket.BucketName;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.ApplicationConverter;
@@ -14,6 +15,7 @@ import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
 import com.exe01.backend.entity.Application;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
+import com.exe01.backend.fileStore.FileStore;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.ApplicationRepository;
 import com.exe01.backend.service.*;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -52,6 +55,9 @@ public class ApplicationServiceImpl implements IApplicationService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    FileStore fileStore;
+
     @Override
     public ApplicationDTO create(BaseApplicationRequest request) throws BaseException {
         try {
@@ -59,12 +65,10 @@ public class ApplicationServiceImpl implements IApplicationService {
 
             Application application = new Application();
             application.setStudent(StudentConverter.toEntity(studentService.findById(request.getStudentId())));
-            application.setJob(request.getJob());
-            application.setStatus(ConstStatus.ACTIVE_STATUS);
+            application.setStatus(ConstStatus.ApplicationStatus.PROCESSING);
             application.setEmail(request.getEmail());
             application.setIntroduce(request.getIntroduce());
             application.setMentor(MentorConverter.toEntity(mentorService.findById(request.getMentorId())));
-            application.setCvFile(request.getCvFile());
             application.setFullName(request.getFullName());
             application.setPhoneNumber(request.getPhoneNumber());
             application.setFacebookUrl(request.getFacebookUrl());
@@ -73,6 +77,8 @@ public class ApplicationServiceImpl implements IApplicationService {
             application.setUserAddress(request.getUserAddress());
 
             applicationRepository.save(application);
+
+            uploadCvFile(application.getId(), request.getCvFile());
 
             Set<String> keysToDelete = redisTemplate.keys("Application:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -97,12 +103,11 @@ public class ApplicationServiceImpl implements IApplicationService {
 
             Application application = ApplicationConverter.toEntity(findById(id));
             application.setStudent(StudentConverter.toEntity(studentService.findById(request.getStudentId())));
-            application.setJob(request.getJob());
             application.setStatus(ConstStatus.ACTIVE_STATUS);
             application.setEmail(request.getEmail());
             application.setIntroduce(request.getIntroduce());
             application.setMentor(MentorConverter.toEntity(mentorService.findById(request.getMentorId())));
-            application.setCvFile(request.getCvFile());
+            //application.setCvFile(request.getCvFile());
             application.setFullName(request.getFullName());
             application.setPhoneNumber(request.getPhoneNumber());
             application.setFacebookUrl(request.getFacebookUrl());
@@ -335,6 +340,43 @@ public class ApplicationServiceImpl implements IApplicationService {
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+
+    }
+
+    @Override
+    public void uploadCvFile(UUID id, MultipartFile file) throws BaseException {
+        try {
+            // 1. Check if file is not empty
+            if (file.isEmpty()) {
+                throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
+            }
+            // 2. If file is a PDF
+            if (!"application/pdf".equals(file.getContentType())) {
+                throw new IllegalStateException("File must be a PDF [ " + file.getContentType() + "]");
+            }
+            // 3. The user exists in our database
+            Application application = applicationRepository.findById(id).orElseThrow(() -> new IllegalStateException("Application not found"));
+            // 4. Grab some metadata from file if any
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("Content-Type", file.getContentType());
+            metadata.put("Content-Length", String.valueOf(file.getSize()));
+
+            // 5. Store the PDF in S3 and update database (userDocumentLink) with S3 document link
+            String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), id);
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            String filename = String.format("%s-%s%s", UUID.randomUUID(), originalFilename.substring(0, originalFilename.lastIndexOf('.')), extension);
+            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+            application.setCvFile(filename);
+
+            applicationRepository.save(application);
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw (BaseException) baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
 
     }
 
