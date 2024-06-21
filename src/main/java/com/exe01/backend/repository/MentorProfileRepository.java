@@ -37,7 +37,7 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
 
     @Query("SELECT  cmp.mentorProfile  FROM CampaignMentorProfile cmp JOIN Application a ON cmp.mentorProfile.mentor.id = a.mentor.id WHERE cmp.campaign.id = a.mentorApply.campaign.id AND a.student.id = :studentId")
     List<MentorProfile> findAllByMenteeId(@Param("studentId") UUID studentId);
-
+  
     int countByStatus(String status);
 
 }

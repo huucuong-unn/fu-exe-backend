@@ -443,5 +443,4 @@ public class MentorServiceImpl implements IMentorService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
-
 }
