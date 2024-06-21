@@ -196,4 +196,25 @@ public class MenteeServiceImpl implements IMenteeService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public Optional<MenteeDTO> findByStudentId(UUID studentId) throws BaseException {
+        try {
+            logger.info("Find mentee by student id {}", studentId);
+            Optional<Mentee> menteeByStudentId = menteeRepository.findByStudentId(studentId);
+            boolean isMenteeExist = menteeByStudentId.isPresent();
+
+            if (!isMenteeExist) {
+                logger.warn("Mentee with student id {} not found", studentId);
+                return Optional.empty();
+            }
+
+            return Optional.of(MenteeConverter.toDto(menteeByStudentId.get()));
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
 }

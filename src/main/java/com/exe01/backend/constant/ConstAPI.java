@@ -21,8 +21,8 @@ public class ConstAPI {
         public static final String DELETE_ACCOUNT = "api/v1/account/delete/";
         public static final String CHANGE_STATUS_ACCOUNT = "api/v1/account/change-status/";
         public static final String UPLOAD_IMAGE_ACCOUNT = "api/v1/account/upload-image/";
-
         public static final String DOWNLOAD_IMAGE_ACCOUNT = "api/v1/account/download-image/";
+        public static final String GET_ACCOUNT_MENTEE_INFO = "api/v1/account/account-mentee-info/";
 
     }
 

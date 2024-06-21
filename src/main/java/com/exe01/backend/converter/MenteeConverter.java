@@ -13,7 +13,7 @@ public class MenteeConverter {
         menteeDTO.setModifiedDate(mentee.getModifiedDate());
         menteeDTO.setCreatedBy(mentee.getCreatedBy());
         menteeDTO.setModifiedBy(mentee.getModifiedBy());
-
+        menteeDTO.setStatus(mentee.getStatus());
         return menteeDTO;
     }
 
@@ -26,7 +26,7 @@ public class MenteeConverter {
         mentee.setModifiedDate(menteeDTO.getModifiedDate());
         mentee.setCreatedBy(menteeDTO.getCreatedBy());
         mentee.setModifiedBy(menteeDTO.getModifiedBy());
-
+        mentee.setStatus(menteeDTO.getStatus());
         return mentee;
     }
 
