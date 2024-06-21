@@ -21,4 +21,6 @@ public interface MenteeRepository extends JpaRepository<Mentee,UUID> {
 
     @Query("SELECT ma.mentee FROM MentorApply ma JOIN ma.application a WHERE a.mentor.id = :mentorId")
     List<Mentee> findMenteesByMentorId(@Param("mentorId") Long mentorId);
+
+    Optional<Mentee> findByStudentId(UUID studentId);
 }
