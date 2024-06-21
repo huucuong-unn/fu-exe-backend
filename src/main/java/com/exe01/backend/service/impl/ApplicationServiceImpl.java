@@ -239,7 +239,7 @@ public class ApplicationServiceImpl implements IApplicationService {
 
         try {
             Application application = ApplicationConverter.toEntity(findById(applicationId));
-            application.setStatus(ConstStatus.ACTIVE_STATUS);
+            application.setStatus(ConstStatus.ApplicationStatus.APPROVED);
 
             //create mentee
             MenteeRequest menteeRequest = new MenteeRequest();

@@ -59,8 +59,8 @@ public class ConstAPI {
         public static final String CREATE_MENTOR = "api/v1/mentor/create";
         public static final String UPDATE_MENTOR = "api/v1/mentor/update/";
         public static final String CHANGE_STATUS_MENTOR = "api/v1/mentor/change-status/";
-
-        public static final String GET_SIMILAR_MENTORS_BY_COMPANYID = "api/v1/mentor/similar-mentors/";
+        public static final String GET_SIMILAR_MENTORS_BY_COMPANY_ID = "api/v1/mentor/similar-mentors/";
+        public static final  String GET_MENTORS_BY_STUDENT_ID = "api/v1/mentor/student/";
 
     }
 

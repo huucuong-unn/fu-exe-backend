@@ -28,4 +28,9 @@ public class ConstStatus {
         public static final String USING = "USING";
     }
 
+    public static class MentorApplyStatus {
+        public static final String IN_PROCESS = "IN PROCESS";
+        public static final String DONE = "DONE";
+    }
+
 }
