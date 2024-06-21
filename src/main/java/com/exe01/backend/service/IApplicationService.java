@@ -4,6 +4,8 @@ import com.exe01.backend.dto.ApplicationDTO;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -24,5 +26,8 @@ public interface IApplicationService extends IGenericService<ApplicationDTO> {
     PagingModel findByMentorIdAndStatusAndSortByCreatedDate(UUID mentorId, String status, String createdDate, int page, int limit) throws BaseException;
 
     PagingModel findByStudentIdAndStatusAndSort(UUID studentId, UUID companyId, String mentorName, String status, String createdDate, int page, int limit) throws BaseException;
+
+    @Async
+    void uploadCvFile(UUID id, MultipartFile file) throws BaseException;
 
 }

@@ -59,6 +59,11 @@ public class ConstAPI {
         public static final String CREATE_MENTOR = "api/v1/mentor/create";
         public static final String UPDATE_MENTOR = "api/v1/mentor/update/";
         public static final String CHANGE_STATUS_MENTOR = "api/v1/mentor/change-status/";
+
+        public static final String GET_SIMILAR_MENTORS_BY_COMPANY_ID = "api/v1/mentor/similar-mentors/";
+
+        public static final  String GET_MENTORS_BY_STUDENT_ID = "api/v1/mentor/student/";
+
     }
 
     public static class StudentAPI {
@@ -163,6 +168,8 @@ public class ConstAPI {
         public static final String GET_TRANSACTION_STATUS_TRUE = "api/v1/transaction/transaction-status-true";
         public static final String GET_TRANSACTION_BY_ID = "api/v1/transaction/";
         public static final String CREATE_TRANSACTION = "api/v1/transaction/create";
+
+        public static final String GET_TRANSACTION_BY_ACCOUNT_ID_AND_SORT_BY_CREATED_DATE = "api/v1/transaction/account/";
     }
 
 }

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -34,10 +35,6 @@ public class BaseApplicationRequest {
     @ValidPhone
     private String phoneNumber;
 
-    @NotBlank(message = "Job must not be blank")
-    @NotNull(message = "Job must not be null")
-    private String job;
-
     @NotBlank(message = "Facebook URL must not be blank")
     @NotNull(message = "Facebook URL must not be null")
     private String facebookUrl;
@@ -56,7 +53,7 @@ public class BaseApplicationRequest {
 
     @NotBlank(message = "CV file must not be blank")
     @NotNull(message = "CV file must not be null")
-    private String cvFile;
+    private MultipartFile cvFile;
 
     @NotBlank(message = "Student ID must not be blank")
     @NotNull(message = "Student ID must not be null")

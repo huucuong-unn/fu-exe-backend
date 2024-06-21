@@ -19,6 +19,8 @@ public class JwtAuthenticationResponse {
 
     private String username;
 
+    private UUID studentId;
+
     private String avatarUrl;
 
     private String status;

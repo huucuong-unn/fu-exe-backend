@@ -32,6 +32,7 @@ import com.exe01.backend.validation.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -66,6 +67,10 @@ public class AccountServiceImpl implements IAccountService {
 
     @Autowired
     JWTServiceImpl jwtService;
+
+    @Autowired
+    @Lazy
+    IStudentService studentService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -333,9 +338,10 @@ public class AccountServiceImpl implements IAccountService {
         return MappingjwtAuthenticationRespone(account);
     }
 
-    private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account) {
+    private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account) throws BaseException {
         JwtAuthenticationResponse jwtAuthenticationRespone = new JwtAuthenticationResponse();
         jwtAuthenticationRespone.setId(account.getId());
+        jwtAuthenticationRespone.setStudentId(studentService.findByAccountId(account.getId()).getId());
         jwtAuthenticationRespone.setUsername(account.getUsername());
         jwtAuthenticationRespone.setAvatarUrl(account.getAvatarUrl());
         jwtAuthenticationRespone.setStatus(account.getStatus());

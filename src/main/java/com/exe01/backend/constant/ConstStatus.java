@@ -15,13 +15,22 @@ public class ConstStatus {
     }
 
     public static class ApplicationStatus {
-        public static final String PROCESSING = "PROCESSING";
+        public static final String PROCESSING = "IN PROCESS";
         public static final String APPROVED = "APPROVED ";
         public static final String REJECTED = "REJECTED";
     }
     public static class  TransactionStatus {
         public static final String SUCCESS_STATUS = "SUCCESS";
         public static final String FAILED_STATUS = "FAILED";
+    }
+
+    public static class MentorProfileStatus {
+        public static final String USING = "USING";
+    }
+
+    public static class MentorApplyStatus {
+        public static final String IN_PROCESS = "IN PROCESS";
+        public static final String DONE = "DONE";
     }
 
 }

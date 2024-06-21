@@ -17,4 +17,6 @@ public interface IStudentService extends IGenericService<StudentDTO> {
 
     Boolean changeStatus(UUID id) throws BaseException;
 
+    StudentDTO findByAccountId(UUID accountId) throws BaseException;
+
 }
