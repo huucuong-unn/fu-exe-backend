@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin
@@ -112,6 +113,13 @@ public class AccountController {
 
         var a =  amazonS3.getUrl(path, account.getAvatarUrl()).toString();
         return  a;
+
+    }
+
+    @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_MENTEE_INFO + "{accountId}")
+    public Map<String, Object> getAccountInfo(@PathVariable("accountId") UUID accountId) throws BaseException {
+        log.info("Get account with accountId: {}", accountId);
+        return accountService.getAccountMenteeInfo(accountId);
 
     }
 

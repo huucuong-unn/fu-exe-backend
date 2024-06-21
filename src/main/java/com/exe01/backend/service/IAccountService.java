@@ -10,6 +10,7 @@ import com.exe01.backend.exception.BaseException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface IAccountService extends IGenericService<AccountDTO> {
@@ -32,4 +33,5 @@ public interface IAccountService extends IGenericService<AccountDTO> {
 
     Boolean updatePoint(UUID id, Integer point) throws BaseException;
 
+    Map<String, Object> getAccountMenteeInfo(UUID id) throws BaseException;
 }

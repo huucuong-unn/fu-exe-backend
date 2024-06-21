@@ -5,8 +5,12 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.AccountConverter;
+import com.exe01.backend.converter.MenteeConverter;
 import com.exe01.backend.converter.RoleConverter;
+import com.exe01.backend.converter.StudentConverter;
 import com.exe01.backend.dto.AccountDTO;
+import com.exe01.backend.dto.MenteeDTO;
+import com.exe01.backend.dto.StudentDTO;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
@@ -18,7 +22,10 @@ import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.fileStore.FileStore;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
+import com.exe01.backend.repository.MenteeRepository;
+import com.exe01.backend.repository.StudentRepository;
 import com.exe01.backend.service.IAccountService;
+import com.exe01.backend.service.IMenteeService;
 import com.exe01.backend.service.IRoleService;
 import com.exe01.backend.service.IStudentService;
 import com.exe01.backend.validation.ValidateUtil;
@@ -70,6 +77,12 @@ public class AccountServiceImpl implements IAccountService {
 
     @Autowired
     FileStore fileStore;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private MenteeRepository menteeRepository;
 
     @Override
     public JwtAuthenticationResponse create(CreateAccountRequest request) throws BaseException {
@@ -508,6 +521,22 @@ public class AccountServiceImpl implements IAccountService {
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+    }
+
+    @Override
+    public Map<String, Object> getAccountMenteeInfo(UUID accountId) {
+        StudentDTO student = null;
+        MenteeDTO mentee = null;
+        Map<String, Object> accountInfo = new HashMap<>();
+        try {
+            student = StudentConverter.toDto(studentRepository.findByAccountId(accountId).get());
+            mentee = MenteeConverter.toDto(menteeRepository.findByStudentId(student.getId()).get());
+            accountInfo.put("mentee", mentee);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return accountInfo;
     }
 
 }
