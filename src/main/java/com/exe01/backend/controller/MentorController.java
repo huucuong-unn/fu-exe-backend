@@ -108,5 +108,4 @@ public class MentorController {
         log.info("Getting all mentor by student id: {}", id);
         return mentorService.getAllMentorByStudentId(id);
     }
-
 }
