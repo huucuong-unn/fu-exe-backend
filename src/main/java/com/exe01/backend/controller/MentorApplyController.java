@@ -57,4 +57,15 @@ public class MentorApplyController {
         return menteeApplyService.findByMenteeId(menteeId, page, limit);
     }
 
+    @Operation(summary = "Get mentee applications by mentee name, mentor full name and campaign id", description = "API get mentee applications by mentee name, mentor full name and campaign id")
+    @GetMapping(value = ConstAPI.MentorApplyAPI.GET_MENTOR_APPLY_BY_MENTEE_NAME_AND_MENTOR_FULL_NAME_AND_CAMPAIGN_ID)
+    public PagingModel findAllByMenteeNameAndMentorFullNameAndCampaignId(@RequestParam(value = "menteeName", required = false) String menteeName,
+                                                                         @RequestParam(value = "mentorFullName", required = false) String mentorFullName,
+                                                                         @RequestParam(value = "campaignId", required = false) UUID campaignId,
+                                                                         @RequestParam(value = "companyId", required = false) UUID companyId,
+                                                                         @RequestParam(value = "page", required = false) Integer page,
+                                                                         @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        return menteeApplyService.findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(menteeName, mentorFullName, campaignId, companyId,page, limit);
+    }
+
 }

@@ -93,6 +93,8 @@ public class ConstAPI {
         public static final String CREATE_CAMPAIGN = "api/v1/campaign/create";
         public static final String UPDATE_CAMPAIGN = "api/v1/campaign/update/";
         public static final String CHANGE_STATUS_CAMPAIGN = "api/v1/campaign/change-status/";
+
+        public static final String GET_ALL_CAMPAIGN_WITHOUT_PAGING = "api/v1/campaign/campaign-without-paging";
     }
 
     public static class CampaignMentorProfileAPI {
@@ -134,6 +136,8 @@ public class ConstAPI {
         public static final String CREATE_COMPANY = "api/v1/company/create";
         public static final String UPDATE_COMPANY = "api/v1/company/update/";
         public static final String CHANGE_STATUS_COMPANY = "api/v1/company/change-status/";
+
+        public static final String GET_COMPANY_STATUS_TRUE_WITHOUT_PAGING = "api/v1/company/company-status-true-without-paging";
     }
 
     public static class ApplicationAPI {
@@ -158,6 +162,7 @@ public class ConstAPI {
         public static final String CHANGE_STATUS_MENTOR_APPLY = "api/v1/mentor-apply/change-status/";
         public static final String GET_MENTOR_APPLY_BY_MENTOR_ID = "api/v1/mentor-apply/mentor/";
         public static final String GET_MENTOR_APPLY_BY_MENTEE_ID = "api/v1/mentor-apply/mentee/";
+        public static final String GET_MENTOR_APPLY_BY_MENTEE_NAME_AND_MENTOR_FULL_NAME_AND_CAMPAIGN_ID = "api/v1/mentor-apply/search";
     }
 
 

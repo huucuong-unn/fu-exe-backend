@@ -15,6 +15,10 @@ public class MentorApplyDTO implements Serializable {
 
     private ApplicationDTO application;
 
+    private CampaignDTO campaign;
+
     private MenteeDTO mentee;
+
+    private String status;
 
 }

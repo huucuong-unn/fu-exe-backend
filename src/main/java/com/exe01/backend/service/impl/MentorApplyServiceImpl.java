@@ -9,6 +9,7 @@ import com.exe01.backend.converter.MentorApplyConverter;
 import com.exe01.backend.converter.MenteeConverter;
 import com.exe01.backend.dto.MentorApplyDTO;
 import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
+import com.exe01.backend.dto.response.mentorApply.MentorApplyForAdminResponse;
 import com.exe01.backend.entity.MentorApply;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
@@ -29,6 +30,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MentorApplyServiceImpl implements IMentorApplyService {
@@ -220,6 +222,58 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+    }
+
+    @Override
+    public PagingModel findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(String menteeName, String mentorFullName, UUID campaignId, UUID companyId, int page, int limit) throws BaseException {
+        try {
+
+            logger.info("Get all MentorApply with status active");
+
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForMentorApply = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_APPLY + menteeName + mentorFullName + campaignId + "all:" + page + ":" + limit;
+
+            List<MentorApplyDTO> mentorApplyDTOs = new ArrayList<>();
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_APPLY, hashKeyForMentorApply)) {
+                logger.info("Fetching mentorApplys from cache for page {} and limit {}", page, limit);
+                mentorApplyDTOs = (List<MentorApplyDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_APPLY, hashKeyForMentorApply);
+            } else {
+                logger.info("Fetching mentorApplys from database for page {} and limit {}", page, limit);
+                List<MentorApply> mentorApplys = mentorApplyRepository.findAllByMenteeNameAndMentorFullNameAndCampaignId(menteeName, mentorFullName, campaignId, companyId, pageable);
+                mentorApplyDTOs = mentorApplys.stream().map(MentorApplyConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_APPLY, hashKeyForMentorApply, mentorApplyDTOs);
+            }
+
+            List<MentorApplyForAdminResponse> mentorApplyForAdminResponses = mentorApplyDTOs.stream()
+                    .map(mentorApplyDTO -> {
+                        MentorApplyForAdminResponse response = new MentorApplyForAdminResponse();
+                        response.setMentee(mentorApplyDTO.getMentee());
+                        response.setMentorFullName(mentorApplyDTO.getApplication().getMentor().getFullName());
+                        response.setCompanyName(mentorApplyDTO.getApplication().getMentor().getCompany().getName());
+                        response.setCampaignName(mentorApplyDTO.getCampaign().getName());
+                        response.setStatus(mentorApplyDTO.getStatus());
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+
+            result.setListResult(mentorApplyForAdminResponses);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 
     public int totalItem() {
