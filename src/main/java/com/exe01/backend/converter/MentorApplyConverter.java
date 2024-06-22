@@ -13,6 +13,8 @@ public class MentorApplyConverter {
 
         MentorApplyDTO mentorApplyDTO = new MentorApplyDTO();
         mentorApplyDTO.setFeedback(mentorApply.getFeedback());
+        mentorApplyDTO.setCampaign(CampaignConverter.toDto(mentorApply.getCampaign()));
+        mentorApplyDTO.setStatus(mentorApply.getStatus());
         mentorApplyDTO.setApplication(ApplicationConverter.toDto(mentorApply.getApplication()));
         mentorApplyDTO.setMentee(MenteeConverter.toDto(mentorApply.getMentee()));
 
@@ -26,6 +28,8 @@ public class MentorApplyConverter {
 
         MentorApply mentorApply = new MentorApply();
         mentorApply.setFeedback(mentorApplyDTO.getFeedback());
+        mentorApply.setCampaign(CampaignConverter.toEntity(mentorApplyDTO.getCampaign()));
+        mentorApply.setStatus(mentorApplyDTO.getStatus());
         mentorApply.setApplication(ApplicationConverter.toEntity(mentorApplyDTO.getApplication()));
         mentorApply.setMentee(MenteeConverter.toEntity(mentorApplyDTO.getMentee()));
 

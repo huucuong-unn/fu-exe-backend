@@ -20,4 +20,6 @@ public interface IMentorApplyService {
     PagingModel findByApplicationMentorId(UUID mentorId, int page, int limit) throws BaseException;
 
     PagingModel findByMenteeId(UUID menteeId, int page, int limit) throws BaseException;
+
+    PagingModel findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(String menteeName, String mentorFullName, UUID campaignId, UUID companyId ,int page, int limit) throws BaseException;
 }

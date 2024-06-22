@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -70,6 +71,13 @@ public class CompanyController {
     public Boolean changeStatus(@PathVariable("id") UUID id) throws BaseException {
         log.info("Change status company with id: {}", id);
         return companyService.changeStatus(id);
+    }
+
+    @Operation(summary = "Get all company by status true without paging", description = "Get all company by status true without paging")
+    @GetMapping(value = ConstAPI.CompanyAPI.GET_COMPANY_STATUS_TRUE_WITHOUT_PAGING)
+    public List<CompanyDTO> getAllCompanyByStatusTrueWithoutPaging() throws BaseException {
+        log.info("Getting all company by status true without paging");
+        return companyService.findAllByStatus();
     }
 
 }
