@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.CampaignDTO;
 import com.exe01.backend.dto.request.campaign.CreateCampaignRequest;
 import com.exe01.backend.dto.request.campaign.UpdateCampaignRequest;
+import com.exe01.backend.entity.Campaign;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.ICampaignService;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -65,4 +67,12 @@ public class CampaignController {
         log.info("Deleting university with id: {}", id);
         return campaignService.changeStatus(id);
     }
+
+    @Operation(summary = "Get all campaign without paging", description = "API get all campaign without paging")
+    @GetMapping(value = ConstAPI.CampaignAPI.GET_ALL_CAMPAIGN_WITHOUT_PAGING)
+    public List<CampaignDTO> getAll() throws BaseException {
+        log.info("Getting all campaigns without paging");
+        return campaignService.findAll();
+    }
+
 }

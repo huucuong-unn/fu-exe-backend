@@ -5,6 +5,7 @@ import com.exe01.backend.dto.request.campaign.CreateCampaignRequest;
 import com.exe01.backend.dto.request.campaign.UpdateCampaignRequest;
 import com.exe01.backend.exception.BaseException;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ICampaignService extends IGenericService<CampaignDTO>{
@@ -14,5 +15,7 @@ public interface ICampaignService extends IGenericService<CampaignDTO>{
     Boolean update(UUID id, UpdateCampaignRequest request) throws BaseException;
 
     Boolean changeStatus(UUID id) throws BaseException;
+
+    List<CampaignDTO> findAll() throws BaseException;
 
 }

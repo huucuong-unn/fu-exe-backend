@@ -172,6 +172,32 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    public List<CompanyDTO> findAllByStatus() throws BaseException {
+        try {
+            logger.info("Get all company with no paging");
+
+            String hashKeyForCompany = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY + "all:" + "active:";
+
+            List<CompanyDTO> companyDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY, hashKeyForCompany)) {
+                logger.info("Fetching company from cache");
+                companyDTOs = (List<CompanyDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY, hashKeyForCompany);
+            } else {
+                logger.info("Fetching company from database ");
+                List<Company> companies = companyRepository.findAllByStatus(ConstStatus.ACTIVE_STATUS);
+                companyDTOs = companies.stream().map(CompanyConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_COMPANY, hashKeyForCompany, companyDTOs);
+            }
+
+            return companyDTOs;
+
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
     public CompanyDTO findById(UUID id) throws BaseException {
         try {
             logger.info("Find company by id {}", id);

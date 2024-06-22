@@ -20,6 +20,8 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     List<Company> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
+    List<Company> findAllByStatus(String status);
+
     int countByStatus(String status);
 
     @Query("SELECT c FROM Company c " +

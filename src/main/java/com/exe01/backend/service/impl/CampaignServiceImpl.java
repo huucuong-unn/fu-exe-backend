@@ -235,4 +235,31 @@ public class CampaignServiceImpl implements ICampaignService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public List<CampaignDTO> findAll() throws BaseException {
+        try {
+
+            logger.info("Get all Campaign");
+
+            String hashKeyForCampaign = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN + "all:";
+
+            List<CampaignDTO> campaignDTOs ;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
+                logger.info("Fetching campaigns from cache");
+                campaignDTOs = (List<CampaignDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign);
+            } else {
+                logger.info("Fetching campaigns from database");
+                List<Campaign> campaigns = campaignRepository.findAll();
+                campaignDTOs = campaigns.stream().map(CampaignConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTOs);
+            }
+
+            return campaignDTOs;
+
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
 }
