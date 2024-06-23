@@ -530,8 +530,7 @@ public class AccountServiceImpl implements IAccountService {
         Map<String, Object> accountInfo = new HashMap<>();
         try {
             student = StudentConverter.toDto(studentRepository.findByAccountId(accountId).get());
-            mentee = MenteeConverter.toDto(menteeRepository.findByStudentId(student.getId()).get());
-            accountInfo.put("mentee", mentee);
+            accountInfo.put("mentee", student);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
