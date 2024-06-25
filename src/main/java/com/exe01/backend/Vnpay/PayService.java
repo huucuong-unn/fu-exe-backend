@@ -104,7 +104,7 @@ public class PayService {
             UUID accountId = UUID.fromString(extractValue(txnRef, 2));
             accountService.updatePoint(accountId, points);
 
-            return new RedirectView("${react.frontend.host}"+ "pay-successed");
+            return new RedirectView("${react.frontend.host}"+ "user/history");
         } else {
             UUID transactionId = UUID.fromString(extractValue(txnRef, 3));
             transactionService.changeStatus(transactionId);

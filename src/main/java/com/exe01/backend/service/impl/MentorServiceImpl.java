@@ -22,10 +22,12 @@ import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.repository.SkillMentorProfileRepository;
 import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.ICompanyService;
+import com.exe01.backend.service.IMenteeService;
 import com.exe01.backend.service.IMentorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,6 +42,10 @@ public class MentorServiceImpl implements IMentorService {
 
     @Autowired
     MentorRepository mentorRepository;
+
+    @Autowired
+    @Lazy
+    IMenteeService menteeService;
 
     @Autowired
     MentorProfileRepository mentorProfileRepository;
@@ -378,14 +384,14 @@ public class MentorServiceImpl implements IMentorService {
 
             logger.info("Get all mentor with all information");
 
-            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + "information:" + "similar" +mentorId;
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + "information:" + "similar" + mentorId;
 
             List<MentorsResponse> mentorDTOs;
 
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor)) {
                 mentorDTOs = (List<MentorsResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
             } else {
-                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorProfilesStatusAndCompanyId(companyId, mentorId ,ConstStatus.CampaignStatus.CLOSED, ConstStatus.MentorProfileStatus.USING);
+                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorProfilesStatusAndCompanyId(companyId, mentorId, ConstStatus.CampaignStatus.CLOSED, ConstStatus.MentorProfileStatus.USING);
                 mentorDTOs = new ArrayList<>();
                 for (MentorProfile mentorProfile : mentorProfiles) {
                     MentorsResponse mentorsResponse = new MentorsResponse();
@@ -414,7 +420,7 @@ public class MentorServiceImpl implements IMentorService {
 
             logger.info("Get all mentor with all information");
 
-            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + "information:" + "similar" +id;
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + "information:" + "similar" + id;
 
             List<MentorsResponse> mentorDTOs;
 
@@ -441,6 +447,54 @@ public class MentorServiceImpl implements IMentorService {
 
         } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public PagingModel getAllMentorForAdminSearch(UUID companyId, String mentorName, int page, int limit) throws BaseException {
+        try {
+
+            logger.info("Get all mentor");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            logger.info("Get all mentor with all information");
+
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + mentorName  + companyId + page + limit;
+
+            List<MentorsResponse> mentorDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor)) {
+                mentorDTOs = (List<MentorsResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
+            } else {
+                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorProfilesForAdminSearch(companyId, mentorName, pageable);
+                mentorDTOs = new ArrayList<>();
+                for (MentorProfile mentorProfile : mentorProfiles) {
+                    MentorsResponse mentorsResponse = new MentorsResponse();
+                    mentorsResponse.setMentorProfile(MentorProfileConverter.toDto(mentorProfile));
+                    List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
+                            .stream()
+                            .map(SkillMentorProfileConverter::toDto)
+                            .toList();
+                    mentorsResponse.setSkills(skillDTOs);
+                    mentorsResponse.setTotalMentees(menteeService.countAllByMentorId(mentorProfile.getMentor().getId()));
+                    mentorDTOs.add(mentorsResponse);
+                }
+
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor, mentorDTOs);
+            }
+
+
+            result.setListResult(mentorDTOs);
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+            return result;
+
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+
+
         }
     }
 }

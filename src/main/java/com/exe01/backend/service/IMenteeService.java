@@ -15,4 +15,5 @@ public interface IMenteeService extends IGenericService<MenteeDTO> {
 
    Optional<MenteeDTO> findByStudentId(UUID studentId) throws BaseException;
 
+   int countAllByMentorId(UUID mentorId) throws BaseException;
 }

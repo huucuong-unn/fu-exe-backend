@@ -24,6 +24,8 @@ public class ConstAPI {
         public static final String DOWNLOAD_IMAGE_ACCOUNT = "api/v1/account/download-image/";
         public static final String GET_ACCOUNT_MENTEE_INFO = "api/v1/account/account-mentee-info/";
 
+        public static final String GET_ACCOUNT_FOR_ADMIN = "api/v1/account/account-for-admin";
+
     }
 
     public static class AuthenticationAPI {
@@ -61,6 +63,7 @@ public class ConstAPI {
         public static final String CHANGE_STATUS_MENTOR = "api/v1/mentor/change-status/";
         public static final String GET_SIMILAR_MENTORS_BY_COMPANY_ID = "api/v1/mentor/similar-mentors/";
         public static final  String GET_MENTORS_BY_STUDENT_ID = "api/v1/mentor/student/";
+        public static final String GET_ALL_MENTOR_FOR_ADMIN_SEARCH = "api/v1/mentor/mentor-for-admin-search";
 
     }
 
@@ -95,6 +98,9 @@ public class ConstAPI {
         public static final String CHANGE_STATUS_CAMPAIGN = "api/v1/campaign/change-status/";
 
         public static final String GET_ALL_CAMPAIGN_WITHOUT_PAGING = "api/v1/campaign/campaign-without-paging";
+
+        public static final String GET_CAMPAIGN_WITH_SEARCH = "api/v1/campaign/campaign-for-admin";
+
     }
 
     public static class CampaignMentorProfileAPI {
@@ -171,8 +177,13 @@ public class ConstAPI {
         public static final String GET_TRANSACTION_STATUS_TRUE = "api/v1/transaction/transaction-status-true";
         public static final String GET_TRANSACTION_BY_ID = "api/v1/transaction/";
         public static final String CREATE_TRANSACTION = "api/v1/transaction/create";
-
         public static final String GET_TRANSACTION_BY_ACCOUNT_ID_AND_SORT_BY_CREATED_DATE = "api/v1/transaction/account/";
+    }
+
+    public static class NotificationAPI
+    {
+        public static final String SEND_NOTIFITION = "api/v1/send-notification";
+        public static final String NOTIFITION_TOKEN = "api/v1/notifcation-token";
     }
 
 }

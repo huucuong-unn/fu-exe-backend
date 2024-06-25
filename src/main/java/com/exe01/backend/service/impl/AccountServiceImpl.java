@@ -297,19 +297,19 @@ public class AccountServiceImpl implements IAccountService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Find account by id {}", id);
-            Account accountById = AccountConverter.toEntity(findById(id));
+Account account = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
 
-            if (accountById.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
-                accountById.setStatus(ConstStatus.INACTIVE_STATUS);
+            if (account.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
+                account.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
-                accountById.setStatus(ConstStatus.ACTIVE_STATUS);
+                account.setStatus(ConstStatus.ACTIVE_STATUS);
             }
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
                 redisTemplate.delete(keysToDelete);
             }
-
+            accountRepository.save(account);
             return true;
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
@@ -538,5 +538,39 @@ public class AccountServiceImpl implements IAccountService {
         return accountInfo;
     }
 
+    @Override
+    public PagingModel findAllForAdmin(String userName, String email, String role, String status, int page, int limit) throws BaseException {
+
+        try {
+            logger.info("Get all account with paging");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForAccount = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT + "all:" + userName + email + role + status + page + ":" + limit;
+
+            List<AccountDTO> accountDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount)) {
+                logger.info("Fetching account from cache for page {} and limit {}", page, limit);
+                accountDTOs = (List<AccountDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount);
+            } else {
+                logger.info("Fetching account from database for page {} and limit {}", page, limit);
+                List<Account> accounts = accountRepository.findAllForAdmin(userName, email, role, status, pageable);
+                accountDTOs = accounts.stream().map(AccountConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount, accountDTOs);
+            }
+
+            result.setListResult(accountDTOs);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+
+        }
+    }
 }
 

@@ -17,10 +17,10 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     List<Application> findByMentorId(UUID id, Pageable pageable);
 
     @Query("SELECT a FROM Application a " +
-            "WHERE (:status = 'ALL' OR a.status = :status) " +
-            "AND a.mentorApply.mentee.student.id = :studentId " +
+            "WHERE (:status = '' OR :status IS NULL OR a.status = :status) " +
             "AND (:companyId IS NULL OR a.mentor.company.id = :companyId) " +
-            "AND (:mentorName IS NULL OR a.mentor.fullName LIKE %:mentorName%) " +
+            "AND (:mentorName IS NULL OR :mentorName = '' OR a.mentor.fullName LIKE %:mentorName%) " +
+            "AND a.student.id = :studentId " +
             "ORDER BY " +
             "CASE WHEN :createdDate = 'asc' THEN a.createdDate END ASC, " +
             "CASE WHEN :createdDate = 'desc' THEN a.createdDate END DESC, " +

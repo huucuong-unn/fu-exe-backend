@@ -123,4 +123,10 @@ public class AccountController {
 
     }
 
+    @GetMapping(value = ConstAPI.AccountAPI.GET_ACCOUNT_FOR_ADMIN)
+    public PagingModel findAllForAdmin(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "email", required = false) String email, @RequestParam(value = "role", required = false) String role, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Get account with username: {}, email: {}, role: {}, status: {}, page: {}, limit: {}", userName, email, role, status, page, limit);
+        return accountService.findAllForAdmin(userName, email, role, status, page, limit);
+    }
+
 }

@@ -313,7 +313,7 @@ public class ApplicationServiceImpl implements IApplicationService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForApplication = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION + studentId + "all:" + page + ":" + limit;
+            String hashKeyForApplication = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION + studentId + "all:" + companyId+status+ createdDate +page + ":" + limit;
 
             List<ApplicationDTO> applicationDTOs = new ArrayList<>();
 
@@ -329,7 +329,8 @@ public class ApplicationServiceImpl implements IApplicationService {
 
             result.setListResult(applicationDTOs);
 
-            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+            result.setTotalCount(totalItem());
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
             result.setLimit(limit);
 
             return result;

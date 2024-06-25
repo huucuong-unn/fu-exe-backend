@@ -23,4 +23,7 @@ public interface MenteeRepository extends JpaRepository<Mentee,UUID> {
     List<Mentee> findMenteesByMentorId(@Param("mentorId") Long mentorId);
 
     Optional<Mentee> findByStudentId(UUID studentId);
+
+    @Query("SELECT COUNT(ma.mentee) FROM MentorApply ma JOIN ma.application a WHERE a.mentor.id = :mentorId")
+    int countAllByMentorId(@Param("mentorId") UUID mentorId);
 }

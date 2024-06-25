@@ -4,6 +4,7 @@ import com.exe01.backend.dto.CampaignDTO;
 import com.exe01.backend.dto.request.campaign.CreateCampaignRequest;
 import com.exe01.backend.dto.request.campaign.UpdateCampaignRequest;
 import com.exe01.backend.exception.BaseException;
+import com.exe01.backend.models.PagingModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,4 +19,5 @@ public interface ICampaignService extends IGenericService<CampaignDTO>{
 
     List<CampaignDTO> findAll() throws BaseException;
 
+    PagingModel findAllCampaignForAdminSearch(String campaignName, String status, int page, int size) throws BaseException;
 }
