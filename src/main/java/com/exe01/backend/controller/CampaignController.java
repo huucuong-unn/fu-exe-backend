@@ -75,4 +75,11 @@ public class CampaignController {
         return campaignService.findAll();
     }
 
+    @Operation(summary = "Get all campaign with search", description = "API get all campaign with search")
+    @GetMapping(value = ConstAPI.CampaignAPI.GET_CAMPAIGN_WITH_SEARCH)
+    public PagingModel getAllWithSearch(@RequestParam(value = "campaignName", required = false) String campaignName, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all campaigns with search with campaignName: {}, status: {}, page: {}, limit: {}", campaignName, status, page, limit);
+        return campaignService.findAllCampaignForAdminSearch(campaignName, status, page, limit);
+    }
+
 }

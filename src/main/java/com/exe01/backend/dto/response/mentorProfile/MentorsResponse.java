@@ -18,6 +18,7 @@ public class MentorsResponse implements Serializable {
 
     private List<SkillMentorProfileDTO> skills;
 
+    private int totalMentees;
     public MentorsResponse(MentorProfileDTO mentorProfile, List<SkillMentorProfileDTO> skills) {
         this.mentorProfile = mentorProfile;
         this.skills = skills;

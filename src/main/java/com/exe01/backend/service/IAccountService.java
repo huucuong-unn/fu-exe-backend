@@ -7,6 +7,7 @@ import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.dto.response.JwtAuthenticationResponse;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.exception.BaseException;
+import com.exe01.backend.models.PagingModel;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,4 +35,6 @@ public interface IAccountService extends IGenericService<AccountDTO> {
     Boolean updatePoint(UUID id, Integer point) throws BaseException;
 
     Map<String, Object> getAccountMenteeInfo(UUID id) throws BaseException;
+
+    PagingModel findAllForAdmin(String userName, String email, String role, String status, int page, int limit) throws BaseException;
 }

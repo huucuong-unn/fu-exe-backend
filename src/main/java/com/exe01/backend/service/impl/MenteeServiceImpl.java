@@ -14,6 +14,7 @@ import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.MenteeRepository;
 import com.exe01.backend.service.IMenteeService;
+import com.exe01.backend.service.IMentorService;
 import com.exe01.backend.service.IStudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,9 @@ public class MenteeServiceImpl implements IMenteeService {
 
     @Autowired
     IStudentService studentService;
+
+    @Autowired
+    IMentorService mentorService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -216,5 +220,21 @@ public class MenteeServiceImpl implements IMenteeService {
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+    }
+
+    @Override
+    public int countAllByMentorId(UUID mentorId) throws BaseException {
+
+        try {
+            logger.info("Count all mentee by mentor id {}", mentorId);
+            mentorService.findById(mentorId);
+            return menteeRepository.countAllByMentorId(mentorId);
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 }
