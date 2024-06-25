@@ -29,4 +29,6 @@ public interface IMentorService extends IGenericService<MentorDTO>{
     List<MentorsResponse> getAllSimillaryMentor(UUID companyId, UUID mentorId) throws BaseException;
 
     List<MentorsResponse> getAllMentorByStudentId(UUID id) throws BaseException;
+
+    PagingModel getAllMentorForAdminSearch( UUID companyId, String mentorName,int page, int limit) throws BaseException;
 }

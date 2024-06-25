@@ -108,4 +108,16 @@ public class MentorController {
         log.info("Getting all mentor by student id: {}", id);
         return mentorService.getAllMentorByStudentId(id);
     }
+
+    @Operation(summary = "Get all mentor for admin search", description = "API get all mentor for admin search")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_ALL_MENTOR_FOR_ADMIN_SEARCH)
+    public PagingModel getAllMentorForAdminSearch(
+                                                  @RequestParam(value = "companyId", required = false) UUID companyId,
+                                                  @RequestParam(value = "mentorName", required = false) String mentorName,
+                                                  @RequestParam(value = "page", required = false) Integer page,
+                                                  @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all mentor for admin search with campaign id: {}, company id: {}, mentor name: {}, page: {}, limit: {}", companyId, mentorName, page, limit);
+        return mentorService.getAllMentorForAdminSearch(companyId, mentorName, page, limit);
+    }
+
 }

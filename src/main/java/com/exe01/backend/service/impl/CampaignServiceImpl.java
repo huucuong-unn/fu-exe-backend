@@ -262,4 +262,42 @@ public class CampaignServiceImpl implements ICampaignService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public PagingModel findAllCampaignForAdminSearch(String campaignName, String status, int page, int size) throws BaseException {
+
+        try {
+            logger.info("Get all Campaign for admin search");
+
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, size);
+
+            String hashKeyForCampaign = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN + "all:" + campaignName + ":" + status + ":" + page + ":" + size;
+
+            List<CampaignDTO> campaignDTOs ;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
+                logger.info("Fetching campaigns from cache for page {} and limit {}", page, size);
+                campaignDTOs = (List<CampaignDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign);
+            } else {
+                logger.info("Fetching campaigns from database for page {} and limit {}", page, size);
+                List<Campaign> campaigns = campaignRepository.findAllCampaignForAdminSearch(campaignName, status, pageable);
+                campaignDTOs = campaigns.stream().map(CampaignConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign, campaignDTOs);
+            }
+
+            result.setListResult(campaignDTOs);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / size)));
+            result.setTotalCount(totalItem());
+            result.setLimit(size);
+
+            return result;
+
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
+    }
 }
