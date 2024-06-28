@@ -21,6 +21,10 @@ public class JwtAuthenticationResponse {
 
     private UUID studentId;
 
+    private UUID mentorId;
+
+    private UUID companyId;
+
     private String avatarUrl;
 
     private String status;

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -18,25 +20,32 @@ public class BaseCampaignRequest {
     private String name;
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    private String img;
+    private MultipartFile img;
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     private String description;
-    @NotNull(message = "This field must not be null")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date companyApplyStartDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date companyApplyEndDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date menteeApplyStartDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date menteeApplyEndDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date trainingStartDate;
-    @NotNull(message = "This field must not be null")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date trainingEndDate;
 
 }

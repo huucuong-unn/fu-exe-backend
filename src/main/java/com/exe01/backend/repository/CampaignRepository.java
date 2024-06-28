@@ -26,5 +26,4 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     List<Campaign> findAllCampaignForAdminSearch(@Param("campaignName") String campaignName, String status , Pageable pageable) throws BaseException;
 
     int countByStatus(String status);
-
 }
