@@ -15,15 +15,12 @@ import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.dto.response.JwtAuthenticationResponse;
-import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Role;
+import com.exe01.backend.entity.*;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.fileStore.FileStore;
 import com.exe01.backend.models.PagingModel;
-import com.exe01.backend.repository.AccountRepository;
-import com.exe01.backend.repository.MenteeRepository;
-import com.exe01.backend.repository.StudentRepository;
+import com.exe01.backend.repository.*;
 import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.IMenteeService;
 import com.exe01.backend.service.IRoleService;
@@ -82,7 +79,10 @@ public class AccountServiceImpl implements IAccountService {
     private StudentRepository studentRepository;
 
     @Autowired
-    private MenteeRepository menteeRepository;
+    private MentorRepository mentorRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @Override
     public JwtAuthenticationResponse create(CreateAccountRequest request) throws BaseException {
@@ -110,6 +110,22 @@ public class AccountServiceImpl implements IAccountService {
             account.setRole(role);
 
             accountRepository.save(account);
+
+            switch (account.getRole().getName()) {
+                case "admin":
+                    break;
+                case "company":
+
+                    break;
+                case "mentor":
+                    System.out.println("It's a cherry!");
+                    break;
+                case "mentee":
+                    System.out.println("It's a cherry!");
+                    break;
+                default:
+                    break;
+            }
             uploadAccountImage(account.getId(), request.getAvatarUrl());
             var jwtToken = jwtService.generateToken(account);
 
@@ -340,8 +356,21 @@ Account account = accountRepository.findById(id).orElseThrow(() -> new BaseExcep
 
     private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account) throws BaseException {
         JwtAuthenticationResponse jwtAuthenticationRespone = new JwtAuthenticationResponse();
+        Optional<Student> student = studentRepository.findByAccountId(account.getId()) ;
+        Optional<Mentor> mentor = mentorRepository.findByAccountId(account.getId());
+        Optional<Company> company = companyRepository.findByAccountId(account.getId());
         jwtAuthenticationRespone.setId(account.getId());
-        jwtAuthenticationRespone.setStudentId(studentService.findByAccountId(account.getId()).getId());
+
+        if(student.isPresent()){
+            jwtAuthenticationRespone.setStudentId(student.get().getId());
+        }
+        if(mentor.isPresent()){
+            jwtAuthenticationRespone.setMentorId(mentor.get().getId());
+        }
+        if(company.isPresent()){
+            jwtAuthenticationRespone.setCompanyId(company.get().getId());
+        }
+
         jwtAuthenticationRespone.setUsername(account.getUsername());
         jwtAuthenticationRespone.setAvatarUrl(account.getAvatarUrl());
         jwtAuthenticationRespone.setStatus(account.getStatus());

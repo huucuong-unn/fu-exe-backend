@@ -1,9 +1,6 @@
 package com.exe01.backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,6 +17,11 @@ import java.util.List;
 @Entity
 @Table(name = "company_tbl")
 public class Company extends BaseEntity {
+
+
+    @OneToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")

@@ -10,11 +10,13 @@ import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
 import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
+import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Mentor;
 import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
+import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.service.IMentorProfileService;
@@ -49,6 +51,8 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public MentorProfileDTO findById(UUID id) throws BaseException {
@@ -161,6 +165,7 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             MentorProfile mentorProfile = new MentorProfile();
 
             Mentor mentorById = MentorConverter.toEntity(mentorService.findById(request.getMentorId()));
+            Account account = accountRepository.findById(mentorById.getAccount().getId()).orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.ACCOUNT_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
 
             mentorProfile.setMentor(mentorById);
             mentorProfile.setLinkedinUrl(request.getLinkedinUrl());
@@ -171,6 +176,15 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             mentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
 
             mentorProfileRepository.save(mentorProfile);
+
+            int points = account.getPoint() - 10;
+            if(points>0){
+                account.setPoint(points);
+                accountRepository.save(account);
+            }
+            else{
+                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
+            }
 
             return MentorProfileConverter.toDto(mentorProfile);
 
