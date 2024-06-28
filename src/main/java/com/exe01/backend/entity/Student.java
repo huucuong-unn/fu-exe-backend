@@ -45,6 +45,10 @@ public class Student extends BaseEntity {
     @Column(name = "student_code", nullable = false, unique = true)
     private String studentCode;
 
+    private String frontStudentCard;
+
+    private String backStudentCard;
+
     @OneToMany(mappedBy = "student")
     private List<Application> applications = new ArrayList<>();
 }

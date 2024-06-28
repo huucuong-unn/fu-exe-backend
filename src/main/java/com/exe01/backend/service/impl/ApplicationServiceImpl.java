@@ -12,12 +12,17 @@ import com.exe01.backend.dto.MenteeDTO;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
 import com.exe01.backend.dto.request.mentee.MenteeRequest;
 import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
+import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.Application;
+import com.exe01.backend.entity.Mentor;
+import com.exe01.backend.entity.Student;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.fileStore.FileStore;
 import com.exe01.backend.models.PagingModel;
+import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.ApplicationRepository;
+import com.exe01.backend.repository.MentorRepository;
 import com.exe01.backend.service.*;
 import com.exe01.backend.validation.ValidateUtil;
 import org.springframework.context.annotation.Lazy;
@@ -27,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,13 +64,21 @@ public class ApplicationServiceImpl implements IApplicationService {
     @Autowired
     FileStore fileStore;
 
+    @Autowired
+    AccountRepository accountRepository;
+    @Autowired
+    private MentorRepository mentorRepository;
+
     @Override
     public ApplicationDTO create(BaseApplicationRequest request) throws BaseException {
         try {
             logger.info("Create Application");
 
             Application application = new Application();
-            application.setStudent(StudentConverter.toEntity(studentService.findById(request.getStudentId())));
+            Student student = StudentConverter.toEntity(studentService.findById(request.getStudentId()));
+            Account account = accountRepository.findById(student.getAccount().getId()).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.Account.ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+            application.setStudent(student);
             application.setStatus(ConstStatus.ApplicationStatus.PROCESSING);
             application.setEmail(request.getEmail());
             application.setIntroduce(request.getIntroduce());
@@ -75,6 +89,14 @@ public class ApplicationServiceImpl implements IApplicationService {
             application.setReasonApply(request.getReasonApply());
             application.setZaloAccount(request.getZaloAccount());
             application.setUserAddress(request.getUserAddress());
+
+            int points = student.getAccount().getPoint() - 10;
+            if(points>0){
+account.setPoint(points);
+            }
+            else{
+                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
+            }
 
             applicationRepository.save(application);
 
@@ -239,6 +261,8 @@ public class ApplicationServiceImpl implements IApplicationService {
 
         try {
             Application application = ApplicationConverter.toEntity(findById(applicationId));
+            Mentor mentor = mentorRepository.findById(application.getMentor().getId()).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.Mentor.MENTOR_NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase()));
+            Account account = accountRepository.findById(mentor.getAccount().getId()).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.Account.ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase()));
             application.setStatus(ConstStatus.ApplicationStatus.APPROVED);
 
             //create mentee
@@ -253,13 +277,19 @@ public class ApplicationServiceImpl implements IApplicationService {
 
             mentorApplyService.create(mentorApplyRequest);
 
+            int points = mentor.getAccount().getPoint() - 10;
+            if(points>0){
+                account.setPoint(points);
+            }
+            else{
+                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
+            }
 
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw baseException; // rethrow the original BaseException
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
-
 
         }
 

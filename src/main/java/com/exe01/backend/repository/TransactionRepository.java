@@ -30,4 +30,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             "a.createdDate DESC")
     List<Transaction> findAllByAccountIdAndSortByCreateDate(@Param("accountId") UUID accountId, @Param("createdDate") String createdDate, Pageable pageable);
 
+    @Query("SELECT MONTH(a.createdDate) AS month, SUM(a.amount) AS revenue " +
+            "FROM Transaction a " +
+            "WHERE a.status = 'Success' " +
+            "GROUP BY MONTH(a.createdDate)")
+    List<Object[]> getMonthlyRevenue();
 }

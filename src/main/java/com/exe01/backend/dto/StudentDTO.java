@@ -22,6 +22,10 @@ public class StudentDTO extends BaseDTO implements Serializable {
 
     private UniversityDTO university;
 
+    private String frontStudentCard;
+
+    private String backStudentCard;
+
     private AccountDTO account;
 
     private String status;

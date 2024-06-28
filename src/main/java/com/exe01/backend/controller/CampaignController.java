@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,8 +49,8 @@ public class CampaignController {
     }
 
     @Operation(summary = "Create campaign", description = "API create new campaign")
-    @PostMapping(value = ConstAPI.CampaignAPI.CREATE_CAMPAIGN)
-    public CampaignDTO create(@RequestBody CreateCampaignRequest request) throws BaseException{
+    @PostMapping(value = ConstAPI.CampaignAPI.CREATE_CAMPAIGN, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public CampaignDTO create(@ModelAttribute CreateCampaignRequest request) throws BaseException{
         log.info("Creating new campaign with request: {}", request);
         return campaignService.create(request);
     }

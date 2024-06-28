@@ -32,4 +32,9 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
                                          @Param("address") String address,
                                          Pageable pageable);
 
+    @Query(value = "SELECT c.* FROM Application a JOIN Company c ON a.mentor.company_id = c.id GROUP BY c.id ORDER BY COUNT(a.id) DESC LIMIT 5", nativeQuery = true)
+    List<Company> topFiveCompanyWithMostApplication();
+
+    Optional<Company> findByAccountId(UUID id);
+
 }

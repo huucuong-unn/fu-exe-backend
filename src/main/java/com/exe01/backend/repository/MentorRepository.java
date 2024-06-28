@@ -25,4 +25,6 @@ public interface MentorRepository extends JpaRepository<Mentor, UUID> {
     @Query(value = "SELECT a.mentor FROM Application a  WHERE a.mentorApply.status = :status AND a.student.id = :studentId")
     List<Mentor> findAllByMenteeId(@Param("studentId") UUID studentId, @Param("status") String status);
 
+    Optional<Mentor> findByAccountId(UUID id);
+
 }

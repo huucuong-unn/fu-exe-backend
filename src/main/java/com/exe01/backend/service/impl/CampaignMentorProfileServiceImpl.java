@@ -9,9 +9,11 @@ import com.exe01.backend.converter.MentorProfileConverter;
 import com.exe01.backend.dto.CampaignMentorProfileDTO;
 import com.exe01.backend.dto.request.campaignMentorProfile.CreateCampaignMentorProfileRequest;
 import com.exe01.backend.dto.request.campaignMentorProfile.UpdateCampaignMentorProfileRequest;
+import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.CampaignMentorProfile;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
+import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.CampaignMentorProfileRepository;
 import com.exe01.backend.service.ICampaignMentorProfileService;
 import com.exe01.backend.service.ICampaignService;
@@ -21,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -44,6 +47,8 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public CampaignMentorProfileDTO findById(UUID id) throws BaseException {
@@ -85,6 +90,16 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
             campaignMentorProfile.setCampaign(CampaignConverter.toEntity(campaignService.findById(request.getCampaignId())));
             campaignMentorProfile.setMentorProfile(MentorProfileConverter.toEntity(mentorProfileService.findById(request.getMentorProfileId())));
             campaignMentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
+
+            Account account = accountRepository.findById(campaignMentorProfile.getMentorProfile().getMentor().getCompany().getId()).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.Account.ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+            int points = account.getPoint() - 10;
+            if(points>0){
+                account.setPoint(points);
+            }
+            else{
+                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
+            }
 
             Set<String> keysToDelete = redisTemplate.keys("CampaignMentorProfile:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
