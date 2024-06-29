@@ -20,4 +20,6 @@ public class LoginRequest {
     @NotNull(message = "password must not be null")
     private String password;
 
+    private String loginWithRole;
+
 }

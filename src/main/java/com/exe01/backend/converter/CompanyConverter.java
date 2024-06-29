@@ -18,7 +18,7 @@ public class CompanyConverter {
         companyDTO.setWorkingTime(company.getWorkingTime());
         companyDTO.setCompanySize(company.getCompanySize());
         companyDTO.setCompanyType(company.getCompanyType());
-        companyDTO.setOvertimePolicy(company.getOvertimePolicy());
+        companyDTO.setAvatarUrl(company.getAvatarUrl());
         companyDTO.setStatus(company.getStatus());
         companyDTO.setCreatedDate(company.getCreatedDate());
         companyDTO.setModifiedDate(company.getModifiedDate());
@@ -40,7 +40,7 @@ public class CompanyConverter {
         company.setWorkingTime(companyDTO.getWorkingTime());
         company.setCompanySize(companyDTO.getCompanySize());
         company.setCompanyType(companyDTO.getCompanyType());
-        company.setOvertimePolicy(companyDTO.getOvertimePolicy());
+        company.setAvatarUrl(companyDTO.getAvatarUrl());
         company.setStatus(companyDTO.getStatus());
         company.setCreatedDate(companyDTO.getCreatedDate());
         company.setModifiedDate(companyDTO.getModifiedDate());

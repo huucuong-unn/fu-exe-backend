@@ -10,7 +10,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateAccountRequest extends BaseAccountRequest{
-//    private BaseCompanyRequest company;
-//    private BaseMentorRequest mentor;
-//    private Base
+
 }

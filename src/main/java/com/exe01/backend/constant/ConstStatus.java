@@ -4,6 +4,7 @@ public class ConstStatus {
 
     public static final String ACTIVE_STATUS = "ACTIVE";
     public static final String INACTIVE_STATUS = "INACTIVE";
+    public static final String PENDING = "PENDING";
 
     public static class CampaignStatus {
         public static final String COMPANY_APPLY = "COMPANY_APPLY";

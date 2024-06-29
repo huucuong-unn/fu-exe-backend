@@ -39,7 +39,6 @@ public class Company extends BaseEntity {
     @Column(name = "company_type", nullable = false)
     private String companyType;
 
-    @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     @Column(name = "company_size")
     private Integer companySize;
@@ -54,11 +53,6 @@ public class Company extends BaseEntity {
     @NotNull(message = "This field must not be null")
     @Column(name = "working_time")
     private String workingTime;
-
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    @Column(name = "overtime_policy")
-    private String overtimePolicy;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
