@@ -3,6 +3,7 @@ package com.exe01.backend.service.impl;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
+import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.converter.CompanyConverter;
 import com.exe01.backend.dto.CompanyDTO;
 import com.exe01.backend.dto.request.company.BaseCompanyRequest;
@@ -11,6 +12,7 @@ import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.CompanyRepository;
+import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.ICompanyService;
 import com.exe01.backend.validation.ValidateUtil;
 import org.slf4j.Logger;
@@ -34,6 +36,9 @@ public class CompanyServiceImpl implements ICompanyService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    IAccountService accountService;
+
     @Override
     public CompanyDTO create(BaseCompanyRequest request) throws BaseException {
         try {
@@ -42,17 +47,18 @@ public class CompanyServiceImpl implements ICompanyService {
             company.setName(request.getName());
             company.setCountry(request.getCountry());
             company.setAddress(request.getAddress());
-            company.setAvatarUrl(request.getAvatarUrl());
             company.setCompany_website_url(request.getCompanyWebsiteUrl());
             company.setFacebook_url(request.getFacebookUrl());
             company.setDescription(request.getDescription());
             company.setWorkingTime(request.getWorkingTime());
             company.setCompanySize(request.getCompanySize());
             company.setCompanyType(request.getCompanyType());
-            company.setOvertimePolicy(request.getOvertimePolicy());
-            company.setStatus(ConstStatus.ACTIVE_STATUS);
+            company.setStatus(ConstStatus.INACTIVE_STATUS);
+            company.setAccount(AccountConverter.toEntity(accountService.findById(request.getAccountId())));
+            company.setAvatarUrl(request.getAvatarUrlString());
 
             companyRepository.save(company);
+
 
             Set<String> keysToDelete = redisTemplate.keys("Company:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -76,14 +82,12 @@ public class CompanyServiceImpl implements ICompanyService {
             company.setName(request.getName());
             company.setCountry(request.getCountry());
             company.setAddress(request.getAddress());
-            company.setAvatarUrl(request.getAvatarUrl());
             company.setCompany_website_url(request.getCompanyWebsiteUrl());
             company.setFacebook_url(request.getFacebookUrl());
             company.setDescription(request.getDescription());
             company.setWorkingTime(request.getWorkingTime());
             company.setCompanySize(request.getCompanySize());
             company.setCompanyType(request.getCompanyType());
-            company.setOvertimePolicy(request.getOvertimePolicy());
 
             companyRepository.save(company);
 

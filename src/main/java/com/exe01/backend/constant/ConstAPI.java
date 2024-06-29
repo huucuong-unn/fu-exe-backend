@@ -17,6 +17,10 @@ public class ConstAPI {
         public static final String GET_ACCOUNT_STATUS_TRUE = "api/v1/account/account-status-true";
         public static final String GET_ACCOUNT_BY_ID = "api/v1/account/";
         public static final String CREATE_ACCOUNT = "api/v1/account/create";
+
+        public static final String CREATE_ACCOUNT_COMPANY = "api/v1/account/create-company";
+        public static final String CREATE_ACCOUNT_MENTOR = "api/v1/account/create-mentor";
+
         public static final String UPDATE_ACCOUNT = "api/v1/account/update/";
         public static final String DELETE_ACCOUNT = "api/v1/account/delete/";
         public static final String CHANGE_STATUS_ACCOUNT = "api/v1/account/change-status/";

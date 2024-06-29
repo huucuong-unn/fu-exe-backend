@@ -60,7 +60,7 @@ public class StudentServiceImpl implements IStudentService {
             student.setStudentCode(request.getStudentCode());
             student.setName(request.getName());
             student.setDob(request.getDob());
-            student.setStatus(ConstStatus.ACTIVE_STATUS);
+            student.setStatus(ConstStatus.PENDING);
 
             Account accountById = AccountConverter.toEntity(accountService.findById(request.getAccountId()));
 

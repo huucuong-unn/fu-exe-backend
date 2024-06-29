@@ -5,15 +5,20 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.AccountConverter;
-import com.exe01.backend.converter.MenteeConverter;
 import com.exe01.backend.converter.RoleConverter;
 import com.exe01.backend.converter.StudentConverter;
 import com.exe01.backend.dto.AccountDTO;
 import com.exe01.backend.dto.MenteeDTO;
 import com.exe01.backend.dto.StudentDTO;
+import com.exe01.backend.dto.request.SignUpWithCompanyRequest;
+import com.exe01.backend.dto.request.SignUpWithMentorRequest;
+import com.exe01.backend.dto.request.SignUpWithStudentRequest;
 import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
+import com.exe01.backend.dto.request.company.BaseCompanyRequest;
+import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
+import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.response.JwtAuthenticationResponse;
 import com.exe01.backend.entity.*;
 import com.exe01.backend.enums.ErrorCode;
@@ -21,10 +26,7 @@ import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.fileStore.FileStore;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.*;
-import com.exe01.backend.service.IAccountService;
-import com.exe01.backend.service.IMenteeService;
-import com.exe01.backend.service.IRoleService;
-import com.exe01.backend.service.IStudentService;
+import com.exe01.backend.service.*;
 import com.exe01.backend.validation.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +38,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,50 +83,110 @@ public class AccountServiceImpl implements IAccountService {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    @Lazy
+    private ICompanyService companyService;
+
+    @Autowired
+    @Lazy
+    private IMentorService mentorService;
+
     @Override
-    public JwtAuthenticationResponse create(CreateAccountRequest request) throws BaseException {
+    public <T> JwtAuthenticationResponse create(T signUpWithRoleRequest, String roleName) throws BaseException {
         try {
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-            logger.info("Create account");
-            // check dupplicate usernam
-            if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.USERNAME_EXISTED, ErrorCode.ERROR_500.getMessage());
-            }
-            // check dupplicate email
-            if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.EMAIL_EXISTED, ErrorCode.ERROR_500.getMessage());
-            }
+            SignUpWithStudentRequest signUpWithStudentRequest = new SignUpWithStudentRequest();
+            SignUpWithCompanyRequest signUpWithCompanyRequest = new SignUpWithCompanyRequest();
+            SignUpWithMentorRequest signUpWithMentorRequest = new SignUpWithMentorRequest();
 
-            Account account = new Account();
-            account.setUsername(request.getUsername());
-            account.setPassword(passwordEncoder.encode(request.getPassword()));
-            account.setStatus(ConstStatus.ACTIVE_STATUS);
-            account.setEmail(request.getEmail());
-            account.setPoint(0);
+            String userName = "";
+            String email = "";
+            String password = "";
 
-            Role role = RoleConverter.toEntity(roleService.findByName(request.getRoleName()));
 
-            account.setRole(role);
+            MultipartFile avatarUrl = null;
 
-            accountRepository.save(account);
-
-            switch (account.getRole().getName()) {
-                case "admin":
-                    break;
+            CreateStudentRequest createStudentRequest = new CreateStudentRequest();
+            BaseCompanyRequest createCompanyRequest = new BaseCompanyRequest();
+            CreateMentorRequest createMentorRequest = new CreateMentorRequest();
+            switch (roleName) {
                 case "company":
 
+                    signUpWithCompanyRequest = (SignUpWithCompanyRequest) signUpWithRoleRequest;
+
+                    userName = signUpWithCompanyRequest.getCreateAccountRequest().getUsername();
+                    email = signUpWithCompanyRequest.getCreateAccountRequest().getEmail();
+                    password = signUpWithCompanyRequest.getCreateAccountRequest().getPassword();
+                    avatarUrl = signUpWithCompanyRequest.getCreateAccountRequest().getAvatarUrl();
+
+                    createCompanyRequest = signUpWithCompanyRequest.getCreateCompanyRequest();
                     break;
+
                 case "mentor":
-                    System.out.println("It's a cherry!");
+                    signUpWithMentorRequest = (SignUpWithMentorRequest) signUpWithRoleRequest;
+
+                    userName = signUpWithMentorRequest.getCreateAccountRequest().getUsername();
+                    email = signUpWithMentorRequest.getCreateAccountRequest().getEmail();
+                    password = signUpWithMentorRequest.getCreateAccountRequest().getPassword();
+                    avatarUrl = signUpWithMentorRequest.getCreateAccountRequest().getAvatarUrl();
+
+                    createMentorRequest = signUpWithMentorRequest.getMentorRequest();
                     break;
-                case "mentee":
-                    System.out.println("It's a cherry!");
+                case "student":
+                    signUpWithStudentRequest = (SignUpWithStudentRequest) signUpWithRoleRequest;
+
+                    userName = signUpWithStudentRequest.getCreateAccountRequest().getUsername();
+                    email = signUpWithStudentRequest.getCreateAccountRequest().getEmail();
+                    password = signUpWithStudentRequest.getCreateAccountRequest().getPassword();
+                    avatarUrl = signUpWithStudentRequest.getCreateAccountRequest().getAvatarUrl();
+
+                    createStudentRequest = signUpWithStudentRequest.getStudentRequest();
                     break;
                 default:
                     break;
             }
-            uploadAccountImage(account.getId(), request.getAvatarUrl());
+            logger.info("Create account");
+            // check dupplicate usernam
+            if (accountRepository.findByUsername(userName).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.USERNAME_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+            // check dupplicate email
+            if (accountRepository.findByEmail(email).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Account.EMAIL_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+
+            Account account = new Account();
+            account.setUsername(userName);
+            account.setPassword(passwordEncoder.encode(password));
+            account.setStatus(ConstStatus.ACTIVE_STATUS);
+            account.setEmail(email);
+            account.setPoint(0);
+
+            Role role = RoleConverter.toEntity(roleService.findByName(roleName));
+
+            account.setRole(role);
+
+            accountRepository.save(account);
+        String avatarUrlString =    uploadAccountImage(account.getId(), avatarUrl);
             var jwtToken = jwtService.generateToken(account);
+            switch (account.getRole().getName()) {
+                case "company":
+                    createCompanyRequest.setAccountId(account.getId());
+                    createCompanyRequest.setAvatarUrlString(avatarUrlString);
+                    companyService.create(createCompanyRequest);
+                    break;
+                case "mentor":
+                    createMentorRequest.setAccountId(account.getId());
+                    mentorService.create(createMentorRequest);
+                    break;
+                case "student":
+                    createStudentRequest.setAccountId(account.getId());
+                    studentService.create(createStudentRequest);
+                    break;
+                default:
+                    break;
+            }
+
 
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
@@ -313,7 +372,7 @@ public class AccountServiceImpl implements IAccountService {
     public Boolean changeStatus(UUID id) throws BaseException {
         try {
             logger.info("Find account by id {}", id);
-Account account = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
+            Account account = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
 
             if (account.getStatus().equals(ConstStatus.ACTIVE_STATUS)) {
                 account.setStatus(ConstStatus.INACTIVE_STATUS);
@@ -346,6 +405,10 @@ Account account = accountRepository.findById(id).orElseThrow(() -> new BaseExcep
         if (account.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), "User is disabled", ErrorCode.ERROR_500.getMessage());
         }
+        if(!account.getRole().getName().equals(loginRequest.getLoginWithRole()))
+        {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), "Role is not match", ErrorCode.ERROR_500.getMessage());
+        }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(account.getUsername(),
                 loginRequest.getPassword()));
@@ -356,18 +419,18 @@ Account account = accountRepository.findById(id).orElseThrow(() -> new BaseExcep
 
     private JwtAuthenticationResponse MappingjwtAuthenticationRespone(Account account) throws BaseException {
         JwtAuthenticationResponse jwtAuthenticationRespone = new JwtAuthenticationResponse();
-        Optional<Student> student = studentRepository.findByAccountId(account.getId()) ;
+        Optional<Student> student = studentRepository.findByAccountId(account.getId());
         Optional<Mentor> mentor = mentorRepository.findByAccountId(account.getId());
         Optional<Company> company = companyRepository.findByAccountId(account.getId());
         jwtAuthenticationRespone.setId(account.getId());
 
-        if(student.isPresent()){
+        if (student.isPresent()) {
             jwtAuthenticationRespone.setStudentId(student.get().getId());
         }
-        if(mentor.isPresent()){
+        if (mentor.isPresent()) {
             jwtAuthenticationRespone.setMentorId(mentor.get().getId());
         }
-        if(company.isPresent()){
+        if (company.isPresent()) {
             jwtAuthenticationRespone.setCompanyId(company.get().getId());
         }
 
@@ -486,7 +549,7 @@ Account account = accountRepository.findById(id).orElseThrow(() -> new BaseExcep
 //    }
 
     @Override
-    public void uploadAccountImage(UUID accountId, MultipartFile file) throws BaseException {
+    public String uploadAccountImage(UUID accountId, MultipartFile file) throws BaseException {
         try {
             // 1. Check if image is not empty
             if (file.isEmpty()) {
@@ -511,6 +574,7 @@ Account account = accountRepository.findById(id).orElseThrow(() -> new BaseExcep
             fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
             account.setAvatarUrl(filename);
             accountRepository.save(account);
+            return filename;
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
                 throw (BaseException) baseException;

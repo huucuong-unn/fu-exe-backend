@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -30,11 +33,17 @@ public class BaseCompanyRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
-    private String avatarUrl;
+    private UUID accountId;
+
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    private MultipartFile avatarUrl;
 
     private String companyWebsiteUrl;
 
     private String facebookUrl;
+
+    private String avatarUrlString;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
@@ -54,8 +63,5 @@ public class BaseCompanyRequest {
     @Size(max = 100, message = "Name must be less than or equal to 100 characters")
     private String companyType;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
-    private String overtimePolicy;
 
 }
