@@ -5,7 +5,9 @@ import com.exe01.backend.bucket.BucketName;
 import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.dto.AccountDTO;
-import com.exe01.backend.dto.request.account.CreateAccountRequest;
+import com.exe01.backend.dto.request.SignUpWithCompanyRequest;
+import com.exe01.backend.dto.request.SignUpWithMentorRequest;
+import com.exe01.backend.dto.request.SignUpWithStudentRequest;
 import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.dto.response.JwtAuthenticationResponse;
@@ -21,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,10 +61,25 @@ public class AccountController {
 
     @Operation(summary = "Create account", description = "API create new account")
     @PostMapping(value = ConstAPI.AccountAPI.CREATE_ACCOUNT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
-    public JwtAuthenticationResponse create(@ModelAttribute  CreateAccountRequest request) throws BaseException {
-        log.info("Creating new account with request: {}", request);
-        return accountService.create(request);
+    public JwtAuthenticationResponse create(@ModelAttribute SignUpWithStudentRequest signUpWithRoleRequest) throws BaseException {
+        log.info("Creating new account with request: {}", signUpWithRoleRequest);
+        return accountService.create(signUpWithRoleRequest,signUpWithRoleRequest.getCreateAccountRequest().getRoleName());
     }
+
+    @Operation(summary = "Create account", description = "API create new account")
+    @PostMapping(value = ConstAPI.AccountAPI.CREATE_ACCOUNT_COMPANY, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public JwtAuthenticationResponse createForCompany(@ModelAttribute SignUpWithCompanyRequest signUpWithRoleRequest) throws BaseException {
+        log.info("Creating new account with request: {}", signUpWithRoleRequest);
+        return accountService.create(signUpWithRoleRequest,signUpWithRoleRequest.getCreateAccountRequest().getRoleName());
+    }
+
+    @Operation(summary = "Create account", description = "API create new account")
+    @PostMapping(value = ConstAPI.AccountAPI.CREATE_ACCOUNT_MENTOR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public JwtAuthenticationResponse createForMentor(@ModelAttribute SignUpWithMentorRequest signUpWithMentorRequest) throws BaseException {
+        log.info("Creating new account with request: {}", signUpWithMentorRequest);
+        return accountService.create(signUpWithMentorRequest,signUpWithMentorRequest.getCreateAccountRequest().getRoleName());
+    }
+
 
     @Operation(summary = "Login", description = "API login ")
     @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_PASSWORD_USERNAME)
@@ -128,5 +144,4 @@ public class AccountController {
         log.info("Get account with username: {}, email: {}, role: {}, status: {}, page: {}, limit: {}", userName, email, role, status, page, limit);
         return accountService.findAllForAdmin(userName, email, role, status, page, limit);
     }
-
 }

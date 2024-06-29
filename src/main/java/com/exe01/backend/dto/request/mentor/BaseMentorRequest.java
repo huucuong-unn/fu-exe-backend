@@ -23,5 +23,4 @@ public class BaseMentorRequest {
     @NotNull(message = "This field must not be null")
     private UUID companyId;
 
-
 }
