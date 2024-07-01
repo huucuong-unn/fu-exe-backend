@@ -144,4 +144,12 @@ public class AccountController {
         log.info("Get account with username: {}, email: {}, role: {}, status: {}, page: {}, limit: {}", userName, email, role, status, page, limit);
         return accountService.findAllForAdmin(userName, email, role, status, page, limit);
     }
+
+    @Operation(summary = "Approve account", description = "API approve account")
+    @PostMapping(value = ConstAPI.AccountAPI.APPROVE_ACCOUNT + "{accountId}")
+    public void approveAccount(@PathVariable("accountId") UUID accountId) throws BaseException {
+        log.info("Approve account with accountId: {}", accountId);
+         accountService.approveAccount(accountId);
+    }
+
 }

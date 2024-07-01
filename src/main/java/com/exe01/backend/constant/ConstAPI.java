@@ -30,6 +30,8 @@ public class ConstAPI {
 
         public static final String GET_ACCOUNT_FOR_ADMIN = "api/v1/account/account-for-admin";
 
+        public static final String APPROVE_ACCOUNT = "api/v1/account/approve/";
+
     }
 
     public static class AuthenticationAPI {
@@ -53,6 +55,9 @@ public class ConstAPI {
         public static final String CREATE_MENTOR_PROFILE = "api/v1/mentor-profile/create";
         public static final String UPDATE_MENTOR_PROFILE = "api/v1/mentor-profile/update/";
         public static final String DELETE_MENTOR_PROFILE = "api/v1/mentor-profile/delete/";
+
+        public static final String GET_ALL_MENTOR_PROFILE_BY_MENTOR_ID = "api/v1/mentor-profile/all/mentor/";
+        public static final String GET_MENTOR_PROFILE_BY_MENTOR_ID = "api/v1/mentor-profile/mentor/";
     }
 
     public static class MentorAPI {

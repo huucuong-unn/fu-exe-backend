@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
+import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.service.IMentorProfileService;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -69,6 +71,20 @@ public class MentorProfileController {
     public Boolean delete(@PathVariable("id") UUID id)  throws BaseException{
         log.info("Deleting mentor profile with id: {}", id);
         return mentorProfileService.delete(id);
+    }
+
+    @Operation(summary = "Find All By MentorId", description = "API Find All By MentorId")
+    @GetMapping(value = ConstAPI.MentorProfileAPI.GET_ALL_MENTOR_PROFILE_BY_MENTOR_ID + "{id}")
+    public List<MentorsResponse> findAllByMentorId(@PathVariable("id") UUID id) throws BaseException{
+        log.info("Finding all mentor profiles by mentor id: {}", id);
+        return mentorProfileService.findAllByMentorId(id);
+    }
+
+    @Operation(summary = "Find Mentor Profile Using By MentorId", description = "API Find Mentor Profile Using By MentorId")
+    @GetMapping(value = ConstAPI.MentorProfileAPI.GET_MENTOR_PROFILE_BY_MENTOR_ID + "{id}")
+    public MentorsResponse findMentorProfileUsingByMentorId(@PathVariable("id") UUID id) throws BaseException{
+        log.info("Finding mentor profile by mentor id: {}", id);
+        return mentorProfileService.findMentorProfileUsingByMentorId(id);
     }
 
 }

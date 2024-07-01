@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.UUID;
@@ -21,6 +22,10 @@ public class BaseStudentRequest {
     private UUID universityId;
 
     private UUID accountId;
+
+    private MultipartFile frontStudentCard;
+
+    private MultipartFile backStudentCard;
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")

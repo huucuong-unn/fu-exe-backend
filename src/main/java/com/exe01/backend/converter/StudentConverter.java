@@ -13,6 +13,8 @@ public class StudentConverter {
         studentDTO.setStudentCode(student.getStudentCode());
         studentDTO.setStatus(student.getStatus());
         studentDTO.setDob(student.getDob());
+        studentDTO.setFrontStudentCard(student.getFrontStudentCard());
+        studentDTO.setBackStudentCard(student.getBackStudentCard());
         studentDTO.setAccount(AccountConverter.toDto(student.getAccount()));
         studentDTO.setUniversity(UniversityConverter.toDTO(student.getUniversity()));
         studentDTO.setCreatedDate(student.getCreatedDate());

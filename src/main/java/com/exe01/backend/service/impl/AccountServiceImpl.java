@@ -4,12 +4,8 @@ import com.exe01.backend.bucket.BucketName;
 import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstHashKeyPrefix;
 import com.exe01.backend.constant.ConstStatus;
-import com.exe01.backend.converter.AccountConverter;
-import com.exe01.backend.converter.RoleConverter;
-import com.exe01.backend.converter.StudentConverter;
-import com.exe01.backend.dto.AccountDTO;
-import com.exe01.backend.dto.MenteeDTO;
-import com.exe01.backend.dto.StudentDTO;
+import com.exe01.backend.converter.*;
+import com.exe01.backend.dto.*;
 import com.exe01.backend.dto.request.SignUpWithCompanyRequest;
 import com.exe01.backend.dto.request.SignUpWithMentorRequest;
 import com.exe01.backend.dto.request.SignUpWithStudentRequest;
@@ -158,7 +154,7 @@ public class AccountServiceImpl implements IAccountService {
             Account account = new Account();
             account.setUsername(userName);
             account.setPassword(passwordEncoder.encode(password));
-            account.setStatus(ConstStatus.ACTIVE_STATUS);
+            account.setStatus(ConstStatus.PENDING);
             account.setEmail(email);
             account.setPoint(0);
 
@@ -167,7 +163,7 @@ public class AccountServiceImpl implements IAccountService {
             account.setRole(role);
 
             accountRepository.save(account);
-        String avatarUrlString =    uploadAccountImage(account.getId(), avatarUrl);
+            String avatarUrlString = uploadAccountImage(account.getId(), avatarUrl);
             var jwtToken = jwtService.generateToken(account);
             switch (account.getRole().getName()) {
                 case "company":
@@ -181,7 +177,11 @@ public class AccountServiceImpl implements IAccountService {
                     break;
                 case "student":
                     createStudentRequest.setAccountId(account.getId());
-                    studentService.create(createStudentRequest);
+                    StudentDTO student = studentService.create(createStudentRequest);
+                    List<MultipartFile> studentCardImages = new ArrayList<>();
+                    studentCardImages.add(signUpWithStudentRequest.getStudentRequest().getFrontStudentCard());
+                    studentCardImages.add(signUpWithStudentRequest.getStudentRequest().getBackStudentCard());
+                    uploadStudentCardImage(student.getId(), studentCardImages);
                     break;
                 default:
                     break;
@@ -405,8 +405,7 @@ public class AccountServiceImpl implements IAccountService {
         if (account.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), "User is disabled", ErrorCode.ERROR_500.getMessage());
         }
-        if(!account.getRole().getName().equals(loginRequest.getLoginWithRole()))
-        {
+        if (!account.getRole().getName().equals(loginRequest.getLoginWithRole())) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), "Role is not match", ErrorCode.ERROR_500.getMessage());
         }
 
@@ -583,6 +582,48 @@ public class AccountServiceImpl implements IAccountService {
         }
     }
 
+    public void uploadStudentCardImage(UUID studentId, List<MultipartFile> studentCardImages) throws BaseException {
+        try {
+            int count = 1;
+            for (MultipartFile file : studentCardImages) {
+
+                // 1. Check if image is not empty
+                if (studentCardImages.isEmpty()) {
+                    throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
+                }
+                // 2. If file is an image
+                if (!Arrays.asList("image/jpeg", "image/png", "image/jpg").contains(file.getContentType())) {
+                    throw new IllegalStateException("File must be an image [ " + file.getContentType() + "]");
+                }
+                // 3. The user exists in our database
+                Student student = studentRepository.findById(studentId).orElseThrow(() -> new IllegalStateException("Student not found"));
+                // 4. Grab some metadata from file if any
+                Map<String, String> metadata = new HashMap<>();
+                metadata.put("Content-Type", file.getContentType());
+                metadata.put("Content-Length", String.valueOf(file.getSize()));
+
+                // 5. Store the image in S3 and update database (userProfileImageLink) with S3 image link
+                String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), student.getId());
+                String originalFilename = file.getOriginalFilename();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+                String filename = String.format("%s-%s%s", UUID.randomUUID(), originalFilename.substring(0, originalFilename.lastIndexOf('.')), extension);
+                fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+                if (count == 1) {
+                    student.setFrontStudentCard(filename);
+                } else {
+                    student.setBackStudentCard(filename);
+                }
+                studentRepository.save(student);
+                count++;
+            }
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw (BaseException) baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
     @Override
     public byte[] downloadAccountImage(UUID accountId) throws BaseException {
         Account account = AccountConverter.toEntity(findById(accountId));
@@ -650,9 +691,32 @@ public class AccountServiceImpl implements IAccountService {
             } else {
                 logger.info("Fetching account from database for page {} and limit {}", page, limit);
                 List<Account> accounts = accountRepository.findAllForAdmin(userName, email, role, status, pageable);
-                accountDTOs = accounts.stream().map(AccountConverter::toDto).toList();
+                 accountDTOs = accounts.stream()
+                        .map(AccountConverter::toDto)
+                        .peek(accountDTO -> {
+                            companyRepository.findByAccountId(accountDTO.getId()).ifPresent(company -> {
+                                CompanyDTO companyDTO = CompanyConverter.toDto(company);
+                                accountDTO.setCompany(companyDTO);
+                            });
+
+                            studentRepository.findByAccountId(accountDTO.getId()).ifPresent(student -> {
+                                StudentDTO studentDTO = StudentConverter.toDto(student);
+                                studentDTO.setAccount(null);
+                                accountDTO.setStudent(studentDTO);
+                            });
+
+                            mentorRepository.findByAccountId(accountDTO.getId()).ifPresent(mentor -> {
+                                MentorDTO mentorDTO = MentorConverter.toDto(mentor);
+                                mentorDTO.setAccount(null);
+                                accountDTO.setMentor(mentorDTO);
+                            });
+                        })
+                        .toList();
+
+
                 redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ACCOUNT, hashKeyForAccount, accountDTOs);
             }
+
 
             result.setListResult(accountDTOs);
 
@@ -663,6 +727,31 @@ public class AccountServiceImpl implements IAccountService {
         } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
 
+        }
+    }
+
+    @Override
+    public void approveAccount(UUID id) throws BaseException {
+        try {
+            logger.info("Approve account");
+
+            Account account = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+            account.setId(id);
+            account.setStatus(ConstStatus.ACTIVE_STATUS);
+
+            accountRepository.save(account);
+
+            Set<String> keysToDelete = redisTemplate.keys("Account:*");
+            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
 }

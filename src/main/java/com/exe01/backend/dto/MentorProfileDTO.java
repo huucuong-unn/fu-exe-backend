@@ -1,5 +1,6 @@
 package com.exe01.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Builder
 public class MentorProfileDTO extends BaseDTO implements Serializable {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private MentorDTO mentorDTO;
 
     private String linkedinUrl;
