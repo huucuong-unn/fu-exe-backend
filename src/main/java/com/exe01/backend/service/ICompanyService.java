@@ -22,4 +22,6 @@ public interface ICompanyService extends IGenericService<CompanyDTO> {
 
     List<CompanyDTO> findAllByStatus() throws BaseException;
 
+
+
 }

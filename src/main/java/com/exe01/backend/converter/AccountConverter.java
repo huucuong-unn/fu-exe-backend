@@ -1,9 +1,18 @@
 package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.AccountDTO;
-import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Role;
+import com.exe01.backend.dto.CompanyDTO;
+import com.exe01.backend.dto.MentorDTO;
+import com.exe01.backend.dto.StudentDTO;
+import com.exe01.backend.entity.*;
 import com.exe01.backend.exception.BaseException;
+import com.exe01.backend.repository.CompanyRepository;
+import com.exe01.backend.repository.MentorRepository;
+import com.exe01.backend.repository.StudentRepository;
+import com.exe01.backend.service.ICompanyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 public class AccountConverter {
 
@@ -20,7 +29,6 @@ public class AccountConverter {
         accountDTO.setEmail(account.getEmail());
         accountDTO.setRole(RoleConverter.toDto(account.getRole()));
         accountDTO.setPoint(account.getPoint());
-
         return accountDTO;
     }
 

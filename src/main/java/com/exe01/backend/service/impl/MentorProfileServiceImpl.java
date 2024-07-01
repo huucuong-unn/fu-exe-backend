@@ -6,7 +6,9 @@ import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.GenericConverter;
 import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.MentorProfileConverter;
+import com.exe01.backend.converter.SkillMentorProfileConverter;
 import com.exe01.backend.dto.MentorProfileDTO;
+import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
 import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
@@ -19,6 +21,7 @@ import com.exe01.backend.models.PagingModel;
 import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.repository.MentorRepository;
+import com.exe01.backend.repository.SkillMentorProfileRepository;
 import com.exe01.backend.service.IMentorProfileService;
 import com.exe01.backend.service.IMentorService;
 import jakarta.persistence.EntityNotFoundException;
@@ -53,6 +56,9 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private SkillMentorProfileRepository skillMentorProfileRepository;
 
     @Override
     public MentorProfileDTO findById(UUID id) throws BaseException {
@@ -292,6 +298,71 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+    }
+
+    @Override
+    public List<MentorsResponse> findAllByMentorId(UUID id) throws BaseException {
+        try {
+
+
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "all:" + id;
+
+            List<MentorsResponse> mentorDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor)) {
+                mentorDTOs = (List<MentorsResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
+            } else {
+                List<MentorProfile> mentorProfiles = mentorProfileRepository.findAllByMentorId(id);
+                mentorDTOs = new ArrayList<>();
+                for (MentorProfile mentorProfile : mentorProfiles) {
+                    MentorsResponse mentorsResponse = new MentorsResponse();
+                    mentorsResponse.setMentorProfile(MentorProfileConverter.toDto(mentorProfile));
+                    List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
+                            .stream()
+                            .map(SkillMentorProfileConverter::toDto)
+                            .toList();
+                    mentorsResponse.setSkills(skillDTOs);
+                    mentorsResponse.getMentorProfile().setMentorDTO(null);
+                    mentorDTOs.add(mentorsResponse);
+                }
+
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor, mentorDTOs);
+            }
+
+            return mentorDTOs;
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
+    }
+
+    @Override
+    public MentorsResponse findMentorProfileUsingByMentorId(UUID id) throws BaseException {
+        try {
+            String hashKeyForMentor = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE + "USING" + id;
+
+            MentorsResponse mentorDTO = new MentorsResponse();
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor)) {
+                mentorDTO = (MentorsResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor);
+            } else {
+                MentorProfile mentorProfile = mentorProfileRepository.findByMentorIdAndStatus(id, ConstStatus.MentorProfileStatus.USING);
+                mentorDTO.setMentorProfile(MentorProfileConverter.toDto(mentorProfile));
+                    List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
+                            .stream()
+                            .map(SkillMentorProfileConverter::toDto)
+                            .toList();
+                mentorDTO.setSkills(skillDTOs);
+                mentorDTO.getMentorProfile().setMentorDTO(null);
+
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL_MENTOR_PROFILE, hashKeyForMentor, mentorDTO);
+            }
+
+            return mentorDTO;
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 
 }

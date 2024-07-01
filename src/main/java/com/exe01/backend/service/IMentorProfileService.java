@@ -18,4 +18,7 @@ public interface IMentorProfileService extends IGenericService<MentorProfileDTO>
     Boolean delete(UUID id) throws BaseException;
 
     Boolean changeStatus(UUID id) throws BaseException;
+
+    List<MentorsResponse> findAllByMentorId(UUID id) throws BaseException;
+    MentorsResponse findMentorProfileUsingByMentorId(UUID id) throws BaseException;
 }
