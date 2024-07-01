@@ -24,8 +24,9 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
 
     List<MentorProfile> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
 
-    @Query(value = "SELECT * FROM mentor_profile_tbl WHERE mentor_id = :mentorId AND status = 'ACTIVE'", nativeQuery = true)
-    MentorProfile findAllByMentorId(@Param("mentorId") UUID mentorId);
+    MentorProfile findByMentorIdAndStatus(UUID mentorId, String status);
+
+    List<MentorProfile> findAllByMentorId(UUID mentorId);
 
     @Query(value = "SELECT mp.* FROM mentor_profile_tbl mp " +
             "INNER JOIN mentor_tbl m ON mp.mentor_id = m.id " +
@@ -47,6 +48,5 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
             @Param("mentorName") String mentorName,
             Pageable pageable);
     int countByStatus(String status);
-
 
 }
