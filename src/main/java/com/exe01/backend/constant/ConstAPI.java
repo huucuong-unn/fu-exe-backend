@@ -126,7 +126,9 @@ public class ConstAPI {
         public static final String GET_MENTEE_BY_ID = "api/v1/mentee/";
         public static final String CREATE_MENTEE = "api/v1/mentee/create";
         public static final String CHANGE_STATUS_MENTEE = "api/v1/mentee/change-status/";
-        public static final String GET_MENTEE_BY_MENTORID_CAMPAIGNID = "api/v1/mentee/mentee-status-true";
+       // public static final String GET_MENTEE_BY_MENTORID_CAMPAIGNID = "api/v1/mentee/mentee-status-true";
+
+        public static final String GET_MENTEE_BY_MENTORID_CAMPAIGNID = "api/v1/mentee/mentor-campaign";
 
     }
 

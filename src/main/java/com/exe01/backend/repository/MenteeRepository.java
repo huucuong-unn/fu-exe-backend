@@ -19,11 +19,14 @@ public interface MenteeRepository extends JpaRepository<Mentee,UUID> {
 
     int countByStatus(String status);
 
-    @Query("SELECT ma.mentee FROM MentorApply ma JOIN ma.application a WHERE a.mentor.id = :mentorId")
-    List<Mentee> findMenteesByMentorId(@Param("mentorId") Long mentorId);
+    @Query("SELECT ma.mentee FROM MentorApply ma JOIN ma.application a WHERE a.mentor.id = :mentorId  and ma.campaign.id = :campaignId")
+    List<Mentee> findMenteesByMentorId(@Param("mentorId") UUID mentorId, @Param("campaignId") UUID campaignId);
 
     Optional<Mentee> findByStudentId(UUID studentId);
 
     @Query("SELECT COUNT(ma.mentee) FROM MentorApply ma JOIN ma.application a WHERE a.mentor.id = :mentorId")
     int countAllByMentorId(@Param("mentorId") UUID mentorId);
+
+    @Query("SELECT COUNT(ma.mentee) FROM MentorApply ma JOIN ma.application a WHERE a.mentor.id = :mentorId and ma.campaign.id = :campaignId")
+    int countAllByMentorIdAndCampaignId(@Param("mentorId") UUID mentorId, @Param("campaignId") UUID campaignId);
 }

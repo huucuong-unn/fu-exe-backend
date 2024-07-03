@@ -237,4 +237,48 @@ public class MenteeServiceImpl implements IMenteeService {
         }
 
     }
+
+    @Override
+    public PagingModel findMenteesByMentorIdAndCampaignId(UUID mentorId, UUID campaignId, Integer page, Integer limit) throws BaseException {
+
+        try {
+            logger.info("Find mentees by mentor id {} and campaign id {}", mentorId, campaignId);
+            mentorService.findById(mentorId);
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForMentee = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTEE + "mentor:" + mentorId + ":campaign:" + campaignId + ":" + page + ":" + limit;
+
+            List<MenteeDTO> menteeDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTEE, hashKeyForMentee)) {
+                logger.info("Fetching mentees from cache for page {} and limit {}", page, limit);
+                menteeDTOs = (List<MenteeDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTEE, hashKeyForMentee);
+            } else {
+                logger.info("Fetching mentees from database for page {} and limit {}", page, limit);
+                List<Mentee> mentees = menteeRepository.findMenteesByMentorId(mentorId, campaignId);
+                menteeDTOs = mentees.stream().map(MenteeConverter::toDto).toList();
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTEE, hashKeyForMentee, menteeDTOs);
+            }
+
+            result.setListResult(menteeDTOs);
+            result.setTotalPage(((int) Math.ceil((double) (totalItemByMentorIdAndCampaignId(mentorId, campaignId)) / limit)));
+            result.setTotalCount(totalItemByMentorIdAndCampaignId(mentorId, campaignId));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
+    }
+
+    private int totalItemByMentorIdAndCampaignId(UUID mentorId, UUID campaignId) {
+        return menteeRepository.countAllByMentorIdAndCampaignId(mentorId, campaignId);
+    }
+
 }
