@@ -16,6 +16,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     Optional<Transaction> findById(UUID id);
 
+
     List<Transaction> findAllByOrderByCreatedDate(Pageable pageable);
 
     List<Transaction> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
@@ -35,4 +36,22 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             "WHERE a.status = 'Success' " +
             "GROUP BY MONTH(a.createdDate)")
     List<Object[]> getMonthlyRevenue();
+
+    @Query("SELECT t FROM Transaction t WHERE " +
+            "(:email IS NULL OR :email = '' OR LOWER(t.account.email) LIKE LOWER(CONCAT('%', :email, '%'))) AND " +
+            "(:status IS NULL OR :status = '' OR :status = t.status) ORDER BY " +
+            "CASE WHEN :sortAmount = 'asc' THEN t.amount END ASC, " +
+            "CASE WHEN :sortAmount = 'desc' THEN t.amount END DESC, " +
+            "CASE WHEN :sortPoint = 'asc' THEN t.points END ASC, " +
+            "CASE WHEN :sortPoint = 'desc' THEN t.points END DESC, " +
+            "CASE WHEN :sortCreatedDate = 'asc' THEN t.createdDate END ASC, " +
+            "CASE WHEN :sortCreatedDate = 'desc' THEN t.createdDate END DESC, " +
+            "t.createdDate DESC")
+    List<Transaction> findByEmailOrderByCreatedDateAndAmount(@Param("email") String email,
+                                                             @Param("status") String status,
+                                                             @Param("sortAmount") String sortAmount,
+                                                             @Param("sortPoint") String sortPoint,
+                                                             @Param("sortCreatedDate") String sortCreatedDate,
+                                                             Pageable pageable);
+
 }

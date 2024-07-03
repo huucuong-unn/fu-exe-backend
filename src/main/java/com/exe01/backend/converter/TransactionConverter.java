@@ -13,7 +13,7 @@ public class TransactionConverter {
         transactionDTO.setAmount(transaction.getAmount());
         transactionDTO.setStatus(transaction.getStatus());
         transactionDTO.setPoints(transaction.getPoints());
-        transactionDTO.setAccountId(transaction.getAccount().getId());
+        transactionDTO.setAccount(AccountConverter.toDto(transaction.getAccount()));
         transactionDTO.setCreatedDate(transaction.getCreatedDate());
         transactionDTO.setModifiedDate(transaction.getModifiedDate());
         transactionDTO.setCreatedBy(transaction.getCreatedBy());
@@ -29,7 +29,7 @@ public class TransactionConverter {
         transaction.setStatus(transaction.getStatus());
         transaction.setPoints(transaction.getPoints());
         Account account = new Account();
-        account.setId(transactionDTO.getAccountId());
+        account.setId(transactionDTO.getAccount().getId());
         transaction.setAccount( account);
         transaction.setCreatedDate(transaction.getCreatedDate());
         transaction.setModifiedDate(transaction.getModifiedDate());
