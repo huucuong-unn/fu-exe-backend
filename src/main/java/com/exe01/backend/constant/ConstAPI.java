@@ -187,6 +187,8 @@ public class ConstAPI {
         public static final String GET_TRANSACTION_BY_ID = "api/v1/transaction/";
         public static final String CREATE_TRANSACTION = "api/v1/transaction/create";
         public static final String GET_TRANSACTION_BY_ACCOUNT_ID_AND_SORT_BY_CREATED_DATE = "api/v1/transaction/account/";
+
+        public static final String GET_TRANSACTION_FOR_ADMIN = "api/v1/transaction/admin";
     }
 
     public static class NotificationAPI
