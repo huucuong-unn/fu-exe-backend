@@ -70,5 +70,11 @@ public class MenteeController {
 //        return menteeService.changeStatus(id);
 //    }
 
+    @Operation(summary = "Get mentee by mentorId and campaignId", description = "API get mentee by mentortId and campaignid")
+    @GetMapping(value = ConstAPI.MenteeAPI.GET_MENTEE_BY_MENTORID_CAMPAIGNID )
+    public PagingModel findByMentorIdAndCampaignId(@RequestParam("mentorId") UUID mentorId, @RequestParam("campaignId") UUID campaignId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all mentee with mentorId: {}, campaignId: {}, page: {}, limit: {}", mentorId, campaignId, page, limit);
+        return menteeService.findMenteesByMentorIdAndCampaignId(mentorId, campaignId, page, limit);
+    }
 
 }
