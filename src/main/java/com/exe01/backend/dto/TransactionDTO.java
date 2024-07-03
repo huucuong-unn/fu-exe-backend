@@ -21,6 +21,6 @@ public class TransactionDTO extends BaseDTO implements Serializable {
 
     private Integer points;
 
-    private UUID accountId;
+    private AccountDTO account;
 
 }

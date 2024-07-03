@@ -250,4 +250,35 @@ public class TransactionService implements ITransactionService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public PagingModel findByEmailOrderByCreatedDateAndAmount(String email,String status ,String sortAmount, String sortPoint, String sortCreatedDate, int page, int limit) throws BaseException {
+
+        try {
+            logger.info("Get all transaction with status active");
+            PagingModel result = new PagingModel();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String cacheKey = HASH_KEY_PREFIX_FOR_TRANSACTION + "all:" + email + sortAmount +status+ sortPoint + sortCreatedDate + page + ":" + limit;
+
+            List<TransactionDTO> transactionDTOs;
+
+            if (redisTemplate.opsForHash().hasKey(HASH_KEY_PREFIX_FOR_TRANSACTION, cacheKey)) {
+                logger.info("Fetching transaction from cache for page {} and limit {}", page, limit);
+                transactionDTOs = (List<TransactionDTO>) redisTemplate.opsForHash().get(HASH_KEY_PREFIX_FOR_TRANSACTION, cacheKey);
+            } else {
+                logger.info("Fetching students from database for page {} and limit {}", page, limit);
+                List<Transaction> transactions = transactionRepository.findByEmailOrderByCreatedDateAndAmount(email, status,sortAmount, sortPoint, sortCreatedDate, pageable);
+                transactionDTOs = transactions.stream().map(TransactionConverter::toDto).toList();
+                redisTemplate.opsForHash().put(HASH_KEY_PREFIX_FOR_TRANSACTION, cacheKey, transactionDTOs);
+            }
+            result.setListResult(transactionDTOs);
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+            return result;
+        }catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
 }

@@ -17,4 +17,6 @@ public interface ITransactionService extends IGenericService<TransactionDTO> {
 
      PagingModel findAllByAccountIdAndSortByCreateDate(UUID accountId, String createdDate, int page, int size) throws BaseException;
 
+     PagingModel findByEmailOrderByCreatedDateAndAmount(String email,String status ,String sortAmount, String sortPoint, String sortCreatedDate, int page, int size) throws BaseException;
+
 }

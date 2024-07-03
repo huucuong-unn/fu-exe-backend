@@ -58,4 +58,10 @@ public class TransactionController {
         return transactionService.findAllByAccountIdAndSortByCreateDate(studentId,createdDate ,page, limit);
     }
 
+    @Operation(summary = "Get all transaction for admin", description = "API Get all transaction for admin")
+    @GetMapping(value = ConstAPI.TransactionAPI.GET_TRANSACTION_FOR_ADMIN)
+    public PagingModel findAllForAdmin(@RequestParam(value = "email",required = false) String email, @RequestParam(value = "status",required = false) String status ,@RequestParam(value = "sortAmount", required = false) String sortAmount, @RequestParam(value = "sortPoint", required = false) String sortPoint, @RequestParam(value = "sortCreatedDate", required = false) String sortCreatedDate, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all transaction for admin with email: {}, sortAmount: {}, sortPoint: {}, sortCreatedDate: {}, page: {}, limit: {}", email, sortAmount, sortPoint, sortCreatedDate, page, limit);
+        return transactionService.findByEmailOrderByCreatedDateAndAmount(email, status ,sortAmount, sortPoint, sortCreatedDate, page, limit);
+    }
 }
