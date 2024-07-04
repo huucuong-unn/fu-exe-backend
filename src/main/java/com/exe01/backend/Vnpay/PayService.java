@@ -35,9 +35,12 @@ public class PayService {
     public String payWithVNPAY(BaseTransactionRequest transactionDTO, HttpServletRequest request) throws UnsupportedEncodingException, BaseException{
         logger.info("Start Payment");
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        logger.info("cld: {}", cld);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
+
+        logger.info("vnp_CreateDate: {}", vnp_CreateDate);
 
         transactionDTO.vnp_TxnRef = Config.getRandomNumber(8);
 
