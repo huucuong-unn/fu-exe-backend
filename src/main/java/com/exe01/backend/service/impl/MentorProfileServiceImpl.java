@@ -176,21 +176,14 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             mentorProfile.setMentor(mentorById);
             mentorProfile.setLinkedinUrl(request.getLinkedinUrl());
             mentorProfile.setRequirement(request.getRequirement());
+            mentorProfile.setFacebookUrl(request.getFacebookUrl());
+            mentorProfile.setGoogleMeetUrl(request.getGoogleMeetUrl());
             mentorProfile.setDescription(request.getDescription());
             mentorProfile.setShortDescription(request.getShortDescription());
             mentorProfile.setProfilePicture(request.getProfilePicture());
             mentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
 
             mentorProfileRepository.save(mentorProfile);
-
-            int points = account.getPoint() - 10;
-            if(points>0){
-                account.setPoint(points);
-                accountRepository.save(account);
-            }
-            else{
-                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
-            }
 
             return MentorProfileConverter.toDto(mentorProfile);
 

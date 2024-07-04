@@ -15,6 +15,4 @@ public class BaseSkillMentorProfileRequest {
 
     private UUID skillId;
 
-    private String skillLevel;
-
 }

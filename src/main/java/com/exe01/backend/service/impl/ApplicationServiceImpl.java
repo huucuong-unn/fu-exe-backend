@@ -205,7 +205,8 @@ account.setPoint(points);
 
             result.setListResult(applicationDTOs);
 
-            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setTotalCount(totalItem());
             result.setLimit(limit);
 
             return result;

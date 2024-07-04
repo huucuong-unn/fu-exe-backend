@@ -8,7 +8,6 @@ public class SkillMentorProfileConverter {
     public static SkillMentorProfileDTO toDto(SkillMentorProfile skillMentorProfile) {
         SkillMentorProfileDTO skillMentorProfileDTO = new SkillMentorProfileDTO();
         skillMentorProfileDTO.setSkill(SkillConverter.toDTO(skillMentorProfile.getSkill()));
-        skillMentorProfileDTO.setSkillLevel(skillMentorProfile.getSkillLevel());
         return skillMentorProfileDTO;
     }
 

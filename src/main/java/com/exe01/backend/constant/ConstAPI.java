@@ -143,6 +143,7 @@ public class ConstAPI {
         public static final String UPDATE_SKILL = "api/v1/skill/update/";
         public static final String DELETE_SKILL = "api/v1/skill/delete/";
         public static final String CHANGE_STATUS_SKILL = "api/v1/skill/change-status/";
+        public static final String GET_ALL_SKILL = "api/v1/skill/all";
     }
 
     public static class CompanyAPI {
@@ -168,7 +169,6 @@ public class ConstAPI {
         public static final String APPROVE_APPLICATION = "api/v1/application/approve/";
         public static final String GET_APPLICATION_BY_MENTOR_ID_AND_STATUS_AND_SORT_BY_CREATED_DATE = "api/v1/application/mentor-current-campaign/";
         public static final String GET_APPLICATION_BY_STUDENT_ID_AND_STATUS_AND_SORT = "api/v1/application/student/";
-
     }
 
     public static class MentorApplyAPI {

@@ -21,4 +21,8 @@ public interface ISkillService extends IGenericService<SkillDTO> {
 
     List<AllSkillOfCompanyResponse> getAllSkillOfCompany(UUID id) throws BaseException;
 
+    List<SkillDTO> findAll() throws BaseException;
+
+    SkillDTO findByName(String name) throws BaseException;
+
 }

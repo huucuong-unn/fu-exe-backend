@@ -100,4 +100,11 @@ public class SkillController {
         return skillService.changeStatus(id);
     }
 
+    @Operation(summary = "Get all skill", description = "API get all skill")
+    @GetMapping(value = ConstAPI.SkillAPI.GET_ALL_SKILL)
+    public List<SkillDTO> findAll() throws BaseException {
+        log.info("Getting all skill");
+        return skillService.findAll();
+    }
+
 }
