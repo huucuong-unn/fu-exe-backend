@@ -31,4 +31,6 @@ public interface SkillRepository extends JpaRepository<Skill, UUID> {
             "JOIN Mentor m ON mp.mentor.id = m.id " +
             "WHERE m.company.id = :companyId")
     List<AllSkillOfCompanyResponse> findDistinctSkillsByCompanyId(@Param("companyId") UUID companyId);
+
+    Skill findByName(String name);
 }

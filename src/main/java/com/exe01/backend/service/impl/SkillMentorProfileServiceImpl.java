@@ -66,7 +66,6 @@ public class SkillMentorProfileServiceImpl implements ISkillMentorProfileService
 
             skillMentorProfile.setMentorProfile(mentorProfile);
             skillMentorProfile.setSkill(skill);
-            skillMentorProfile.setSkillLevel(request.getSkillLevel());
 
             skillMentorProfileRepository.save(skillMentorProfile);
 
