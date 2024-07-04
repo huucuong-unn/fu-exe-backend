@@ -308,6 +308,7 @@ public class MentorServiceImpl implements IMentorService {
             Mentor mentor = new Mentor();
             mentor.setAccount(account);
             mentor.setCompany(company);
+            mentor.setFullName(request.getFullName());
             mentor.setStatus(ConstStatus.ACTIVE_STATUS);
 
             Mentor saveMentor = mentorRepository.save(mentor);

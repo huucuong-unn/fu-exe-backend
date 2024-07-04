@@ -276,4 +276,64 @@ public class SkillServiceImpl implements ISkillService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public List<SkillDTO> findAll() throws BaseException {
+
+        try {
+            logger.info("Find all skill");
+            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL + "all";
+            List<SkillDTO> skillDTOByRedis = (List<SkillDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL, hashKeyForSkill);
+
+            if (!Objects.isNull(skillDTOByRedis)) {
+                return skillDTOByRedis;
+            }
+
+            List<Skill> skills = skillRepository.findAll();
+            List<SkillDTO> skillDTOs = skills.stream().map(SkillConverter::toDTO).toList();
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL, hashKeyForSkill, skillDTOs);
+
+            return skillDTOs;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+
+        }
+    }
+
+    @Override
+    public SkillDTO findByName(String name) throws BaseException {
+
+        try {
+            logger.info("Find skill by name {}", name);
+            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL + "name:" + name;
+            SkillDTO skillDTOByRedis = (SkillDTO) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL, hashKeyForSkill);
+
+            if (!Objects.isNull(skillDTOByRedis)) {
+                return skillDTOByRedis;
+            }
+
+            Skill skill = skillRepository.findByName(name);
+
+            if (Objects.isNull(skill)) {
+                logger.warn("Skill with name {} not found", name);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Skill.SKILL_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            SkillDTO skillDTOs = SkillConverter.toDTO(skill);
+
+            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_SKILL, hashKeyForSkill, skillDTOs);
+
+            return skillDTOs;
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
 }

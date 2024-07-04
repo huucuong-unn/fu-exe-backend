@@ -37,5 +37,11 @@ public class BaseMentorProfileRequest {
 
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
+    private String facebookUrl;
+
+    @NotBlank(message = "This field must not be blank")
+    @NotNull(message = "This field must not be null")
+    private String googleMeetUrl;
+
     private String profilePicture;
 }

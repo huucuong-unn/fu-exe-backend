@@ -9,13 +9,14 @@ import com.exe01.backend.dto.*;
 import com.exe01.backend.dto.request.SignUpWithCompanyRequest;
 import com.exe01.backend.dto.request.SignUpWithMentorRequest;
 import com.exe01.backend.dto.request.SignUpWithStudentRequest;
-import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.dto.request.company.BaseCompanyRequest;
 import com.exe01.backend.dto.request.mentor.CreateMentorRequest;
+import com.exe01.backend.dto.request.skillMentorProfile.BaseSkillMentorProfileRequest;
 import com.exe01.backend.dto.request.student.CreateStudentRequest;
 import com.exe01.backend.dto.response.JwtAuthenticationResponse;
+import com.exe01.backend.dto.response.mentorProfile.CreateMentorResponse;
 import com.exe01.backend.entity.*;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
@@ -87,6 +88,18 @@ public class AccountServiceImpl implements IAccountService {
     @Lazy
     private IMentorService mentorService;
 
+    @Autowired
+    @Lazy
+    private IMentorProfileService mentorProfileService;
+
+    @Autowired
+    @Lazy
+    private ISkillMentorProfileService skillMentorProfileService;
+
+    @Autowired
+    @Lazy
+    private ISkillService skillService;
+
     @Override
     public <T> JwtAuthenticationResponse create(T signUpWithRoleRequest, String roleName) throws BaseException {
         try {
@@ -98,6 +111,7 @@ public class AccountServiceImpl implements IAccountService {
             String userName = "";
             String email = "";
             String password = "";
+            String phoneNumber="";
 
 
             MultipartFile avatarUrl = null;
@@ -114,6 +128,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithCompanyRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithCompanyRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithCompanyRequest.getCreateAccountRequest().getAvatarUrl();
+                    phoneNumber =  signUpWithCompanyRequest.getCreateAccountRequest().getPhoneNumber();
 
                     createCompanyRequest = signUpWithCompanyRequest.getCreateCompanyRequest();
                     break;
@@ -125,6 +140,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithMentorRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithMentorRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithMentorRequest.getCreateAccountRequest().getAvatarUrl();
+                    phoneNumber =  signUpWithMentorRequest.getCreateAccountRequest().getPhoneNumber();
 
                     createMentorRequest = signUpWithMentorRequest.getMentorRequest();
                     break;
@@ -135,6 +151,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithStudentRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithStudentRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithStudentRequest.getCreateAccountRequest().getAvatarUrl();
+                    phoneNumber =  signUpWithStudentRequest.getCreateAccountRequest().getPhoneNumber();
 
                     createStudentRequest = signUpWithStudentRequest.getStudentRequest();
                     break;
@@ -156,6 +173,7 @@ public class AccountServiceImpl implements IAccountService {
             account.setPassword(passwordEncoder.encode(password));
             account.setStatus(ConstStatus.PENDING);
             account.setEmail(email);
+            account.setPhoneNumber(phoneNumber);
             account.setPoint(0);
 
             Role role = RoleConverter.toEntity(roleService.findByName(roleName));
@@ -173,7 +191,17 @@ public class AccountServiceImpl implements IAccountService {
                     break;
                 case "mentor":
                     createMentorRequest.setAccountId(account.getId());
-                    mentorService.create(createMentorRequest);
+                    CreateMentorResponse mentorDTO =  mentorService.create(createMentorRequest);
+                    createMentorRequest.getMentorProfileRequest().setMentorId(mentorDTO.getId());
+                    createMentorRequest.getMentorProfileRequest().setProfilePicture(avatarUrlString);
+                    MentorProfileDTO mentorProfileDTO =   mentorProfileService.create(createMentorRequest.getMentorProfileRequest());
+                    for (String skill : createMentorRequest.getSkillNames()) {
+                        SkillDTO skillDTO = skillService.findByName(skill);
+                        BaseSkillMentorProfileRequest skillMentorProfileDTO = new BaseSkillMentorProfileRequest();
+                        skillMentorProfileDTO.setMentorProfileId(mentorProfileDTO.getId());
+                        skillMentorProfileDTO.setSkillId(skillDTO.getId());
+                        skillMentorProfileService.create(skillMentorProfileDTO);
+                    }
                     break;
                 case "student":
                     createStudentRequest.setAccountId(account.getId());
@@ -186,8 +214,6 @@ public class AccountServiceImpl implements IAccountService {
                 default:
                     break;
             }
-
-
             Set<String> keysToDelete = redisTemplate.keys("Account:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
                 redisTemplate.delete(keysToDelete);

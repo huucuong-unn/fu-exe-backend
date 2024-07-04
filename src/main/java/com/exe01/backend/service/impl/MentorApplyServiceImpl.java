@@ -10,10 +10,12 @@ import com.exe01.backend.converter.MenteeConverter;
 import com.exe01.backend.dto.MentorApplyDTO;
 import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
 import com.exe01.backend.dto.response.mentorApply.MentorApplyForAdminResponse;
+import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.MentorApply;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
+import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.MentorApplyRepository;
 import com.exe01.backend.service.IApplicationService;
 import com.exe01.backend.service.ICampaignMentorProfileService;
@@ -51,6 +53,9 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
     @Autowired
     ICampaignMentorProfileService campaignMentorProfileService;
 
+    @Autowired
+    @Lazy
+    AccountRepository accountRepository;
     @Override
     public MentorApplyDTO findById(UUID id) throws BaseException {
         return null;
@@ -69,6 +74,17 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
             mentorApply.setCampaign(CampaignMentorProfileConverter.toEntity(campaignMentorProfileService.findByMentorIdAndStatus(mentorApply.getApplication().getMentor().getId(), ConstStatus.CampaignStatus.MENTEE_APPLY)).getCampaign());
 
             mentorApplyRepository.save(mentorApply);
+
+            Account account = mentorApply.getApplication().getMentor().getAccount();
+
+            int points = account.getPoint() - 10;
+            if(points>0){
+                account.setPoint(points);
+                accountRepository.save(account);
+            }
+            else{
+                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
+            }
 
             Set<String> keysToDelete = redisTemplate.keys("MentorApply:*");
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
