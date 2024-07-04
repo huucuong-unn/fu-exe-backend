@@ -5,7 +5,10 @@ import com.exe01.backend.dto.request.transaction.BaseTransactionRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.service.IAccountService;
 import com.exe01.backend.service.ITransactionService;
+import com.exe01.backend.service.impl.TransactionService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
@@ -21,6 +24,8 @@ import java.util.regex.Pattern;
 @Service
 public class PayService {
 
+    Logger logger = LoggerFactory.getLogger(PayService.class);
+
     @Autowired
     ITransactionService transactionService;
 
@@ -28,6 +33,7 @@ public class PayService {
     IAccountService accountService;
 
     public String payWithVNPAY(BaseTransactionRequest transactionDTO, HttpServletRequest request) throws UnsupportedEncodingException, BaseException{
+        logger.info("Start Payment");
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -38,6 +44,8 @@ public class PayService {
         cld.add(Calendar.MINUTE, 2);
 
         String vnp_ExpireDate = formatter.format(cld.getTime());
+
+        logger.info("vnp_Exp: {}", vnp_ExpireDate);
 
         TransactionDTO transactionDTO_db =  transactionService.create(transactionDTO);
 
