@@ -26,6 +26,7 @@ public class PayService {
 
     Logger logger = LoggerFactory.getLogger(PayService.class);
 
+
     @Autowired
     ITransactionService transactionService;
 
@@ -34,7 +35,8 @@ public class PayService {
 
     public String payWithVNPAY(BaseTransactionRequest transactionDTO, HttpServletRequest request) throws UnsupportedEncodingException, BaseException{
         logger.info("Start Payment");
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
         logger.info("cld: {}", cld);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
