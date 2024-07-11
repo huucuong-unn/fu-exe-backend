@@ -63,9 +63,10 @@ public class MentorApplyController {
                                                                          @RequestParam(value = "mentorFullName", required = false) String mentorFullName,
                                                                          @RequestParam(value = "campaignId", required = false) UUID campaignId,
                                                                          @RequestParam(value = "companyId", required = false) UUID companyId,
+                                                                         @RequestParam(value = "status", required = false) String status,
                                                                          @RequestParam(value = "page", required = false) Integer page,
                                                                          @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
-        return menteeApplyService.findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(menteeName, mentorFullName, campaignId, companyId,page, limit);
+        return menteeApplyService.findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(menteeName, mentorFullName, campaignId, companyId, status,page, limit);
     }
 
 }

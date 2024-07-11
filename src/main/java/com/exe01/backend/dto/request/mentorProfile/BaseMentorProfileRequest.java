@@ -44,4 +44,6 @@ public class BaseMentorProfileRequest {
     private String googleMeetUrl;
 
     private String profilePicture;
+
+    private String status;
 }

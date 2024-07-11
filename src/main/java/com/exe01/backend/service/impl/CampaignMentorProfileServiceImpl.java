@@ -11,10 +11,12 @@ import com.exe01.backend.dto.request.campaignMentorProfile.CreateCampaignMentorP
 import com.exe01.backend.dto.request.campaignMentorProfile.UpdateCampaignMentorProfileRequest;
 import com.exe01.backend.entity.Account;
 import com.exe01.backend.entity.CampaignMentorProfile;
+import com.exe01.backend.entity.MentorProfile;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.repository.AccountRepository;
 import com.exe01.backend.repository.CampaignMentorProfileRepository;
+import com.exe01.backend.repository.MentorProfileRepository;
 import com.exe01.backend.service.ICampaignMentorProfileService;
 import com.exe01.backend.service.ICampaignService;
 import com.exe01.backend.service.IMentorProfileService;
@@ -44,6 +46,12 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
 
     @Autowired
     ICampaignService campaignService;
+
+    @Autowired
+    CacheService cacheService;
+
+    @Autowired
+    MentorProfileRepository mentorProfileRepository;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -91,17 +99,9 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
             campaignMentorProfile.setMentorProfile(MentorProfileConverter.toEntity(mentorProfileService.findById(request.getMentorProfileId())));
             campaignMentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
 
-            Account account = accountRepository.findById(campaignMentorProfile.getMentorProfile().getMentor().getCompany().getId()).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.Account.ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase()));
-
-            int points = account.getPoint() - 10;
-            if(points>0){
-                account.setPoint(points);
-            }
-            else{
-                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
-            }
-
             Set<String> keysToDelete = redisTemplate.keys("CampaignMentorProfile:*");
+            cacheService.deleteKeysContaining("MentorProfile", "SkillMentorProfile");
+
             if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
                 redisTemplate.delete(keysToDelete);
             }
@@ -190,6 +190,28 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
           }
           throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
       }
+
+    }
+
+    @Override
+    public void swapMentorProfile(UUID oldMentorProfileId, UUID campaignId, UUID newMentorProfileId) throws BaseException {
+        try {
+            CampaignMentorProfile campaignMentorProfile = campaignMentorProfileRepository.findByMentorProfileIdAndCampaignId(oldMentorProfileId, campaignId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.CampaignMentorProfile.CAMPAIGN_MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
+            MentorProfile newMentorProfile = mentorProfileRepository.findById(newMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
+            MentorProfile oldMentorProfile = mentorProfileRepository.findById(oldMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
+            campaignMentorProfile.setMentorProfile(newMentorProfile);
+            campaignMentorProfileRepository.save(campaignMentorProfile);
+            newMentorProfile.setStatus(ConstStatus.MentorProfileStatus.USING);
+            oldMentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
+            mentorProfileRepository.save(newMentorProfile);
+            mentorProfileRepository.save(oldMentorProfile);
+            cacheService.deleteKeysContaining("MentorProfile", "SkillMentorProfile");
+        }catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
 
     }
 
