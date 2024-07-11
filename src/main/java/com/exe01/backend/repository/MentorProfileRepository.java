@@ -41,12 +41,17 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
 
     @Query("SELECT mp FROM CampaignMentorProfile cmp RIGHT JOIN MentorProfile mp ON cmp.mentorProfile.id = mp.id " +
             "WHERE (:companyId IS NULL OR mp.mentor.company.id = :companyId) " +
+            "AND (:campaignId IS NULL OR cmp.campaign.id = :campaignId) " +
             "AND mp.status = 'USING' " +
-            "AND (:mentorName IS NULL OR :mentorName ='' OR LOWER(mp.mentor.fullName) LIKE LOWER(CONCAT('%', :mentorName, '%')))")
+            "AND (:mentorName IS NULL OR :mentorName ='' OR LOWER(mp.mentor.fullName) LIKE LOWER(CONCAT('%', :mentorName, '%'))) ORDER BY mp.createdDate DESC")
     List<MentorProfile> findAllByMentorProfilesForAdminSearch(
             @Param("companyId") UUID companyId,
+            @Param("campaignId") UUID campaignId,
             @Param("mentorName") String mentorName,
             Pageable pageable);
+    @Query("SELECT mp FROM MentorProfile mp WHERE mp.id NOT IN (SELECT cmp.mentorProfile.id FROM CampaignMentorProfile cmp) AND mp.status = 'USING' AND mp.mentor.company.id = :companyId")
+    List<MentorProfile> findAllByCompanyIdForListChoose(
+            @Param("companyId") UUID companyId);
     int countByStatus(String status);
 
 }

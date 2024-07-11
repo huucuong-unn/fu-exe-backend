@@ -181,7 +181,7 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             mentorProfile.setDescription(request.getDescription());
             mentorProfile.setShortDescription(request.getShortDescription());
             mentorProfile.setProfilePicture(request.getProfilePicture());
-            mentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
+            mentorProfile.setStatus(request.getStatus());
 
             mentorProfileRepository.save(mentorProfile);
 
@@ -355,6 +355,11 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
         } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+
+    }
+
+    @Override
+    public void chooseProfile(UUID id) throws BaseException {
 
     }
 

@@ -20,12 +20,13 @@ public interface MentorApplyRepository extends JpaRepository<MentorApply, UUID> 
     @Query("SELECT m FROM MentorApply m WHERE m.application.mentor.id = :id AND (COALESCE(:status, NULL) IS NULL OR m.status = :status)")
     List<MentorApply> findByApplicationMentorId(UUID id, String status, Pageable pageable);
 
-    @Query("SELECT m FROM MentorApply m WHERE m.mentee.student.name LIKE %:menteeName% AND m.application.mentor.fullName LIKE %:mentorFullName% AND (:campaignId IS NULL OR m.campaign.id = :campaignId) AND (:companyId IS NULL OR m.application.mentor.company = :companyId)")
+    @Query("SELECT m FROM MentorApply m WHERE ( :menteeName IS NULL OR :menteeName ='' OR  m.mentee.student.name LIKE %:menteeName% ) AND ( :mentorFullName IS NULL OR :mentorFullName = '' OR  m.application.mentor.fullName LIKE %:mentorFullName% ) AND (:campaignId IS NULL OR m.campaign.id = :campaignId) AND (:companyId IS NULL OR m.application.mentor.company = :companyId) AND (:status IS NULL OR :status = '' OR m.status = :status)")
     List<MentorApply> findAllByMenteeNameAndMentorFullNameAndCampaignId(
             @Param("menteeName") String menteeName,
             @Param("mentorFullName") String mentorFullName,
             @Param("campaignId") UUID campaignId,
             @Param("companyId") UUID companyId,
+            @Param("status") String status,
             Pageable pageable);
 
     int countByStatus(String status);

@@ -194,6 +194,7 @@ public class AccountServiceImpl implements IAccountService {
                     CreateMentorResponse mentorDTO =  mentorService.create(createMentorRequest);
                     createMentorRequest.getMentorProfileRequest().setMentorId(mentorDTO.getId());
                     createMentorRequest.getMentorProfileRequest().setProfilePicture(avatarUrlString);
+                    createMentorRequest.getMentorProfileRequest().setStatus(ConstStatus.MentorProfileStatus.USING);
                     MentorProfileDTO mentorProfileDTO =   mentorProfileService.create(createMentorRequest.getMentorProfileRequest());
                     for (String skill : createMentorRequest.getSkillNames()) {
                         SkillDTO skillDTO = skillService.findByName(skill);

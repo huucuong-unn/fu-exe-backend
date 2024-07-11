@@ -74,6 +74,8 @@ public class ConstAPI {
         public static final  String GET_MENTORS_BY_STUDENT_ID = "api/v1/mentor/student/";
         public static final String GET_ALL_MENTOR_FOR_ADMIN_SEARCH = "api/v1/mentor/mentor-for-admin-search";
 
+        public static final String GET_MENTOR_FOR_LIST_CHOOSE= "api/v1/mentor/mentor-for-list-choose/";
+
     }
 
     public static class StudentAPI {

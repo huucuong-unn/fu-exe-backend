@@ -9,7 +9,7 @@ import com.exe01.backend.exception.BaseException;
 import java.util.List;
 import java.util.UUID;
 
-public interface IMentorProfileService extends IGenericService<MentorProfileDTO> {
+public interface  IMentorProfileService extends IGenericService<MentorProfileDTO> {
 
     MentorProfileDTO create(CreateMentorProfileRequest request) throws BaseException;
 
@@ -21,4 +21,6 @@ public interface IMentorProfileService extends IGenericService<MentorProfileDTO>
 
     List<MentorsResponse> findAllByMentorId(UUID id) throws BaseException;
     MentorsResponse findMentorProfileUsingByMentorId(UUID id) throws BaseException;
+
+    void chooseProfile(UUID id) throws BaseException;
 }

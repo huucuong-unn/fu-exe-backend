@@ -113,11 +113,18 @@ public class MentorController {
     @GetMapping(value = ConstAPI.MentorAPI.GET_ALL_MENTOR_FOR_ADMIN_SEARCH)
     public PagingModel getAllMentorForAdminSearch(
                                                   @RequestParam(value = "companyId", required = false) UUID companyId,
+                                                  @RequestParam(value = "campaignId", required = false) UUID campaignId,
                                                   @RequestParam(value = "mentorName", required = false) String mentorName,
                                                   @RequestParam(value = "page", required = false) Integer page,
                                                   @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all mentor for admin search with campaign id: {}, company id: {}, mentor name: {}, page: {}, limit: {}", companyId, mentorName, page, limit);
-        return mentorService.getAllMentorForAdminSearch(companyId, mentorName, page, limit);
+        return mentorService.getAllMentorForAdminSearch(companyId, campaignId,mentorName, page, limit);
     }
 
+    @Operation(summary = "Get all mentor for list choose", description = "API get all mentor for list choose")
+    @GetMapping(value = ConstAPI.MentorAPI.GET_MENTOR_FOR_LIST_CHOOSE + "{companyId}")
+    public List<MentorsResponse> findAllByCompanyIdForChoosenList(@PathVariable("companyId") UUID companyId) throws BaseException {
+        log.info("Getting all mentor for list choose with company id: {}", companyId);
+        return mentorService.findAlllByCompanyIdForChoosenList(companyId);
+    }
 }
