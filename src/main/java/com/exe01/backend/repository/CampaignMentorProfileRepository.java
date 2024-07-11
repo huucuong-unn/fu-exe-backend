@@ -21,6 +21,6 @@ public interface CampaignMentorProfileRepository extends JpaRepository<CampaignM
 
     CampaignMentorProfile findByMentorProfileMentorIdAndCampaignStatus(UUID mentorId, String status) throws BaseException;
 
-
+    Optional<CampaignMentorProfile>  findByMentorProfileIdAndCampaignId(UUID mentorProfileId, UUID campaignId);
     int countByStatus(String status);
 }

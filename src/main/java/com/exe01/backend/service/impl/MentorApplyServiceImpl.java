@@ -241,7 +241,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
     }
 
     @Override
-    public PagingModel findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(String menteeName, String mentorFullName, UUID campaignId, UUID companyId, int page, int limit) throws BaseException {
+    public PagingModel findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(String menteeName, String mentorFullName, UUID campaignId, UUID companyId,String status , int page, int limit) throws BaseException {
         try {
 
             logger.info("Get all MentorApply with status active");
@@ -259,7 +259,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
                 mentorApplyDTOs = (List<MentorApplyDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_APPLY, hashKeyForMentorApply);
             } else {
                 logger.info("Fetching mentorApplys from database for page {} and limit {}", page, limit);
-                List<MentorApply> mentorApplys = mentorApplyRepository.findAllByMenteeNameAndMentorFullNameAndCampaignId(menteeName, mentorFullName, campaignId, companyId, pageable);
+                List<MentorApply> mentorApplys = mentorApplyRepository.findAllByMenteeNameAndMentorFullNameAndCampaignId(menteeName, mentorFullName, campaignId, companyId, status,pageable);
                 mentorApplyDTOs = mentorApplys.stream().map(MentorApplyConverter::toDto).toList();
                 redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_MENTOR_APPLY, hashKeyForMentorApply, mentorApplyDTOs);
             }
