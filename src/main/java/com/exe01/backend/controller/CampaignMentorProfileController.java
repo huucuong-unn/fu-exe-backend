@@ -52,7 +52,7 @@ public class CampaignMentorProfileController {
     }
 
     @Operation(summary = "Swap Mentor Profile", description = "API Swap Mentor Profile")
-    @PutMapping(value = ConstAPI.CampaignMentorProfileAPI.SWAP_MENTOR_PROFILE + "{oldMentorProfile}}")
+    @PutMapping(value = ConstAPI.CampaignMentorProfileAPI.SWAP_MENTOR_PROFILE + "{oldMentorProfile}")
     public void swapMentorProfile(@PathVariable("oldMentorProfile") UUID oldMentorProfile, @RequestParam("campaignId") UUID campaignId, @RequestParam("newMentorProfile") UUID newMentorProfile) throws BaseException{
         log.info("Swapping mentor profile with old mentor profile: {}, campaign id: {}, new mentor profile: {}", oldMentorProfile, campaignId, newMentorProfile);
          campaignMentorProfileService.swapMentorProfile(oldMentorProfile, campaignId, newMentorProfile);
