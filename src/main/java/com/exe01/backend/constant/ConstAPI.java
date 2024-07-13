@@ -118,6 +118,7 @@ public class ConstAPI {
         public static final String CREATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/create";
         public static final String UPDATE_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/update/";
         public static final String CHANGE_STATUS_CAMPAIGN_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/change-status/";
+        public static final String SWAP_MENTOR_PROFILE = "api/v1/campaign-mentor-profile/swap-mentor-profile/";
     }
 
     public static class MenteeAPI {
