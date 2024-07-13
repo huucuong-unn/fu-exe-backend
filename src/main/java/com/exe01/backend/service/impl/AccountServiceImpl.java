@@ -9,6 +9,7 @@ import com.exe01.backend.dto.*;
 import com.exe01.backend.dto.request.SignUpWithCompanyRequest;
 import com.exe01.backend.dto.request.SignUpWithMentorRequest;
 import com.exe01.backend.dto.request.SignUpWithStudentRequest;
+import com.exe01.backend.dto.request.account.CreateAccountRequest;
 import com.exe01.backend.dto.request.account.LoginRequest;
 import com.exe01.backend.dto.request.account.UpdateAccountRequest;
 import com.exe01.backend.dto.request.company.BaseCompanyRequest;
@@ -107,11 +108,13 @@ public class AccountServiceImpl implements IAccountService {
             SignUpWithStudentRequest signUpWithStudentRequest = new SignUpWithStudentRequest();
             SignUpWithCompanyRequest signUpWithCompanyRequest = new SignUpWithCompanyRequest();
             SignUpWithMentorRequest signUpWithMentorRequest = new SignUpWithMentorRequest();
+            CreateAccountRequest accountRequest =  new CreateAccountRequest();
 
             String userName = "";
             String email = "";
             String password = "";
             String phoneNumber="";
+            String status = ConstStatus.PENDING;
 
 
             MultipartFile avatarUrl = null;
@@ -155,6 +158,15 @@ public class AccountServiceImpl implements IAccountService {
 
                     createStudentRequest = signUpWithStudentRequest.getStudentRequest();
                     break;
+                case "admin":
+                    signUpWithStudentRequest = (SignUpWithStudentRequest) signUpWithRoleRequest;
+                    userName = signUpWithStudentRequest.getCreateAccountRequest().getUsername();
+                    email = signUpWithStudentRequest.getCreateAccountRequest().getEmail();
+                    password = signUpWithStudentRequest.getCreateAccountRequest().getPassword();
+                    avatarUrl = signUpWithStudentRequest.getCreateAccountRequest().getAvatarUrl();
+                    phoneNumber =  signUpWithStudentRequest.getCreateAccountRequest().getPhoneNumber();
+                    status = ConstStatus.ACTIVE_STATUS;
+                    break;
                 default:
                     break;
             }
@@ -171,7 +183,7 @@ public class AccountServiceImpl implements IAccountService {
             Account account = new Account();
             account.setUsername(userName);
             account.setPassword(passwordEncoder.encode(password));
-            account.setStatus(ConstStatus.PENDING);
+            account.setStatus(status);
             account.setEmail(email);
             account.setPhoneNumber(phoneNumber);
             account.setPoint(0);
