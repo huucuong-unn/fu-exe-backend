@@ -13,7 +13,7 @@ public interface  IMentorProfileService extends IGenericService<MentorProfileDTO
 
     MentorProfileDTO create(CreateMentorProfileRequest request) throws BaseException;
 
-    Boolean update(UUID id, UpdateMentorProfileRequest request) throws BaseException;
+    Boolean update(UUID id, CreateMentorProfileRequest request) throws BaseException;
 
     Boolean delete(UUID id) throws BaseException;
 
@@ -23,4 +23,9 @@ public interface  IMentorProfileService extends IGenericService<MentorProfileDTO
     MentorsResponse findMentorProfileUsingByMentorId(UUID id) throws BaseException;
 
     void chooseProfile(UUID id) throws BaseException;
+
+    void createNewMentorSkillProfile(CreateMentorProfileRequest createMentorProfileRequest, List<String> skills) throws BaseException;
+
+    void updateMentorSkillProfile(CreateMentorProfileRequest id, List<String> skills) throws BaseException;
 }
+

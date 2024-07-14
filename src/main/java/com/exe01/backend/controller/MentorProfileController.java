@@ -3,6 +3,7 @@ package com.exe01.backend.controller;
 import com.exe01.backend.constant.ConstAPI;
 import com.exe01.backend.dto.MentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
+import com.exe01.backend.dto.request.mentorProfile.CreateNewMentorProfileSkills;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
 import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
 import com.exe01.backend.exception.BaseException;
@@ -58,12 +59,18 @@ public class MentorProfileController {
         log.info("Creating new mentor profile with request: {}", request);
         return mentorProfileService.create(request);
     }
+    @Operation(summary = "Create new mentor profile skill", description = "API Create new mentor profile skill")
+    @PostMapping(value = ConstAPI.MentorProfileAPI.CREATE_NEW_MENTOR_PROFILE_SKILLS)
+    public void createNewMentorSkillProfile(@RequestBody CreateNewMentorProfileSkills createMentorProfileRequest) throws BaseException{
+        log.info("Creating new mentor profile skill with request: {}", createMentorProfileRequest);
+        mentorProfileService.createNewMentorSkillProfile(createMentorProfileRequest.getCreateMentorProfileRequest(), createMentorProfileRequest.getSkills());
+    }
 
     @Operation(summary = "Update mentor profile", description = "API update mentor profile")
-    @PutMapping(value = ConstAPI.MentorProfileAPI.UPDATE_MENTOR_PROFILE + "{id}")
-    public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateMentorProfileRequest request) throws BaseException{
-        log.info("Updating mentor profile with id: {}, request: {}", id, request);
-        return mentorProfileService.update(id, request);
+    @PutMapping(value = ConstAPI.MentorProfileAPI.UPDATE_MENTOR_PROFILE)
+    public void update(@RequestBody CreateNewMentorProfileSkills request) throws BaseException{
+        log.info("Updating mentor profile with id: {}, request: {}", request.getCreateMentorProfileRequest().getMentorId());
+         mentorProfileService.updateMentorSkillProfile(request.getCreateMentorProfileRequest(), request.getSkills());
     }
 
     @Operation(summary = "Delete mentor profile", description = "API delete mentor profile")
