@@ -8,32 +8,33 @@ import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.MentorProfileConverter;
 import com.exe01.backend.converter.SkillMentorProfileConverter;
 import com.exe01.backend.dto.MentorProfileDTO;
+import com.exe01.backend.dto.SkillDTO;
 import com.exe01.backend.dto.SkillMentorProfileDTO;
 import com.exe01.backend.dto.request.mentorProfile.CreateMentorProfileRequest;
 import com.exe01.backend.dto.request.mentorProfile.UpdateMentorProfileRequest;
+import com.exe01.backend.dto.request.skillMentorProfile.BaseSkillMentorProfileRequest;
 import com.exe01.backend.dto.response.mentorProfile.MentorsResponse;
-import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Mentor;
-import com.exe01.backend.entity.MentorProfile;
+import com.exe01.backend.entity.*;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
-import com.exe01.backend.repository.AccountRepository;
-import com.exe01.backend.repository.MentorProfileRepository;
-import com.exe01.backend.repository.MentorRepository;
-import com.exe01.backend.repository.SkillMentorProfileRepository;
+import com.exe01.backend.repository.*;
 import com.exe01.backend.service.IMentorProfileService;
 import com.exe01.backend.service.IMentorService;
+import com.exe01.backend.service.ISkillMentorProfileService;
+import com.exe01.backend.service.ISkillService;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MentorProfileServiceImpl implements IMentorProfileService {
@@ -58,7 +59,21 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     private AccountRepository accountRepository;
 
     @Autowired
+    @Lazy
+    ISkillService skillService;
+
+    @Autowired
+    @Lazy
+    ISkillMentorProfileService skillMentorProfileService;
+
+    @Autowired
+    @Lazy
+    CacheService cacheService;
+
+    @Autowired
     private SkillMentorProfileRepository skillMentorProfileRepository;
+    @Autowired
+    private SkillRepository skillRepository;
 
     @Override
     public MentorProfileDTO findById(UUID id) throws BaseException {
@@ -196,24 +211,23 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     }
 
     @Override
-    public Boolean update(UUID id, UpdateMentorProfileRequest request) throws BaseException {
+    public Boolean update(UUID id, CreateMentorProfileRequest request) throws BaseException {
 
         try {
 
             logger.info("Update mentor profile with id {}", id);
             logger.info("Find mentor profile by id {}", id);
-            MentorProfile mentorProfileById = MentorProfileConverter.toEntity(findById(id));
-
+            MentorProfile mentorProfileById = mentorProfileRepository.findById(id).orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
             Mentor mentorById = MentorConverter.toEntity(mentorService.findById(request.getMentorId()));
 
             mentorProfileById.setId(id);
-            mentorProfileById.setMentor(mentorById);
             mentorProfileById.setLinkedinUrl(request.getLinkedinUrl());
             mentorProfileById.setRequirement(request.getRequirement());
+            mentorProfileById.setFacebookUrl(request.getFacebookUrl());
+            mentorProfileById.setGoogleMeetUrl(request.getGoogleMeetUrl());
             mentorProfileById.setDescription(request.getDescription());
             mentorProfileById.setShortDescription(request.getShortDescription());
             mentorProfileById.setProfilePicture(request.getProfilePicture());
-            mentorProfileById.setStatus(request.getStatus());
 
             mentorProfileRepository.save(mentorProfileById);
 
@@ -341,10 +355,10 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
             } else {
                 MentorProfile mentorProfile = mentorProfileRepository.findByMentorIdAndStatus(id, ConstStatus.MentorProfileStatus.USING);
                 mentorDTO.setMentorProfile(MentorProfileConverter.toDto(mentorProfile));
-                    List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
-                            .stream()
-                            .map(SkillMentorProfileConverter::toDto)
-                            .toList();
+                List<SkillMentorProfileDTO> skillDTOs = skillMentorProfileRepository.findAllByMentorProfileId(mentorProfile.getId())
+                        .stream()
+                        .map(SkillMentorProfileConverter::toDto)
+                        .toList();
                 mentorDTO.setSkills(skillDTOs);
                 mentorDTO.getMentorProfile().setMentorDTO(null);
 
@@ -361,6 +375,70 @@ public class MentorProfileServiceImpl implements IMentorProfileService {
     @Override
     public void chooseProfile(UUID id) throws BaseException {
 
+    }
+
+    @Override
+    public void createNewMentorSkillProfile(CreateMentorProfileRequest createMentorProfileRequest, List<String> skills) throws BaseException {
+        try {
+            MentorProfileDTO mentorProfileDTO = create(createMentorProfileRequest);
+            for (String skill : skills) {
+                SkillDTO skillDTO = skillService.findByName(skill);
+                BaseSkillMentorProfileRequest skillMentorProfileDTO = new BaseSkillMentorProfileRequest();
+                skillMentorProfileDTO.setMentorProfileId(mentorProfileDTO.getId());
+                skillMentorProfileDTO.setSkillId(skillDTO.getId());
+                skillMentorProfileService.create(skillMentorProfileDTO);
+            }
+            cacheService.deleteKeysContaining("MentorProfile", "SkillMentorProfile");
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public void updateMentorSkillProfile(CreateMentorProfileRequest createMentorProfileRequest, List<String> skills) throws BaseException {
+        try {
+            update(createMentorProfileRequest.getMentorProfileId(), createMentorProfileRequest);
+            List<SkillMentorProfile> skillMentorProfiles = skillMentorProfileRepository.findAllByMentorProfileId(createMentorProfileRequest.getMentorId());
+            List<Skill> skillList = skillRepository.findAll();
+
+// Collect IDs of skills that are still valid
+            Set<UUID> validSkillIds = skillList.stream()
+                    .map(Skill::getId)
+                    .collect(Collectors.toSet());
+
+// Find SkillMentorProfiles to delete
+            List<SkillMentorProfile> profilesToDelete = skillMentorProfiles.stream()
+                    .filter(profile -> !validSkillIds.contains(profile.getSkill().getId()))
+                    .collect(Collectors.toList());
+
+// Delete the identified SkillMentorProfile records
+            skillMentorProfileRepository.deleteAll(profilesToDelete);
+            for (String skillName : skills) {
+                SkillDTO skillDTO = skillService.findByName(skillName);
+
+                // Check if the SkillMentorProfile already exists
+                boolean profileExists = existsByMentorProfileIdAndSkillId(
+                        createMentorProfileRequest.getMentorProfileId(),
+                        skillDTO.getId()
+                );
+
+                if (!profileExists) {
+                    // Only create if it doesn't exist
+                    BaseSkillMentorProfileRequest skillMentorProfileDTO = new BaseSkillMentorProfileRequest();
+                    skillMentorProfileDTO.setMentorProfileId(createMentorProfileRequest.getMentorProfileId());
+                    skillMentorProfileDTO.setSkillId(skillDTO.getId());
+                    skillMentorProfileService.create(skillMentorProfileDTO);
+                }
+            }
+            cacheService.deleteKeysContaining("MentorProfile", "SkillMentorProfile");
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+    // In SkillMentorProfileService.java
+
+    public boolean existsByMentorProfileIdAndSkillId(UUID mentorProfileId, UUID skillId) {
+        return skillMentorProfileRepository.existsByMentorProfileIdAndSkillId(mentorProfileId, skillId);
     }
 
 }

@@ -15,4 +15,5 @@ public interface SkillMentorProfileRepository extends JpaRepository<SkillMentorP
     @Query(value = "SELECT * FROM skill_mentor_profile_tbl WHERE mentor_profile_id = :mentorProfileId", nativeQuery = true)
     List<SkillMentorProfile> findAllByMentorProfileId(@Param("mentorProfileId") UUID mentorProfileId);
 
+    boolean existsByMentorProfileIdAndSkillId(UUID mentorProfileId, UUID skillId);
 }
