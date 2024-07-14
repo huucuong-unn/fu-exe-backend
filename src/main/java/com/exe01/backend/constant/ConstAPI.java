@@ -52,11 +52,12 @@ public class ConstAPI {
         public static final String GET_MENTOR_PROFILE_STATUS_TRUE = "api/v1/mentor-profile/mentor-profile-status-true";
         public static final String GET_MENTOR_PROFILE_BY_ID = "api/v1/mentor-profile/";
         public static final String CREATE_MENTOR_PROFILE = "api/v1/mentor-profile/create";
-        public static final String UPDATE_MENTOR_PROFILE = "api/v1/mentor-profile/update/";
+        public static final String UPDATE_MENTOR_PROFILE = "api/v1/mentor-profile/update";
         public static final String DELETE_MENTOR_PROFILE = "api/v1/mentor-profile/delete/";
 
         public static final String GET_ALL_MENTOR_PROFILE_BY_MENTOR_ID = "api/v1/mentor-profile/all/mentor/";
         public static final String GET_MENTOR_PROFILE_BY_MENTOR_ID = "api/v1/mentor-profile/mentor/";
+        public static final String CREATE_NEW_MENTOR_PROFILE_SKILLS = "api/v1/mentor-profile/create-new-mentor-profile-skills";
     }
 
     public static class MentorAPI {

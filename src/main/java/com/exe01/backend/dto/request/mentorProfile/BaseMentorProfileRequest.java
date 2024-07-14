@@ -16,6 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BaseMentorProfileRequest {
 
+
+    private  UUID mentorProfileId;
     @NotBlank(message = "This field must not be blank")
     @NotNull(message = "This field must not be null")
     private UUID mentorId;
