@@ -69,6 +69,9 @@ public class ApplicationServiceImpl implements IApplicationService {
     @Autowired
     private MentorRepository mentorRepository;
 
+    @Autowired
+    CacheService cacheService;
+
     @Override
     public ApplicationDTO create(BaseApplicationRequest request) throws BaseException {
         try {
@@ -198,7 +201,7 @@ account.setPoint(points);
                 applicationDTOs = (List<ApplicationDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication);
             } else {
                 logger.info("Fetching applications from database for page {} and limit {}", page, limit);
-                List<Application> applications = applicationRepository.findByMentorId(mentorId, pageable);
+                List<Application> applications = applicationRepository.findByMentorIdAndStatus(mentorId,ConstStatus.ApplicationStatus.PROCESSING ,pageable);
                 applicationDTOs = applications.stream().map(ApplicationConverter::toDto).toList();
                 redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication, applicationDTOs);
             }
@@ -221,40 +224,41 @@ account.setPoint(points);
 
     @Override
     public PagingModel findByMenteeId(UUID menteeId, int page, int limit) throws BaseException {
-        try {
-            logger.info("Get all Application");
-
-            PagingModel result = new PagingModel();
-            result.setPage(page);
-            Pageable pageable = PageRequest.of(page - 1, limit);
-
-            String hashKeyForApplication = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION + menteeId + "all:" + page + ":" + limit;
-
-            List<ApplicationDTO> applicationDTOs = new ArrayList<>();
-
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication)) {
-                logger.info("Fetching applications from cache for page {} and limit {}", page, limit);
-                applicationDTOs = (List<ApplicationDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication);
-            } else {
-                logger.info("Fetching applications from database for page {} and limit {}", page, limit);
-                List<Application> applications = applicationRepository.findByMentorId(menteeId, pageable);
-                applicationDTOs = applications.stream().map(ApplicationConverter::toDto).toList();
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication, applicationDTOs);
-            }
-
-            result.setListResult(applicationDTOs);
-
-            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
-            result.setLimit(limit);
-
-            return result;
-
-        } catch (Exception baseException) {
-            if (baseException instanceof BaseException) {
-                throw baseException; // rethrow the original BaseException
-            }
-            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
-        }
+//        try {
+//            logger.info("Get all Application");
+//
+//            PagingModel result = new PagingModel();
+//            result.setPage(page);
+//            Pageable pageable = PageRequest.of(page - 1, limit);
+//
+//            String hashKeyForApplication = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION + menteeId + "all:" + page + ":" + limit;
+//
+//            List<ApplicationDTO> applicationDTOs = new ArrayList<>();
+//
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication)) {
+//                logger.info("Fetching applications from cache for page {} and limit {}", page, limit);
+//                applicationDTOs = (List<ApplicationDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication);
+//            } else {
+//                logger.info("Fetching applications from database for page {} and limit {}", page, limit);
+//                List<Application> applications = applicationRepository.findByMentorId(menteeId, pageable);
+//                applicationDTOs = applications.stream().map(ApplicationConverter::toDto).toList();
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication, applicationDTOs);
+//            }
+//
+//            result.setListResult(applicationDTOs);
+//
+//            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+//            result.setLimit(limit);
+//
+//            return result;
+//
+//        } catch (Exception baseException) {
+//            if (baseException instanceof BaseException) {
+//                throw baseException; // rethrow the original BaseException
+//            }
+//            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+//        }
+        return null;
     }
 
     @Override
@@ -277,14 +281,31 @@ account.setPoint(points);
             mentorApplyRequest.setMenteeId(menteeDTO.getId());
 
             mentorApplyService.create(mentorApplyRequest);
+            applicationRepository.save(application);
 
-            int points = mentor.getAccount().getPoint() - 10;
-            if(points>0){
-                account.setPoint(points);
+            cacheService.deleteKeysContaining("Mentee:*", "MentorApply:*", "Application:*", "Mentor:*");
+
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
             }
-            else{
-                throw  new BaseException(ErrorCode.ERROR_500.getCode(),ConstError.Account.NOT_HAVE_ENOUGH_POINT, ErrorCode.ERROR_500.getMessage());
-            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+
+        }
+
+    }
+
+    @Override
+    public void rejectApplication(UUID applicationId, String message) throws BaseException {
+
+        try {
+            Application application = ApplicationConverter.toEntity(findById(applicationId));
+            application.setStatus(ConstStatus.ApplicationStatus.REJECTED);
+
+
+            applicationRepository.save(application);
+
+            cacheService.deleteKeysContaining("Mentee:*", "MentorApply:*", "Application:*", "Mentor:*");
 
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {

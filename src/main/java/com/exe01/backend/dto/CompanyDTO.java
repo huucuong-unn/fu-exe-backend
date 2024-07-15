@@ -33,4 +33,6 @@ public class CompanyDTO extends BaseDTO implements Serializable {
 
     private String status;
 
+    private AccountDTO account;
+
 }

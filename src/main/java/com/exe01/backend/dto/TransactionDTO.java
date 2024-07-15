@@ -23,4 +23,6 @@ public class TransactionDTO extends BaseDTO implements Serializable {
 
     private AccountDTO account;
 
+    private  String type;
+
 }

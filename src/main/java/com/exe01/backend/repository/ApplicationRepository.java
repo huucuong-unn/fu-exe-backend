@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
-    List<Application> findByMentorId(UUID id, Pageable pageable);
+    List<Application> findByMentorIdAndStatus(UUID id, String status,Pageable pageable);
 
     @Query("SELECT a FROM Application a " +
             "WHERE (:status = '' OR :status IS NULL OR a.status = :status) " +

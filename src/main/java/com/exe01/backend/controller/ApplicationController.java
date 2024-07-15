@@ -75,7 +75,7 @@ public class ApplicationController {
 
     @Operation(summary = "Approve Application", description = "API approve application")
     @PostMapping(value = ConstAPI.ApplicationAPI.APPROVE_APPLICATION + "{applicationId}")
-    public void approveApplication(@PathVariable("applicationId") UUID applicationId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+    public void approveApplication(@PathVariable("applicationId") UUID applicationId) throws BaseException {
         log.info("Approve application with application id: {}", applicationId);
         applicationService.approveApplication(applicationId);
     }
