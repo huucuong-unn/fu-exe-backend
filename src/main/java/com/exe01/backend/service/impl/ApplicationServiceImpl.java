@@ -12,10 +12,7 @@ import com.exe01.backend.dto.MenteeDTO;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
 import com.exe01.backend.dto.request.mentee.MenteeRequest;
 import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
-import com.exe01.backend.entity.Account;
-import com.exe01.backend.entity.Application;
-import com.exe01.backend.entity.Mentor;
-import com.exe01.backend.entity.Student;
+import com.exe01.backend.entity.*;
 import com.exe01.backend.enums.ErrorCode;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.fileStore.FileStore;
@@ -71,6 +68,9 @@ public class ApplicationServiceImpl implements IApplicationService {
 
     @Autowired
     CacheService cacheService;
+
+    @Autowired
+    EmailService emailService;
 
     @Override
     public ApplicationDTO create(BaseApplicationRequest request) throws BaseException {
@@ -304,6 +304,12 @@ account.setPoint(points);
 
 
             applicationRepository.save(application);
+            EmailDetailsEntity emailDetailsEntity = new EmailDetailsEntity();
+            emailDetailsEntity.setType("APPLICATION");
+            emailDetailsEntity.setRecipient(application.getEmail());
+            emailDetailsEntity.setMsgBody(message);
+            emailDetailsEntity.setSubject("Application Rejected");
+            emailService.sendSimpleMail(emailDetailsEntity);
 
             cacheService.deleteKeysContaining("Mentee:*", "MentorApply:*", "Application:*", "Mentor:*");
 

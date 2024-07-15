@@ -194,9 +194,9 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
     }
 
     @Override
-    public void swapMentorProfile(UUID oldMentorProfileId, UUID campaignId, UUID newMentorProfileId) throws BaseException {
+    public void swapMentorProfile(UUID oldMentorProfileId, UUID  newMentorProfileId) throws BaseException {
         try {
-            CampaignMentorProfile campaignMentorProfile = campaignMentorProfileRepository.findByMentorProfileIdAndCampaignId(oldMentorProfileId, campaignId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.CampaignMentorProfile.CAMPAIGN_MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
+            CampaignMentorProfile campaignMentorProfile = campaignMentorProfileRepository.findByMentorProfileId(oldMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.CampaignMentorProfile.CAMPAIGN_MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
             MentorProfile newMentorProfile = mentorProfileRepository.findById(newMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
             MentorProfile oldMentorProfile = mentorProfileRepository.findById(oldMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
             campaignMentorProfile.setMentorProfile(newMentorProfile);

@@ -172,6 +172,8 @@ public class ConstAPI {
         public static final String APPROVE_APPLICATION = "api/v1/application/approve/";
         public static final String GET_APPLICATION_BY_MENTOR_ID_AND_STATUS_AND_SORT_BY_CREATED_DATE = "api/v1/application/mentor-current-campaign/";
         public static final String GET_APPLICATION_BY_STUDENT_ID_AND_STATUS_AND_SORT = "api/v1/application/student/";
+
+        public static final String REJECT_APPLICATION = "api/v1/application/reject/";
     }
 
     public static class MentorApplyAPI {

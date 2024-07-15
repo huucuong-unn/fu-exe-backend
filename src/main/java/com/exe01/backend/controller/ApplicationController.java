@@ -94,4 +94,11 @@ public class ApplicationController {
 
     }
 
+    @Operation(summary = "Reject Application", description = "API Reject Application")
+    @PostMapping(value = ConstAPI.ApplicationAPI.REJECT_APPLICATION + "{applicationId}")
+    public void rejectApplication(@PathVariable("applicationId") UUID applicationId, @RequestBody String message) throws BaseException {
+        log.info("Reject application with application id: {}", applicationId);
+        applicationService.rejectApplication(applicationId, message);
+    }
+
 }
