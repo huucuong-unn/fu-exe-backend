@@ -28,4 +28,6 @@ public class Transaction extends BaseEntity{
     @Column(name = "points")
     private Integer points;
 
+    private  String type;
+
 }

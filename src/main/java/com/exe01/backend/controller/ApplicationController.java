@@ -75,7 +75,7 @@ public class ApplicationController {
 
     @Operation(summary = "Approve Application", description = "API approve application")
     @PostMapping(value = ConstAPI.ApplicationAPI.APPROVE_APPLICATION + "{applicationId}")
-    public void approveApplication(@PathVariable("applicationId") UUID applicationId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+    public void approveApplication(@PathVariable("applicationId") UUID applicationId) throws BaseException {
         log.info("Approve application with application id: {}", applicationId);
         applicationService.approveApplication(applicationId);
     }
@@ -92,6 +92,13 @@ public class ApplicationController {
     public PagingModel findByStudentIdAndStatusAndSort(@PathVariable(value = "studentId", required = false) UUID studentId, @RequestParam(value = "companyId", required = false) UUID companyId, @RequestParam(value = "mentorName", required = false) String mentorName, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "createdDate", required = false) String createdDate, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return applicationService.findByStudentIdAndStatusAndSort(studentId, companyId, mentorName, status, createdDate, page, limit);
 
+    }
+
+    @Operation(summary = "Reject Application", description = "API Reject Application")
+    @PostMapping(value = ConstAPI.ApplicationAPI.REJECT_APPLICATION + "{applicationId}")
+    public void rejectApplication(@PathVariable("applicationId") UUID applicationId, @RequestBody String message) throws BaseException {
+        log.info("Reject application with application id: {}", applicationId);
+        applicationService.rejectApplication(applicationId, message);
     }
 
 }
