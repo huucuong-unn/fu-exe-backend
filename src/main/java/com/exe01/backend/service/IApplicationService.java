@@ -23,6 +23,8 @@ public interface IApplicationService extends IGenericService<ApplicationDTO> {
 
     void approveApplication(UUID applicationId) throws BaseException;
 
+    void rejectApplication(UUID applicationId, String message) throws BaseException;
+
     PagingModel findByMentorIdAndStatusAndSortByCreatedDate(UUID mentorId, String status, String createdDate, int page, int limit) throws BaseException;
 
     PagingModel findByStudentIdAndStatusAndSort(UUID studentId, UUID companyId, String mentorName, String status, String createdDate, int page, int limit) throws BaseException;

@@ -2,12 +2,14 @@ package com.exe01.backend.converter;
 
 import com.exe01.backend.dto.CompanyDTO;
 import com.exe01.backend.entity.Company;
+import com.exe01.backend.exception.BaseException;
 
 public class CompanyConverter {
 
     public static CompanyDTO toDto(Company company) {
         CompanyDTO companyDTO = new CompanyDTO();
         companyDTO.setId(company.getId());
+        companyDTO.setAccount(AccountConverter.toDto(company.getAccount()));
         companyDTO.setName(company.getName());
         companyDTO.setCountry(company.getCountry());
         companyDTO.setAddress(company.getAddress());
@@ -27,9 +29,10 @@ public class CompanyConverter {
         return companyDTO;
     }
 
-    public static Company toEntity(CompanyDTO companyDTO) {
+    public static Company toEntity(CompanyDTO companyDTO) throws BaseException {
         Company company = new Company();
         company.setId(companyDTO.getId());
+        company.setAccount(AccountConverter.toEntity(companyDTO.getAccount()));
         company.setName(companyDTO.getName());
         company.setCountry(companyDTO.getCountry());
         company.setAddress(companyDTO.getAddress());

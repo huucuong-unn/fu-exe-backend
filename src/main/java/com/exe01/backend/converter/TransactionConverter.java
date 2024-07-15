@@ -11,6 +11,7 @@ public class TransactionConverter {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setId(transaction.getId());
         transactionDTO.setAmount(transaction.getAmount());
+        transactionDTO.setType(transaction.getType());
         transactionDTO.setStatus(transaction.getStatus());
         transactionDTO.setPoints(transaction.getPoints());
         transactionDTO.setAccount(AccountConverter.toDto(transaction.getAccount()));
@@ -26,6 +27,7 @@ public class TransactionConverter {
         Transaction transaction = new Transaction();
         transaction.setId(transactionDTO.getId());
         transaction.setAmount(transaction.getAmount());
+        transaction.setType(transaction.getType());
         transaction.setStatus(transaction.getStatus());
         transaction.setPoints(transaction.getPoints());
         Account account = new Account();

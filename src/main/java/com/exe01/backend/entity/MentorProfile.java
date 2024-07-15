@@ -45,8 +45,6 @@ public class MentorProfile extends BaseEntity {
     @Column(name = "short_description")
     private String shortDescription;
 
-    @NotBlank(message = "This field must not be blank")
-    @NotNull(message = "This field must not be null")
     @Column(name = "profile_picture")
     private String profilePicture;
 

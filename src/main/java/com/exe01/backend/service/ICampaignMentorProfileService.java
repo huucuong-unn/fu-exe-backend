@@ -20,6 +20,6 @@ public interface ICampaignMentorProfileService{
 
     CampaignMentorProfileDTO findByMentorIdAndStatus(UUID mentorId, String status) throws BaseException;
 
-    void swapMentorProfile(UUID oldMentorProfile, UUID campaignId, UUID newMentorProfile) throws BaseException;
+    void swapMentorProfile(UUID oldMentorProfile, UUID newMentorProfile) throws BaseException;
 
 }

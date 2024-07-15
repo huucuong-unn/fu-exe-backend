@@ -13,7 +13,6 @@ public class BackendApplication {
 
 
     public static void main(String[] args) {
-        TimeZone.setDefault(TimeZone.getTimeZone("Etc/GMT+7"));
         SpringApplication.run(BackendApplication.class, args);
     }
 

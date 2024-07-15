@@ -75,7 +75,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
 
             mentorApplyRepository.save(mentorApply);
 
-            Account account = mentorApply.getApplication().getMentor().getAccount();
+            Account account = accountRepository.findById(mentorApply.getApplication().getMentor().getCompany().getAccount().getId()).get();
 
             int points = account.getPoint() - 10;
             if(points>0){
