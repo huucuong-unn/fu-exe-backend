@@ -278,7 +278,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
 
             result.setListResult(mentorApplyForAdminResponses);
 
-            result.setTotalPage(((int) Math.ceil((double) (totalItemByStatusTrue()) / limit)));
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
             result.setLimit(limit);
 
             return result;
