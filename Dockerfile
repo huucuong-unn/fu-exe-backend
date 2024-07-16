@@ -56,7 +56,7 @@ ENV FB_UNIVERSE_DOMAIN=${FB_UNIVERSE_DOMAIN}
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-COPY firebase-config.json /app/firebase-config.json  # Copy your firebase-config.json file
+COPY --from=build /app/src/main/resources/firebase-service-account.json /app/src/main/resources/firebase-service-account.json
 
 RUN mvn clean install
 
@@ -91,6 +91,6 @@ ENV FB_UNIVERSE_DOMAIN=${FB_UNIVERSE_DOMAIN}
 
 WORKDIR /app
 COPY --from=build /app/target/backend.jar /app/backend.jar
-COPY --from=build /app/firebase-config.json /app/firebase-config.json  # Copy firebase-config.json again in the runtime stage
+COPY --from=build /app/src/main/resources/firebase-service-account.json /app/src/main/resources/firebase-service-account.json
 EXPOSE 8086
 CMD ["java", "-jar", "/app/backend.jar"]
