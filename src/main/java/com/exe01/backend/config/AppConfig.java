@@ -7,11 +7,17 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import jakarta.mail.internet.MimeMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,9 +30,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @Configuration
 public class AppConfig {
+    @Value("${spring.mail.username}")
+    private String sender;
+    @Value("${spring.mail.password}")
+    private String password;
     @Autowired
     AccountRepository accountRepository;
 
@@ -38,6 +50,24 @@ public class AppConfig {
                 return accountRepository.findByUsername(username).get();
             }
         };
+    }
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.example.com"); //update with your SMTP server
+        mailSender.setPort(587); //update with your port
+
+        mailSender.setUsername(sender); //update with your username
+        mailSender.setPassword(password); //update with your password
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
     }
 
     @Bean
@@ -62,17 +92,6 @@ public class AppConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-//    @Bean
-//    FirebaseMessaging firebaseMessaging() throws IOException {
-//        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
-//                new ClassPathResource("firebase-service-account.json").getInputStream());
-//        FirebaseOptions firebaseOptions = FirebaseOptions.builder()
-//                .setCredentials(googleCredentials)
-//                .build();
-//        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "tortee");
-//    return FirebaseMessaging.getInstance(app);
-//    }
 
 
 }

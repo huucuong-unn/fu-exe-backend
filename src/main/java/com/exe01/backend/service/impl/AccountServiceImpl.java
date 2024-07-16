@@ -36,6 +36,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -444,8 +446,12 @@ public class AccountServiceImpl implements IAccountService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), "Role is not match", ErrorCode.ERROR_500.getMessage());
         }
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(account.getUsername(),
-                loginRequest.getPassword()));
+        // Authenticate the user
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(account.getUsername(), loginRequest.getPassword()));
+
+        // Set the authentication in the SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Account account = findByUsername(loginRequest.getUsername());
         return MappingjwtAuthenticationRespone(account);
