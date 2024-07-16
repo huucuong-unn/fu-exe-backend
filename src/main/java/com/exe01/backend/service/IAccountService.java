@@ -38,4 +38,5 @@ public interface IAccountService extends IGenericService<AccountDTO> {
     PagingModel findAllForAdmin(String userName, String email, String role, String status, int page, int limit) throws BaseException;
 
     void  approveAccount(UUID id) throws BaseException;
+    void rejectAccount(UUID id, String msssage) throws BaseException;
 }
