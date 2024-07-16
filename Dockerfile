@@ -56,14 +56,17 @@ ENV FB_UNIVERSE_DOMAIN=${FB_UNIVERSE_DOMAIN}
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-COPY --from=build /app/src/main/resources/firebase-service-account.json /app/src/main/resources/firebase-service-account.json
 
+# Copy the Firebase service account JSON file
+COPY src/main/resources/firebase-service-account.json /app/src/main/resources/firebase-service-account.json
+
+# Run Maven build
 RUN mvn clean install
 
 # Stage 2: Run the application
 FROM openjdk:17-jdk-slim
 
-# Set environment variables for runtime
+# Set environment variables for runtime (optional if already set above)
 ENV DB_URL=${DB_URL}
 ENV DB_USER=${DB_USER}
 ENV DB_PASSWORD=${DB_PASSWORD}
@@ -91,6 +94,9 @@ ENV FB_UNIVERSE_DOMAIN=${FB_UNIVERSE_DOMAIN}
 
 WORKDIR /app
 COPY --from=build /app/target/backend.jar /app/backend.jar
-COPY --from=build /app/src/main/resources/firebase-service-account.json /app/src/main/resources/firebase-service-account.json
+
+# Copy the Firebase service account JSON file again for runtime (if needed)
+COPY src/main/resources/firebase-service-account.json /app/src/main/resources/firebase-service-account.json
+
 EXPOSE 8086
 CMD ["java", "-jar", "/app/backend.jar"]
