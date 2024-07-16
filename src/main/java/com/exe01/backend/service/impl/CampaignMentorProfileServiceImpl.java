@@ -196,11 +196,13 @@ public class CampaignMentorProfileServiceImpl implements ICampaignMentorProfileS
     @Override
     public void swapMentorProfile(UUID oldMentorProfileId, UUID  newMentorProfileId) throws BaseException {
         try {
-            CampaignMentorProfile campaignMentorProfile = campaignMentorProfileRepository.findByMentorProfileId(oldMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.CampaignMentorProfile.CAMPAIGN_MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
+            Optional<CampaignMentorProfile> campaignMentorProfile = campaignMentorProfileRepository.findByMentorProfileId(oldMentorProfileId);
             MentorProfile newMentorProfile = mentorProfileRepository.findById(newMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
             MentorProfile oldMentorProfile = mentorProfileRepository.findById(oldMentorProfileId).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), ConstError.MentorProfile.MENTOR_PROFILE_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
-            campaignMentorProfile.setMentorProfile(newMentorProfile);
-            campaignMentorProfileRepository.save(campaignMentorProfile);
+            if(campaignMentorProfile.isPresent()){
+                campaignMentorProfile.get().setMentorProfile(newMentorProfile);
+                campaignMentorProfileRepository.save(campaignMentorProfile.get());
+            }
             newMentorProfile.setStatus(ConstStatus.MentorProfileStatus.USING);
             oldMentorProfile.setStatus(ConstStatus.ACTIVE_STATUS);
             mentorProfileRepository.save(newMentorProfile);
