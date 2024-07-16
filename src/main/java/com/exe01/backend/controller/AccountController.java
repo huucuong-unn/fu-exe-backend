@@ -154,4 +154,11 @@ public class AccountController {
          accountService.approveAccount(accountId);
     }
 
+    @Operation(summary = "Reject account", description = "API reject account")
+    @PostMapping(value = ConstAPI.AccountAPI.REJECT_ACCOUNT + "{accountId}")
+    public void rejectAccount(@PathVariable("accountId") UUID accountId, @RequestBody String message) throws BaseException {
+        log.info("Approve account with accountId: {}", accountId);
+        accountService.rejectAccount(accountId, message);
+    }
+
 }

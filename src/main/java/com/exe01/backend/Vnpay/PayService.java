@@ -36,7 +36,7 @@ public class PayService {
     public String payWithVNPAY(BaseTransactionRequest transactionDTO, HttpServletRequest request) throws UnsupportedEncodingException, BaseException{
         logger.info("Start Payment");
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
-        cld.add(Calendar.HOUR_OF_DAY, 14);
+        cld.add(Calendar.HOUR_OF_DAY, 21);
         logger.info("cld: {}", cld);
 
 
