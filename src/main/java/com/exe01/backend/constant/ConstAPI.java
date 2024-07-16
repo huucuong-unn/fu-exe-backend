@@ -31,6 +31,8 @@ public class ConstAPI {
 
         public static final String APPROVE_ACCOUNT = "api/v1/account/approve/";
 
+        public static final String REJECT_ACCOUNT = "api/v1/account/reject/";
+
     }
 
     public static class AuthenticationAPI {
