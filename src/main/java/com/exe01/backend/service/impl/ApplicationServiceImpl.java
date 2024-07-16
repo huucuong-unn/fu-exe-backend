@@ -72,6 +72,10 @@ public class ApplicationServiceImpl implements IApplicationService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    private FirebaseService firebaseService;
+
+
     @Override
     public ApplicationDTO create(BaseApplicationRequest request) throws BaseException {
         try {
@@ -282,6 +286,12 @@ account.setPoint(points);
 
             mentorApplyService.create(mentorApplyRequest);
             applicationRepository.save(application);
+
+            String token = "cnkUVQfRkh44YFnPPIiv2m:APA91bHTt6pTB4fW0pSusd9nB0NHPRZbvr1ZqeVxs8FO7ilyBuMB-AX-fO7LkiXGkSjwcBsFn8cy6J-6kfKUr9T91TDxF-pHxaCUIAMO-pQfkSPdhnP5-iXvsU42nbyLNJm1SmFcI7gg";
+            String title ="Application status";
+            String body = "Your application has been approved";
+
+             firebaseService.sendNotification(token, title, body);
 
             cacheService.deleteKeysContaining("Mentee:*", "MentorApply:*", "Application:*", "Mentor:*");
 
