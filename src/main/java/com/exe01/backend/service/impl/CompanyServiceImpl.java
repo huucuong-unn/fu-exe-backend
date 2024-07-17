@@ -6,6 +6,7 @@ import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.converter.CompanyConverter;
 import com.exe01.backend.dto.CompanyDTO;
+import com.exe01.backend.dto.Dashboard.TopFiveCompany;
 import com.exe01.backend.dto.request.company.BaseCompanyRequest;
 import com.exe01.backend.entity.Company;
 import com.exe01.backend.enums.ErrorCode;
@@ -200,6 +201,28 @@ public class CompanyServiceImpl implements ICompanyService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public List<TopFiveCompany> getTopFiveCompany() throws BaseException {
+        try {
+            logger.info("Get top five company");
+            List<Object[]> topFiveCompany = companyRepository.topFiveCompanyWithMostApplication();
+            List<TopFiveCompany> topFiveCompanies = new ArrayList<>();
+            for (Object[] objects : topFiveCompany) {
+                TopFiveCompany topFiveCompany1 = new TopFiveCompany();
+                topFiveCompany1.setCompanyName((String) objects[0]);
+                topFiveCompany1.setApplicationCount((Long) objects[1]);
+                topFiveCompanies.add(topFiveCompany1);
+            }
+            return topFiveCompanies;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
 
     @Override
     public CompanyDTO findById(UUID id) throws BaseException {

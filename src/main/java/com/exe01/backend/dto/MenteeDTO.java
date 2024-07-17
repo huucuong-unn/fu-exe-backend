@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class MenteeDTO extends BaseDTO implements Serializable {
 
     private StudentDTO student;
-
+    private String cvFile;
     private String status;
 
 
