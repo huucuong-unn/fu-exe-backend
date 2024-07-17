@@ -206,4 +206,8 @@ public class ConstAPI {
         public static final String NOTIFITION_TOKEN = "api/v1/notifcation-token";
     }
 
+    public static class DashboardAPI {
+        public static final String GET_DASHBOARD = "api/v1/dashboard";
+    }
+
 }

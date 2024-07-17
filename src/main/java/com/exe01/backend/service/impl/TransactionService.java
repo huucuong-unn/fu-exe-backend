@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.converter.TransactionConverter;
+import com.exe01.backend.dto.Dashboard.MonthlyRevenue;
 import com.exe01.backend.dto.TransactionDTO;
 import com.exe01.backend.dto.request.transaction.BaseTransactionRequest;
 import com.exe01.backend.entity.Account;
@@ -278,6 +279,24 @@ public class TransactionService implements ITransactionService {
             result.setLimit(limit);
             return result;
         }catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public List<MonthlyRevenue> getMonthlyRevenue() throws BaseException {
+        try {
+            logger.info("Get monthly revenue");
+            List<Object[]> monthlyRevenue = transactionRepository.getMonthlyRevenue();
+            List<MonthlyRevenue> monthlyRevenues = new ArrayList<>();
+            for (Object[] objects : monthlyRevenue) {
+                MonthlyRevenue monthlyRevenue1 = new MonthlyRevenue();
+                monthlyRevenue1.setMonth((Integer) objects[0]);
+                monthlyRevenue1.setRevenue((Double) objects[1]);
+                monthlyRevenues.add(monthlyRevenue1);
+            }
+            return monthlyRevenues;
+        } catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

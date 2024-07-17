@@ -8,6 +8,8 @@ import com.exe01.backend.converter.ApplicationConverter;
 import com.exe01.backend.converter.MentorConverter;
 import com.exe01.backend.converter.StudentConverter;
 import com.exe01.backend.dto.ApplicationDTO;
+import com.exe01.backend.dto.Dashboard.MonthlyApplication;
+import com.exe01.backend.dto.Dashboard.TopFiveCompany;
 import com.exe01.backend.dto.MenteeDTO;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
 import com.exe01.backend.dto.request.mentee.MenteeRequest;
@@ -447,6 +449,27 @@ account.setPoint(points);
         }
 
 
+    }
+
+    @Override
+    public List<MonthlyApplication> getApplicationByMonth() throws BaseException {
+        try {
+            logger.info("Get application by month");
+            List<Object[]> applicationCountByMonth = applicationRepository.getApplicationCountByMonth();
+            List<MonthlyApplication> monthlyApplications = new ArrayList<>();
+            for (Object[] objects : applicationCountByMonth) {
+                MonthlyApplication monthlyApplication = new MonthlyApplication();
+                monthlyApplication.setMonth((Integer) objects[0]);
+                monthlyApplication.setApplicationCount((Long) objects[1]);
+                monthlyApplications.add(monthlyApplication);
+            }
+            return monthlyApplications;
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException; // rethrow the original BaseException
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 
     @Override

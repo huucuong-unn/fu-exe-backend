@@ -30,7 +30,7 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
 
     @Query(value = "SELECT mp.* FROM mentor_profile_tbl mp " +
             "INNER JOIN mentor_tbl m ON mp.mentor_id = m.id " +
-            "WHERE m.company_id = :companyId", nativeQuery = true)
+            "WHERE m.company_id = :companyId AND mp.status = 'USING' ", nativeQuery = true)
     List<MentorProfile> findByCompanyId(@Param("companyId") UUID id);
 
     @Query("SELECT  cmp.mentorProfile  FROM CampaignMentorProfile cmp  WHERE cmp.campaign.status != :campaignStatus AND cmp.mentorProfile.mentor.company.id = :companyId and cmp.mentorProfile.status = :mentorProfileStatus AND cmp.mentorProfile.mentor.id != :mentorId")

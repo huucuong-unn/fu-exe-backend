@@ -1,12 +1,15 @@
 package com.exe01.backend.service;
 
 import com.exe01.backend.dto.ApplicationDTO;
+import com.exe01.backend.dto.Dashboard.MonthlyApplication;
+import com.exe01.backend.dto.Dashboard.TopFiveCompany;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IApplicationService extends IGenericService<ApplicationDTO> {
@@ -31,5 +34,7 @@ public interface IApplicationService extends IGenericService<ApplicationDTO> {
 
     @Async
     void uploadCvFile(UUID id, MultipartFile file) throws BaseException;
+
+    List<MonthlyApplication> getApplicationByMonth() throws BaseException;
 
 }
