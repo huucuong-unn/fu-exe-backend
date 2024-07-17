@@ -215,7 +215,7 @@ account.setPoint(points);
             result.setListResult(applicationDTOs);
 
             result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
-            result.setTotalCount(totalItem());
+            result.setTotalCount(countByMentorIdAndStatus(mentorId, ConstStatus.ApplicationStatus.PROCESSING));
             result.setLimit(limit);
 
             return result;
@@ -226,6 +226,11 @@ account.setPoint(points);
             }
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
+    }
+
+    private int countByMentorIdAndStatus(UUID mentorId, String status)
+    {
+        return applicationRepository.countByMentorIdAndStatus(mentorId, status);
     }
 
     @Override

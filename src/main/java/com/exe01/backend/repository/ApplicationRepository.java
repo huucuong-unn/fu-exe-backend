@@ -55,6 +55,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 
     int countAllByMentorCompanyId(UUID companyId);
 
+    int countByMentorIdAndStatus(UUID mentorId, String status);
+
     @Query("SELECT MONTH(a.createdDate) AS month, COUNT(a.id) AS applicationCount " +
             "FROM Application a " +
             "GROUP BY MONTH(a.createdDate) " )
