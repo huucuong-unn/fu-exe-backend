@@ -33,7 +33,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     @Query("SELECT MONTH(a.createdDate) AS month, SUM(a.amount) AS revenue " +
             "FROM Transaction a " +
-            "WHERE a.status = 'Success' " +
+            "WHERE a.status = 'SUCCESS' " +
             "GROUP BY MONTH(a.createdDate)")
     List<Object[]> getMonthlyRevenue();
 

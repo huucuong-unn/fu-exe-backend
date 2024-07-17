@@ -1,6 +1,7 @@
 package com.exe01.backend.service;
 
 import com.exe01.backend.dto.CompanyDTO;
+import com.exe01.backend.dto.Dashboard.TopFiveCompany;
 import com.exe01.backend.dto.request.company.BaseCompanyRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
@@ -22,6 +23,7 @@ public interface ICompanyService extends IGenericService<CompanyDTO> {
 
     List<CompanyDTO> findAllByStatus() throws BaseException;
 
+    List<TopFiveCompany> getTopFiveCompany() throws BaseException;
 
 
 }
