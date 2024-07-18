@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -26,6 +27,8 @@ public class PayService {
 
     Logger logger = LoggerFactory.getLogger(PayService.class);
 
+    @Value("${react.frontend.host}")
+private String frontEndHost;
 
     @Autowired
     ITransactionService transactionService;
@@ -118,12 +121,12 @@ public class PayService {
             UUID accountId = UUID.fromString(extractValue(txnRef, 2));
             accountService.updatePoint(accountId, points);
 
-            return new RedirectView("${react.frontend.host}"+ "user/history");
+            return new RedirectView(frontEndHost+ "user/history");
         } else {
             UUID transactionId = UUID.fromString(extractValue(txnRef, 3));
             transactionService.changeStatus(transactionId);
             // Trạng thái thất bại
-            return new RedirectView("${react.frontend.host}"+ "pay-failed");
+            return new RedirectView(frontEndHost+ "pay-failed");
         }
     }
 

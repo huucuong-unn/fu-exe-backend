@@ -13,9 +13,6 @@ import java.io.UnsupportedEncodingException;
 public class VnPayController {
     PayService payService;
 
-
-
-
     public VnPayController(PayService payService) {
         this.payService = payService;
     }
