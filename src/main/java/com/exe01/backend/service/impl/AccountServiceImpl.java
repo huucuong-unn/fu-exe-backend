@@ -827,5 +827,17 @@ public class AccountServiceImpl implements IAccountService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public JwtAuthenticationResponse loginWithGoogle(LoginRequest request) throws BaseException {
+        Account account = findByEmailOrUserName(request.getEmailOrUsername());
+
+        // Check if the account is disabled
+        if (account.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), "User is disabled", ErrorCode.ERROR_500.getMessage());
+        }
+
+        return MappingjwtAuthenticationRespone(account);
+    }
 }
 

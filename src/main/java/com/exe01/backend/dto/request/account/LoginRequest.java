@@ -16,8 +16,6 @@ public class LoginRequest {
     @NotNull(message = "username must not be null")
     private String emailOrUsername;
 
-    @NotBlank(message = "password must not be blank")
-    @NotNull(message = "password must not be null")
     private String password;
 
     private String loginWithRole;
