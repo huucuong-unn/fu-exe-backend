@@ -462,12 +462,18 @@ account.setPoint(points);
             logger.info("Get application by month");
             List<Object[]> applicationCountByMonth = applicationRepository.getApplicationCountByMonth();
             List<MonthlyApplication> monthlyApplications = new ArrayList<>();
-            for (Object[] objects : applicationCountByMonth) {
+            for (int i =1 ; i<=12 ; i++){
                 MonthlyApplication monthlyApplication = new MonthlyApplication();
-                monthlyApplication.setMonth((Integer) objects[0]);
-                monthlyApplication.setApplicationCount((Long) objects[1]);
+                monthlyApplication.setMonth(i);
+                for (Object[] objects : applicationCountByMonth) {
+                    if((Integer) objects[0]==i) {
+                        monthlyApplication.setApplicationCount((Long) objects[1]);
+                        break;
+                    }
+                }
                 monthlyApplications.add(monthlyApplication);
             }
+
             return monthlyApplications;
         } catch (Exception baseException) {
             if (baseException instanceof BaseException) {
