@@ -4,6 +4,7 @@ import com.exe01.backend.constant.ConstError;
 import com.exe01.backend.constant.ConstStatus;
 import com.exe01.backend.converter.AccountConverter;
 import com.exe01.backend.converter.TransactionConverter;
+import com.exe01.backend.dto.Dashboard.MonthlyApplication;
 import com.exe01.backend.dto.Dashboard.MonthlyRevenue;
 import com.exe01.backend.dto.TransactionDTO;
 import com.exe01.backend.dto.request.transaction.BaseTransactionRequest;
@@ -289,10 +290,15 @@ public class TransactionService implements ITransactionService {
             logger.info("Get monthly revenue");
             List<Object[]> monthlyRevenue = transactionRepository.getMonthlyRevenue();
             List<MonthlyRevenue> monthlyRevenues = new ArrayList<>();
-            for (Object[] objects : monthlyRevenue) {
+            for (int i =1 ; i<=12 ; i++){
                 MonthlyRevenue monthlyRevenue1 = new MonthlyRevenue();
-                monthlyRevenue1.setMonth((Integer) objects[0]);
-                monthlyRevenue1.setRevenue((Double) objects[1]);
+                monthlyRevenue1.setMonth(i);
+                for (Object[] objects : monthlyRevenue) {
+                    if((Integer) objects[0]==i) {
+                        monthlyRevenue1.setRevenue((Double) objects[1]);
+                        break;
+                    }
+                }
                 monthlyRevenues.add(monthlyRevenue1);
             }
             return monthlyRevenues;
