@@ -42,4 +42,5 @@ public interface IAccountService extends IGenericService<AccountDTO> {
 
     JwtAuthenticationResponse loginWithGoogle(LoginRequest request) throws BaseException;
 
+    int getPoint(UUID id) throws BaseException;
 }

@@ -113,12 +113,12 @@ public class AccountServiceImpl implements IAccountService {
             SignUpWithStudentRequest signUpWithStudentRequest = new SignUpWithStudentRequest();
             SignUpWithCompanyRequest signUpWithCompanyRequest = new SignUpWithCompanyRequest();
             SignUpWithMentorRequest signUpWithMentorRequest = new SignUpWithMentorRequest();
-            CreateAccountRequest accountRequest =  new CreateAccountRequest();
+            CreateAccountRequest accountRequest = new CreateAccountRequest();
 
             String userName = "";
             String email = "";
             String password = "";
-            String phoneNumber="";
+            String phoneNumber = "";
             String status = ConstStatus.PENDING;
 
 
@@ -136,7 +136,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithCompanyRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithCompanyRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithCompanyRequest.getCreateAccountRequest().getAvatarUrl();
-                    phoneNumber =  signUpWithCompanyRequest.getCreateAccountRequest().getPhoneNumber();
+                    phoneNumber = signUpWithCompanyRequest.getCreateAccountRequest().getPhoneNumber();
 
                     createCompanyRequest = signUpWithCompanyRequest.getCreateCompanyRequest();
                     break;
@@ -148,7 +148,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithMentorRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithMentorRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithMentorRequest.getCreateAccountRequest().getAvatarUrl();
-                    phoneNumber =  signUpWithMentorRequest.getCreateAccountRequest().getPhoneNumber();
+                    phoneNumber = signUpWithMentorRequest.getCreateAccountRequest().getPhoneNumber();
 
                     createMentorRequest = signUpWithMentorRequest.getMentorRequest();
                     break;
@@ -159,7 +159,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithStudentRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithStudentRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithStudentRequest.getCreateAccountRequest().getAvatarUrl();
-                    phoneNumber =  signUpWithStudentRequest.getCreateAccountRequest().getPhoneNumber();
+                    phoneNumber = signUpWithStudentRequest.getCreateAccountRequest().getPhoneNumber();
 
                     createStudentRequest = signUpWithStudentRequest.getStudentRequest();
                     break;
@@ -169,7 +169,7 @@ public class AccountServiceImpl implements IAccountService {
                     email = signUpWithStudentRequest.getCreateAccountRequest().getEmail();
                     password = signUpWithStudentRequest.getCreateAccountRequest().getPassword();
                     avatarUrl = signUpWithStudentRequest.getCreateAccountRequest().getAvatarUrl();
-                    phoneNumber =  signUpWithStudentRequest.getCreateAccountRequest().getPhoneNumber();
+                    phoneNumber = signUpWithStudentRequest.getCreateAccountRequest().getPhoneNumber();
                     status = ConstStatus.ACTIVE_STATUS;
                     break;
                 default:
@@ -208,7 +208,7 @@ public class AccountServiceImpl implements IAccountService {
                     break;
                 case "mentor":
                     createMentorRequest.setAccountId(account.getId());
-                    CreateMentorResponse mentorDTO =  mentorService.create(createMentorRequest);
+                    CreateMentorResponse mentorDTO = mentorService.create(createMentorRequest);
                     createMentorRequest.getMentorProfileRequest().setMentorId(mentorDTO.getId());
                     createMentorRequest.getMentorProfileRequest().setProfilePicture(avatarUrlString);
                     createMentorRequest.getMentorProfileRequest().setStatus(ConstStatus.MentorProfileStatus.USING);
@@ -732,7 +732,7 @@ public class AccountServiceImpl implements IAccountService {
             } else {
                 logger.info("Fetching account from database for page {} and limit {}", page, limit);
                 List<Account> accounts = accountRepository.findAllForAdmin(userName, email, role, status, pageable);
-                 accountDTOs = accounts.stream()
+                accountDTOs = accounts.stream()
                         .map(AccountConverter::toDto)
                         .peek(accountDTO -> {
                             companyRepository.findByAccountId(accountDTO.getId()).ifPresent(company -> {
@@ -838,6 +838,21 @@ public class AccountServiceImpl implements IAccountService {
         }
 
         return MappingjwtAuthenticationRespone(account);
+    }
+
+    @Override
+    public int getPoint(UUID id) throws BaseException {
+        try {
+            logger.info("Get point for account");
+            Account accountById = accountRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "Account not found", HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+            return accountById.getPoint();
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 }
 
