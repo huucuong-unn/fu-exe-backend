@@ -166,7 +166,7 @@ public class CampaignServiceImpl implements ICampaignService {
             campaign.setMenteeApplyEndDate(request.getMenteeApplyEndDate());
             campaign.setTrainingStartDate(request.getTrainingStartDate());
             campaign.setTrainingEndDate(request.getTrainingEndDate());
-            campaign.setStatus(ConstStatus.ACTIVE_STATUS);
+            campaign.setStatus(ConstStatus.CampaignStatus.COMPANY_APPLY);
 
             campaignRepository.save(campaign);
             uploadCampaignImage(campaign.getId(), request.getImg());
