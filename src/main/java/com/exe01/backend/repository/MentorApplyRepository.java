@@ -30,4 +30,6 @@ public interface MentorApplyRepository extends JpaRepository<MentorApply, UUID> 
             Pageable pageable);
 
     int countByStatus(String status);
+
+    List<MentorApply> findByMenteeStudentId(UUID id);
 }

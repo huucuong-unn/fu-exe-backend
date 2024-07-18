@@ -62,11 +62,11 @@ public class CampaignController {
         return campaignService.update(id, request);
     }
 
-    @Operation(summary = "Delete campagin", description = "API delete campagin")
+    @Operation(summary = "Change status campagin", description = "API change status campagin")
     @DeleteMapping(value = ConstAPI.CampaignAPI.CHANGE_STATUS_CAMPAIGN + "{id}")
-    public Boolean delete(@PathVariable("id") UUID id) throws BaseException{
+    public void delete(@PathVariable("id") UUID id) throws BaseException{
         log.info("Deleting university with id: {}", id);
-        return campaignService.changeStatus(id);
+         campaignService.updateStatusCampaign(id);
     }
 
     @Operation(summary = "Get all campaign without paging", description = "API get all campaign without paging")
@@ -82,5 +82,4 @@ public class CampaignController {
         log.info("Getting all campaigns with search with campaignName: {}, status: {}, page: {}, limit: {}", campaignName, status, page, limit);
         return campaignService.findAllCampaignForAdminSearch(campaignName, status, page, limit);
     }
-
 }

@@ -5,6 +5,7 @@ import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
 import com.exe01.backend.exception.BaseException;
 import com.exe01.backend.models.PagingModel;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IMentorApplyService {
@@ -22,4 +23,6 @@ public interface IMentorApplyService {
     PagingModel findByMenteeId(UUID menteeId, int page, int limit) throws BaseException;
 
     PagingModel findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(String menteeName, String mentorFullName, UUID campaignId, UUID companyId , String status ,int page, int limit) throws BaseException;
+
+    List<MentorApplyDTO> findByStudentId(UUID studentId ) throws BaseException;
 }
