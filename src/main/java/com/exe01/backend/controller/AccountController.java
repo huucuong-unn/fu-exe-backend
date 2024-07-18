@@ -91,6 +91,14 @@ public class AccountController {
         return accountService.login(request);
     }
 
+    @Operation(summary = "Login with google", description = "API login with google")
+    @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_GOOGLE)
+    public JwtAuthenticationResponse loginWithGoogle(@RequestBody LoginRequest request) throws BaseException {
+        log.info("Creating new account with request: {}", request);
+        return accountService.loginWithGoogle(request);
+    }
+
+
     @Operation(summary = "Update role", description = "API update account")
     @PutMapping(value = ConstAPI.AccountAPI.UPDATE_ACCOUNT + "{id}")
     public Boolean update(@PathVariable("id") UUID id, @RequestBody UpdateAccountRequest request) throws BaseException {

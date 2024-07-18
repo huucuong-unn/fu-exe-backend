@@ -40,5 +40,6 @@ public interface IAccountService extends IGenericService<AccountDTO> {
     void  approveAccount(UUID id) throws BaseException;
     void rejectAccount(UUID id, String msssage) throws BaseException;
 
+    JwtAuthenticationResponse loginWithGoogle(LoginRequest request) throws BaseException;
 
 }
