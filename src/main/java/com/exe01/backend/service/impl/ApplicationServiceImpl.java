@@ -11,6 +11,7 @@ import com.exe01.backend.dto.ApplicationDTO;
 import com.exe01.backend.dto.Dashboard.MonthlyApplication;
 import com.exe01.backend.dto.Dashboard.TopFiveCompany;
 import com.exe01.backend.dto.MenteeDTO;
+import com.exe01.backend.dto.request.PushNotificationRequest;
 import com.exe01.backend.dto.request.application.BaseApplicationRequest;
 import com.exe01.backend.dto.request.mentee.MenteeRequest;
 import com.exe01.backend.dto.request.mentorApply.BaseMentorApplyRequest;
@@ -75,7 +76,7 @@ public class ApplicationServiceImpl implements IApplicationService {
     EmailService emailService;
 
     @Autowired
-    private FirebaseService firebaseService;
+    private PushNotificationService pushNotificationService;
 
 
     @Override
@@ -294,11 +295,11 @@ account.setPoint(points);
             mentorApplyService.create(mentorApplyRequest);
             applicationRepository.save(application);
 
-            String token = "cnkUVQfRkh44YFnPPIiv2m:APA91bHTt6pTB4fW0pSusd9nB0NHPRZbvr1ZqeVxs8FO7ilyBuMB-AX-fO7LkiXGkSjwcBsFn8cy6J-6kfKUr9T91TDxF-pHxaCUIAMO-pQfkSPdhnP5-iXvsU42nbyLNJm1SmFcI7gg";
+            String token = "dE3y7cQWS6aNLXOIhfXKIt:APA91bHgO8ybLNiEFJF5u3moF40HN32Iet7-bf3KH7zkXQX_TY9eEHhxQpgxLXaEboucjb-M3Q3MT8TgVy23SrSUIn_G7Q7op6jmz2K_ng955aBM4_z7-phd9G9JOzhMVScYZ2ir-H0Q";
             String title ="Application status";
             String body = "Your application has been approved";
-
-             firebaseService.sendNotification(token, title, body);
+            PushNotificationRequest pushNotificationRequest = new PushNotificationRequest( title, body,null,token);
+             pushNotificationService.sendPushNotificationToToken(pushNotificationRequest);
 
             cacheService.deleteKeysContaining("Mentee:*", "MentorApply:*", "Application:*", "Mentor:*");
 
