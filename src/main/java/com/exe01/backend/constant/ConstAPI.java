@@ -33,6 +33,8 @@ public class ConstAPI {
 
         public static final String REJECT_ACCOUNT = "api/v1/account/reject/";
 
+        public static final String GET_POINT = "api/v1/account/point/";
+
     }
 
     public static class AuthenticationAPI {

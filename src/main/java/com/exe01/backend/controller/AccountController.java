@@ -170,4 +170,13 @@ public class AccountController {
         accountService.rejectAccount(accountId, message);
     }
 
+    @Operation(summary = "Get point", description = "API get point")
+    @GetMapping(value = ConstAPI.AccountAPI.GET_POINT + "{accountId}")
+    public int getPoint(@PathVariable("accountId") UUID accountId) throws BaseException {
+        log.info("Get point with accountId: {}", accountId);
+        return accountService.getPoint(accountId);
+    }
+
+
+
 }
