@@ -49,7 +49,7 @@ public interface MentorProfileRepository extends JpaRepository<MentorProfile, UU
             @Param("campaignId") UUID campaignId,
             @Param("mentorName") String mentorName,
             Pageable pageable);
-    @Query("SELECT mp FROM MentorProfile mp WHERE mp.id NOT IN (SELECT cmp.mentorProfile.id FROM CampaignMentorProfile cmp) AND mp.status = 'USING' AND mp.mentor.company.id = :companyId")
+    @Query("SELECT mp FROM MentorProfile mp WHERE mp.id NOT IN (SELECT cmp.mentorProfile.id FROM CampaignMentorProfile cmp) AND mp.status = 'USING' AND mp.mentor.company.id = :companyId AND mp.mentor.account.status= 'ACTIVE' ORDER BY mp.createdDate DESC")
     List<MentorProfile> findAllByCompanyIdForListChoose(
             @Param("companyId") UUID companyId);
     int countByStatus(String status);

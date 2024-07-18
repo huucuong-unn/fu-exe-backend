@@ -33,10 +33,13 @@ public class ConstAPI {
 
         public static final String REJECT_ACCOUNT = "api/v1/account/reject/";
 
+        public static final String GET_POINT = "api/v1/account/point/";
+
     }
 
     public static class AuthenticationAPI {
         public static final String LOGIN_WITH_PASSWORD_USERNAME = "api/v1/auth/login";
+        public static final String LOGIN_WITH_GOOGLE = "api/v1/auth/login-google";
     }
 
     public static class MajorAPI {
