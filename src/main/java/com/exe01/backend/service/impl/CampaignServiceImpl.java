@@ -118,7 +118,7 @@ public class CampaignServiceImpl implements ICampaignService {
 
             String hashKeyForCampaign = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN + "all:" + "active:" + page + ":" + limit;
 
-            List<CampaignDTO> campaignDTOs ;
+            List<CampaignDTO> campaignDTOs;
 
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
                 logger.info("Fetching campaigns from cache for page {} and limit {}", page, limit);
@@ -183,6 +183,7 @@ public class CampaignServiceImpl implements ICampaignService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
     public void uploadCampaignImage(UUID campaignId, MultipartFile file) throws BaseException {
         try {
             // 1. Check if image is not empty
@@ -284,7 +285,7 @@ public class CampaignServiceImpl implements ICampaignService {
 
             String hashKeyForCampaign = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN + "all:";
 
-            List<CampaignDTO> campaignDTOs ;
+            List<CampaignDTO> campaignDTOs;
 
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
                 logger.info("Fetching campaigns from cache");
@@ -315,7 +316,7 @@ public class CampaignServiceImpl implements ICampaignService {
 
             String hashKeyForCampaign = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN + "all:" + campaignName + ":" + status + ":" + page + ":" + size;
 
-            List<CampaignDTO> campaignDTOs ;
+            List<CampaignDTO> campaignDTOs;
 
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CAMPAIGN, hashKeyForCampaign)) {
                 logger.info("Fetching campaigns from cache for page {} and limit {}", page, size);
@@ -339,5 +340,39 @@ public class CampaignServiceImpl implements ICampaignService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
 
+    }
+
+    @Override
+    public void updateStatusCampaign(UUID campaignId) throws BaseException {
+        try {
+            logger.info("Update status campaign");
+
+            Campaign campaign = campaignRepository.findById(campaignId).orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Campaign.CAMPAIGN_NOT_FOUND, ErrorCode.ERROR_500.getMessage()));
+            switch (campaign.getStatus()) {
+                case ConstStatus.CampaignStatus.COMPANY_APPLY:
+                    campaign.setStatus(ConstStatus.CampaignStatus.STUDENT_APPLY);
+                    break;
+                case ConstStatus.CampaignStatus.STUDENT_APPLY:
+                    campaign.setStatus(ConstStatus.CampaignStatus.TRAINING);
+                    break;
+                case ConstStatus.CampaignStatus.TRAINING:
+                    campaign.setStatus(ConstStatus.CampaignStatus.CLOSED);
+                    break;
+                case  ConstStatus.CampaignStatus.CLOSED:
+                    campaign.setStatus(ConstStatus.CampaignStatus.COMPANY_APPLY);
+                    break;
+                default:
+            }
+
+            campaignRepository.save(campaign);
+
+            Set<String> keysToDelete = redisTemplate.keys("Campaign:*");
+            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+                redisTemplate.delete(keysToDelete);
+            }
+
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 }
