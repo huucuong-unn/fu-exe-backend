@@ -161,7 +161,7 @@ public class MenteeServiceImpl implements IMenteeService {
 
             Mentee mentee = new Mentee();
             mentee.setStudent(student);
-            mentee.setStatus(ConstStatus.ACTIVE_STATUS);
+            mentee.setStatus(ConstStatus.CampaignStatus.TRAINING);
 
             menteeRepository.save(mentee);
             return MenteeConverter.toDto(mentee);
