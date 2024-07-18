@@ -71,7 +71,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
             mentorApply.setApplication(ApplicationConverter.toEntity(applicationService.findById(request.getApplicationId())));
             mentorApply.setMentee(MenteeConverter.toEntity(menteeService.findById(request.getMenteeId())));
             mentorApply.setStatus(ConstStatus.ACTIVE_STATUS);
-            mentorApply.setCampaign(CampaignMentorProfileConverter.toEntity(campaignMentorProfileService.findByMentorIdAndStatus(mentorApply.getApplication().getMentor().getId(), ConstStatus.CampaignStatus.MENTEE_APPLY)).getCampaign());
+            mentorApply.setCampaign(CampaignMentorProfileConverter.toEntity(campaignMentorProfileService.findByMentorIdAndStatus(mentorApply.getApplication().getMentor().getId(), ConstStatus.CampaignStatus.STUDENT_APPLY)).getCampaign());
 
             mentorApplyRepository.save(mentorApply);
 
@@ -290,6 +290,20 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
 
+    }
+
+    @Override
+    public List<MentorApplyDTO> findByStudentId(UUID studentId) throws BaseException {
+        try {
+            logger.info("Find mentorApplyService by studentId {}", studentId);
+            List<MentorApply> mentorApplys = mentorApplyRepository.findByMenteeStudentId(studentId);
+            return mentorApplys.stream().map(MentorApplyConverter::toDto).toList();
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 
     public int totalItem() {

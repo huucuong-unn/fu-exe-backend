@@ -8,7 +8,7 @@ public class ConstStatus {
 
     public static class CampaignStatus {
         public static final String COMPANY_APPLY = "COMPANY_APPLY";
-        public static final String MENTEE_APPLY = "MENTEE_APPLY";
+        public static final String STUDENT_APPLY = "STUDENT_APPLY";
         public static final String TRAINING = "TRAINING";
         public static final String CLOSED = "CLOSED";
         public static final String CANCEL = "CANCEL";

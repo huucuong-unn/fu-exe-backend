@@ -187,6 +187,8 @@ public class ConstAPI {
         public static final String GET_MENTOR_APPLY_BY_MENTOR_ID = "api/v1/mentor-apply/mentor/";
         public static final String GET_MENTOR_APPLY_BY_MENTEE_ID = "api/v1/mentor-apply/mentee/";
         public static final String GET_MENTOR_APPLY_BY_MENTEE_NAME_AND_MENTOR_FULL_NAME_AND_CAMPAIGN_ID = "api/v1/mentor-apply/search";
+
+        public static final String GET_MENTOR_APPLY_BY_STUDENT_ID = "api/v1/mentor-apply/student/";
     }
 
 

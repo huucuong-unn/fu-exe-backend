@@ -358,7 +358,7 @@ account.setPoint(points);
                 applicationDTOs = (List<ApplicationDTO>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication);
             } else {
                 logger.info("Fetching applications from database for page {} and limit {}", page, limit);
-                List<Application> applications = applicationRepository.findAllByMentorIdAndStatusAndSortByCreatedDate(mentorId, status, ConstStatus.CampaignStatus.MENTEE_APPLY, createdDate, pageable);
+                List<Application> applications = applicationRepository.findAllByMentorIdAndStatusAndSortByCreatedDate(mentorId, status, ConstStatus.CampaignStatus.STUDENT_APPLY, createdDate, pageable);
                 applicationDTOs = applications.stream().map(ApplicationConverter::toDto).toList();
                 redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_APPLICATION, hashKeyForApplication, applicationDTOs);
             }

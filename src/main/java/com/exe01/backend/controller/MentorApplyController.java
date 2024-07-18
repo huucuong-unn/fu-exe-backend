@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -67,6 +68,12 @@ public class MentorApplyController {
                                                                          @RequestParam(value = "page", required = false) Integer page,
                                                                          @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return menteeApplyService.findAllByMenteeNameAndMentorFullNameAndCampaignIdAndCompanyId(menteeName, mentorFullName, campaignId, companyId, status,page, limit);
+    }
+
+    @Operation(summary = "Get mentee applications by student id", description = "API get mentee applications by student id")
+    @GetMapping(value = ConstAPI.MentorApplyAPI.GET_MENTOR_APPLY_BY_STUDENT_ID + "{studentId}")
+    public List<MentorApplyDTO> findByStudentId(@PathVariable("studentId") UUID studentId) throws BaseException {
+        return menteeApplyService.findByStudentId(studentId);
     }
 
 }

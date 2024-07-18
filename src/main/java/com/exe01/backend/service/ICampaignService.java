@@ -20,4 +20,6 @@ public interface ICampaignService extends IGenericService<CampaignDTO>{
     List<CampaignDTO> findAll() throws BaseException;
 
     PagingModel findAllCampaignForAdminSearch(String campaignName, String status, int page, int size) throws BaseException;
+
+    void updateStatusCampaign(UUID campaignId) throws BaseException;
 }
