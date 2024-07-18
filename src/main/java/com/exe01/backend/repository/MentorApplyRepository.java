@@ -20,7 +20,7 @@ public interface MentorApplyRepository extends JpaRepository<MentorApply, UUID> 
     @Query("SELECT m FROM MentorApply m WHERE m.application.mentor.id = :id AND (COALESCE(:status, NULL) IS NULL OR m.status = :status)")
     List<MentorApply> findByApplicationMentorId(UUID id, String status, Pageable pageable);
 
-    @Query("SELECT m FROM MentorApply m WHERE (:menteeName IS NULL OR :menteeName ='' OR LOWER(m.mentee.student.name) LIKE LOWER(CONCAT('%', :menteeName, '%')))  AND (:campaignId IS NULL OR m.campaign.id = :campaignId) AND (:companyId IS NULL OR m.application.mentor.company = :companyId) AND (:status IS NULL OR :status = '' OR m.status = :status)")
+    @Query("SELECT m FROM MentorApply m WHERE  (:menteeName IS NULL OR :menteeName ='' OR LOWER(m.mentee.student.name) LIKE LOWER(CONCAT('%', :menteeName, '%'))) AND  (:mentorFullName IS NULL OR :mentorFullName ='' OR LOWER(m.application.mentor.fullName) LIKE LOWER(CONCAT('%', :mentorFullName, '%'))) AND (:campaignId IS NULL OR m.campaign.id = :campaignId) AND (:companyId IS NULL OR m.application.mentor.company = :companyId) AND (:status IS NULL OR :status = '' OR m.status = :status)")
     List<MentorApply> findAllByMenteeNameAndMentorFullNameAndCampaignId(
             @Param("menteeName") String menteeName,
             @Param("mentorFullName") String mentorFullName,
