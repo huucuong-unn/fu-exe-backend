@@ -295,7 +295,7 @@ account.setPoint(points);
             mentorApplyService.create(mentorApplyRequest);
             applicationRepository.save(application);
 
-            String token = "dE3y7cQWS6aNLXOIhfXKIt:APA91bHgO8ybLNiEFJF5u3moF40HN32Iet7-bf3KH7zkXQX_TY9eEHhxQpgxLXaEboucjb-M3Q3MT8TgVy23SrSUIn_G7Q7op6jmz2K_ng955aBM4_z7-phd9G9JOzhMVScYZ2ir-H0Q";
+            String token = "fXprRsuuQNGzWDERlf5DwH:APA91bEcQLGQ45FTroZ98vSbwrZpj5OikY98nXTgbWj1Vn2hzAcQMW6SwOFjohoDV_T-UreMQI23AVr1CWaGGMJAN7DmoLE9ApLxsfiy7G01U-DcmkfjYdBhUbUKPu5tulpRgWpOSu6K";
             String title ="Application status";
             String body = "Your application has been approved";
             PushNotificationRequest pushNotificationRequest = new PushNotificationRequest( title, body,null,token);
