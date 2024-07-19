@@ -17,7 +17,7 @@ public class ConstStatus {
 
     public static class ApplicationStatus {
         public static final String PROCESSING = "IN PROCESS";
-        public static final String APPROVED = "APPROVED ";
+        public static final String APPROVED = "APPROVED";
         public static final String REJECTED = "REJECTED";
     }
     public static class  TransactionStatus {

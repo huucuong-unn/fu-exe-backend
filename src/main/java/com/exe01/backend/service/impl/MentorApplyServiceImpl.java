@@ -70,7 +70,7 @@ public class MentorApplyServiceImpl implements IMentorApplyService {
             mentorApply.setFeedback(request.getFeedback());
             mentorApply.setApplication(ApplicationConverter.toEntity(applicationService.findById(request.getApplicationId())));
             mentorApply.setMentee(MenteeConverter.toEntity(menteeService.findById(request.getMenteeId())));
-            mentorApply.setStatus(ConstStatus.ACTIVE_STATUS);
+            mentorApply.setStatus(ConstStatus.CampaignStatus.TRAINING);
             mentorApply.setCampaign(CampaignMentorProfileConverter.toEntity(campaignMentorProfileService.findByMentorIdAndStatus(mentorApply.getApplication().getMentor().getId(), ConstStatus.CampaignStatus.STUDENT_APPLY)).getCampaign());
 
             mentorApplyRepository.save(mentorApply);
